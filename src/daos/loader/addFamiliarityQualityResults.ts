@@ -1,5 +1,5 @@
 import { sqlQuery } from "../../pool/postgres";
-import { Entry } from "../../types/loader/Entry";
+import { Entry } from "cruzi-models";
 
 const addFamiliarityQualityResults = async (entries: Entry[], sourceAI: string) => {
     let familiarityQualityValue = entries.map(entry => {

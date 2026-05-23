@@ -1,4 +1,4 @@
-import { Entry } from "../../types/loader/Entry";
+import { Entry } from "cruzi-models";
 import { sqlQuery } from "../../pool/postgres";
 
 export interface GetEntriesInput {

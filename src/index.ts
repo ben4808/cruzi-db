@@ -4,11 +4,9 @@ export { PostgresParameter } from './pool/PostgresParameter';
 export { default as CruziDao } from './daos/api/CruziDao';
 export { default } from './daos/api/CruziDao';
 export { ICruziDao } from './daos/api/ICruziDao';
-export type { CluePersisted } from './types/CluePersisted';
 
 export { default as LoaderDao } from './daos/loader/LoaderDao';
 export { ILoaderDao } from './daos/loader/ILoaderDao';
-export type { TranslateResult } from './types/TranslateResult';
 
 export { default as getEntries, GetEntriesInput } from './daos/loader/getEntries';
 export { default as upsertEntries } from './daos/loader/upsertEntries';

@@ -38,7 +38,8 @@ create table clue_collection (
   metadata1 text, -- AI composite score
   metadata2 text,
   "source" text, -- Book it came from? AI source? Important in case I need to remove copyrighted data.
-  clue_count int not null default 0
+  clue_count int not null default 0,
+  clue_count_6_plus int not null default 0
 );
 
 CREATE INDEX IX_Date ON clue_collection(created_date ASC);

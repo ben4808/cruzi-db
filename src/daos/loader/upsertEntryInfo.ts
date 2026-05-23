@@ -1,5 +1,5 @@
 import { sqlQuery } from "../../pool/postgres";
-import { Sense } from "../../types/loader/Sense";
+import { Sense } from "cruzi-models";
 
 export const getSensesForEntry = async (entry: string, lang: string): Promise<Sense[]> => {
   const results = await sqlQuery(true, "get_senses_for_entry", [

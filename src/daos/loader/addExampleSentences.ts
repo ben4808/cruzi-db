@@ -1,5 +1,5 @@
 import { sqlQuery } from "../../pool/postgres";
-import { ExampleSentence } from "../../types/loader/ExampleSentence";
+import { ExampleSentence } from "cruzi-models";
 
 const addExampleSentences = async (senseId: string, exampleSentences: ExampleSentence[]): Promise<void> => {
   // Convert ExampleSentence array to the format expected by the stored procedure

@@ -1,5 +1,5 @@
 import { sqlQuery } from "../../pool/postgres";
-import { Clue } from "../../types/loader/Clue";
+import { Clue } from "cruzi-models";
 import { generateId } from "../../lib/dbUtils";
 
 /**
@@ -26,13 +26,13 @@ const addCluesToCollection = async (collectionId: string, clues: Clue[]) => {
         return {
             collection_id: collectionId,
             id: clue.id ?? generateId(),
-            order: clue.order ?? index,
+            order: index,
             entry: clue.entry?.entry ?? "",
             lang: clue.lang ?? "en",
             sense_id: clue.sense?.id ?? null,
             custom_clue: clue.customClue ?? null,
             custom_display_text: clue.customDisplayText ?? null,
-            metadata1: clue.metadata1 ?? null,
+            metadata1: clue.aiCompositeScore ?? null,
             metadata2: clue.metadata2 ?? null,
         };
     }).filter(x => x.entry.length > 0);
