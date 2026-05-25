@@ -4,6 +4,8 @@ import removeClueFromCollection from "./removeClueFromCollection";
 import addOrUpdateEntries from "./addOrUpdateEntries";
 import addOrUpdateSense from "./addOrUpdateSense";
 import getCrosswordList from "./getCrosswordList";
+import getCrossword from "./getCrossword";
+import getCrosswordCalendar from "./getCrosswordCalendar";
 import getCollectionProgress from "./getCollectionsProgress";
 import getCollectionById from "./getCollectionById";
 import getCollectionList from "./getCollectionList";
@@ -13,6 +15,7 @@ import populateCollectionBatch from "./populateCollectionBatch";
 import getCrosswordClues from "./getCrosswordClues";
 import getCollectionClues from "./getCollectionClues";
 import submitUserResponse from "./submitUserResponse";
+import submitCrosswordResponse from "./submitCrosswordResponse";
 import reopenCollection from "./reopenCollection";
 import getSingleClue from "./getSingleClue";
 import updateSingleClue from "./updateSingleClue";
@@ -26,6 +29,10 @@ import addToEntryInfoQueue from "./addToEntryInfoQueue";
 
 class CruziDao implements ICruziDao {
     getCrosswordList = getCrosswordList;
+
+    getCrossword = getCrossword;
+
+    getCrosswordCalendar = getCrosswordCalendar;
 
     getCollectionProgress = getCollectionProgress;
 
@@ -44,6 +51,8 @@ class CruziDao implements ICruziDao {
     getCollectionClues = getCollectionClues;
 
     submitUserResponse = submitUserResponse;
+
+    submitCrosswordResponse = submitCrosswordResponse;
 
     reopenCollection = reopenCollection;
 

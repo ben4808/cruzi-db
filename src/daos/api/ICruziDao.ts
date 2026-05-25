@@ -8,10 +8,14 @@ import {
     Sense,
     User,
     UserResponse,
+    CrosswordResponse,
 } from 'cruzi-models';
+import { CrosswordCalendarDay } from './getCrosswordCalendar';
 
 export interface ICruziDao {
   getCrosswordList(date: Date, userId?: string): Promise<ClueCollection[]>;
+  getCrossword(collectionId: string, userId?: string): Promise<ClueCollection | null>;
+  getCrosswordCalendar(publicationId: string, month: number, year: number, userId?: string): Promise<CrosswordCalendarDay[]>;
   getCollectionProgress(userId: string, collectionIds: string[]): Promise<Map<string, CollectionProgress>>;
   getCollectionList(userId?: string): Promise<ClueCollection[]>;
   getCollectionById(collectionId: string, userId?: string): Promise<ClueCollection | null>;
@@ -30,6 +34,7 @@ export interface ICruziDao {
     page?: number
   ): Promise<CollectionClueTableRow[]>;
   submitUserResponse(userId: string, response: UserResponse): Promise<void>;
+  submitCrosswordResponse(userId: string, response: CrosswordResponse): Promise<void>;
   reopenCollection(userId: string, collectionId: string): Promise<void>;
 
   addClueToCollection(collectionId: string, clue: Clue): Promise<void>;

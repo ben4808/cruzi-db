@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_collection_progress(
+CREATE OR REPLACE FUNCTION get_collections_progress(
     p_user_id TEXT,
     p_collection_ids JSONB
 )

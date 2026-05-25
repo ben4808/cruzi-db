@@ -151,6 +151,7 @@ create table user__collection (
   unseen int not null,
   in_progress int not null,
   completed int not null,
+  hints_used int,
   primary key(user_id, collection_id)
 );
 

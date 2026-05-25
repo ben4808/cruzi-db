@@ -10,12 +10,12 @@ const getCollectionsProgress = async (
         return new Map();
     }
 
-    const result = await sqlQuery(true, 'get_collection_progress', [
+    const result = await sqlQuery(true, 'get_collections_progress', [
         { name: 'p_user_id', value: userId },
         { name: 'p_collection_ids', value: collectionIds },
     ]);
 
-    const rawData = result?.[0]?.get_collection_progress ?? [];
+    const rawData = result?.[0]?.get_collections_progress ?? [];
     const progressByCollectionId = new Map<string, CollectionProgress>();
 
     for (const raw of rawData) {
