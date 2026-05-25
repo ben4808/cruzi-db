@@ -1,4 +1,4 @@
-import { ClueCollection, CollectionClueWithProgress, Entry, Sense } from 'cruzi-models';
+import { ClueCollection, CollectionClueWithProgress, Entry } from 'cruzi-models';
 import { sqlQuery } from "../../pool/postgres";
 import { mapCollectionProgressData, mapCreator } from "./mappers";
 
@@ -29,21 +29,6 @@ const mapCollectionClue = (raw: any): CollectionClueWithProgress => {
         qualityScore: clueRaw.quality_score,
     } as Entry;
 
-    const senseRaw = clueRaw.sense;
-    const sense = senseRaw
-        ? ({
-              id: senseRaw.id,
-              entry: entryModel,
-              summary: senseRaw.summary,
-              definition: senseRaw.definition,
-              partOfSpeech: senseRaw.part_of_speech,
-              commonness: senseRaw.commonness,
-              familiarityScore: senseRaw.familiarity_score,
-              qualityScore: senseRaw.quality_score,
-              sourceAi: senseRaw.source_ai,
-          } as Sense)
-        : undefined;
-
     return {
         order: raw.order,
         puzzleClueIndex: raw.metadata1,
@@ -52,7 +37,6 @@ const mapCollectionClue = (raw: any): CollectionClueWithProgress => {
             id: clueRaw.id,
             entry: entryModel,
             lang: clueRaw.lang,
-            sense,
             customClue: clueRaw.custom_clue,
             customDisplayText: clueRaw.custom_display_text,
             progressData: mapClueProgress(clueRaw.user_progress),

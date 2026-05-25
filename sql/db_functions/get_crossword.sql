@@ -72,19 +72,7 @@ BEGIN
                             'quality_score', e.quality_score,
                             'custom_clue', c.custom_clue,
                             'custom_display_text', c.custom_display_text,
-                            'sense', CASE
-                                WHEN s.id IS NOT NULL THEN jsonb_build_object(
-                                    'id', s.id,
-                                    'summary', s.summary,
-                                    'definition', s.definition,
-                                    'part_of_speech', s.part_of_speech,
-                                    'commonness', s.commonness,
-                                    'familiarity_score', s.familiarity_score,
-                                    'quality_score', s.quality_score,
-                                    'source_ai', s.source_ai
-                                )
-                                ELSE NULL
-                            END,
+                            'sense', NULL,
                             'user_progress', CASE
                                 WHEN p_user_id IS NOT NULL THEN jsonb_build_object(
                                     'correct_solves_needed', COALESCE(ucl.correct_solves_needed, 2),
@@ -102,7 +90,6 @@ BEGIN
                 FROM collection__clue ccl
                 JOIN clue c ON ccl.clue_id = c.id
                 LEFT JOIN entry e ON c.entry = e.entry AND c.lang = e.lang
-                LEFT JOIN sense s ON c.sense_id = s.id
                 LEFT JOIN user__clue ucl ON c.id = ucl.clue_id AND ucl.user_id = p_user_id
                 LEFT JOIN user__puzzle_clue upc ON c.id = upc.clue_id AND upc.user_id = p_user_id
                 WHERE ccl.collection_id = cc.id

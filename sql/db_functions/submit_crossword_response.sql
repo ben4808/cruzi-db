@@ -30,22 +30,5 @@ BEGIN
     VALUES (p_user_id, _clue_id, _hints_used)
     ON CONFLICT (user_id, clue_id) DO UPDATE
         SET hints_used = EXCLUDED.hints_used;
-
-    INSERT INTO user__clue (
-        user_id,
-        clue_id,
-        correct_solves,
-        correct_solves_needed,
-        incorrect_solves,
-        last_solve
-    )
-    VALUES (p_user_id, _clue_id, 1, 1, 0, CURRENT_DATE)
-    ON CONFLICT (user_id, clue_id) DO UPDATE
-        SET
-            correct_solves = 1,
-            correct_solves_needed = 1,
-            last_solve = CURRENT_DATE;
-
-    PERFORM update_crossword_collection_hints(p_user_id, _collection_id);
 END;
 $$;
