@@ -31,7 +31,7 @@ const mapCollectionClue = (raw: any): CollectionClueWithProgress => {
 
     return {
         order: raw.order,
-        puzzleClueIndex: raw.metadata1,
+        metadata1: raw.metadata1,
         metadata2: raw.metadata2,
         clue: {
             id: clueRaw.id,

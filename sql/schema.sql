@@ -35,7 +35,7 @@ create table "entry" (
 
 create table puzzle (
   id text not null primary key,
-  publication_id text references publication(id) on delete set null,
+  publication_id text,
   "date" date not null,
   lang text not null default 'en',
   author text,
@@ -133,9 +133,7 @@ create table clue (
   lang text not null, -- in some cases only for reference if there is a sense provided
   sense_id text references sense(id) on delete set null, -- optional, if linked to a specific sense
   custom_clue text,
-  custom_display_text text,
-  source text,
-  foreign key ("entry", lang) references "entry"("entry", lang) on delete cascade
+  custom_display_text text
 );
 
 create table collection__clue (

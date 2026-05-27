@@ -12,6 +12,7 @@ CREATE OR REPLACE FUNCTION add_clue_collection (
     p_metadata1 text,
     p_metadata2 text,
     p_clue_count integer,
+    p_clue_count_6_plus integer,
     p_source text
 )
 RETURNS void
@@ -32,6 +33,7 @@ BEGIN
         metadata1,
         metadata2,
         clue_count,
+        clue_count_6_plus,
         "source"
     )
     VALUES (
@@ -48,6 +50,7 @@ BEGIN
         NULLIF(p_metadata1, ''),
         NULLIF(p_metadata2, ''),
         COALESCE(p_clue_count, 0),
+        COALESCE(p_clue_count_6_plus, 0),
         p_source
     )
     ON CONFLICT (id) DO UPDATE SET
@@ -63,6 +66,7 @@ BEGIN
         metadata1 = EXCLUDED.metadata1,
         metadata2 = EXCLUDED.metadata2,
         clue_count = EXCLUDED.clue_count,
+        clue_count_6_plus = EXCLUDED.clue_count_6_plus,
         "source" = EXCLUDED.source;
 END;
 $$;

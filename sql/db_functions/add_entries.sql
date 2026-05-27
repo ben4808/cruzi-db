@@ -14,7 +14,6 @@ BEGIN
         entry_type,
         familiarity_score,
         quality_score,
-        crossword_score,
         loading_status
     )
     SELECT
@@ -26,7 +25,6 @@ BEGIN
         NULLIF(trim(e->>'entryType'), ''),
         (e->>'familiarityScore')::integer,
         (e->>'qualityScore')::integer,
-        (e->>'crosswordScore')::integer,
         COALESCE(NULLIF(trim(e->>'loadingStatus'), ''), 'Ready')
     FROM jsonb_array_elements(p_entries) AS e
     ON CONFLICT ("entry", lang) DO UPDATE SET
@@ -35,7 +33,6 @@ BEGIN
         entry_type = COALESCE(EXCLUDED.entry_type, "entry".entry_type),
         familiarity_score = COALESCE(EXCLUDED.familiarity_score, "entry".familiarity_score),
         quality_score = COALESCE(EXCLUDED.quality_score, "entry".quality_score),
-        crossword_score = COALESCE(EXCLUDED.crossword_score, "entry".crossword_score),
         loading_status = COALESCE(EXCLUDED.loading_status, "entry".loading_status);
 END;
 $$;

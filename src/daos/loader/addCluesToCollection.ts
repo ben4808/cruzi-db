@@ -1,5 +1,5 @@
 import { sqlQuery } from "../../pool/postgres";
-import { Clue } from "cruzi-models";
+import { CollectionClue } from "cruzi-models";
 import { generateId } from "../../lib/dbUtils";
 
 /**
@@ -19,20 +19,20 @@ interface CluesDataElement {
     metadata2: string | null;
 }
 
-const addCluesToCollection = async (collectionId: string, clues: Clue[]) => {
+const addCluesToCollection = async (collectionId: string, clues: CollectionClue[]) => {
     if (clues.length === 0) return;
 
     const cluesData: CluesDataElement[] = clues.map((clue, index) => {
         return {
             collection_id: collectionId,
-            id: clue.id ?? generateId(),
+            id: clue.clue.id ?? generateId(),
             order: index,
-            entry: clue.entry?.entry ?? "",
-            lang: clue.lang ?? "en",
-            sense_id: clue.sense?.id ?? null,
-            custom_clue: clue.customClue ?? null,
-            custom_display_text: clue.customDisplayText ?? null,
-            metadata1: clue.aiCompositeScore ?? null,
+            entry: clue.clue.entry?.entry ?? "",
+            lang: clue.clue.lang ?? "en",
+            sense_id: clue.clue.sense?.id ?? null,
+            custom_clue: clue.clue.customClue ?? null,
+            custom_display_text: clue.clue.customDisplayText ?? null,
+            metadata1: clue.metadata1 ?? null,
             metadata2: clue.metadata2 ?? null,
         };
     }).filter(x => x.entry.length > 0);

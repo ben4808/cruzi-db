@@ -25,7 +25,7 @@ const mapCrosswordCollection = (raw: any, date: Date): ClueCollection => ({
               date: raw.puzzle_date ? new Date(raw.puzzle_date) : date,
               width: raw.width ?? 0,
               height: raw.height ?? 0,
-              author: raw.puzzle_author,
+              authors: raw.puzzle_author?.split(', ') ?? [],
               lang: raw.puzzle_lang ?? raw.lang,
           }
         : undefined,
