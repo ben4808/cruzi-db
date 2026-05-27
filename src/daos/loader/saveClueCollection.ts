@@ -16,7 +16,7 @@ const saveClueCollection = async (clueCollection: ClueCollection) => {
         {name: "p_is_private", value: clueCollection.isPrivate ?? false},
         {name: "p_created_date", value: clueCollection.createdDate ?? new Date()},
         {name: "p_modified_date", value: clueCollection.modifiedDate ?? clueCollection.createdDate ?? new Date()},
-        {name: "p_metadata1", value: clueCollection.aiCompositeScore ?? ""},
+        {name: "p_metadata1", value: clueCollection.metadata1 ?? ""},
         {name: "p_metadata2", value: clueCollection.metadata2 ?? ""},
         {name: "p_clue_count", value: clueCollection.clueCount ?? 0},
         {name: "p_clue_count_6_plus", value: clueCollection.clueCount6Plus ?? 0},

@@ -2,6 +2,7 @@ import { ClueCollection } from 'cruzi-models';
 import { sqlQuery } from "../../pool/postgres";
 import getCollectionsProgress from "./getCollectionsProgress";
 import { mapCreator } from "./mappers";
+import { formatDateKey } from '../../lib/dbUtils';
 
 const mapCrosswordCollection = (raw: any, date: Date): ClueCollection => ({
     id: raw.id,
@@ -13,7 +14,7 @@ const mapCrosswordCollection = (raw: any, date: Date): ClueCollection => ({
     modifiedDate: raw.modified_date ? new Date(raw.modified_date) : new Date(raw.created_date),
     source: raw.source,
     isPrivate: raw.is_private ?? false,
-    aiCompositeScore: raw.metadata1,
+    metadata1: raw.metadata1,
     metadata2: raw.metadata2,
     clueCount: raw.clue_count,
     creator: mapCreator(raw.creator),
@@ -33,7 +34,7 @@ const mapCrosswordCollection = (raw: any, date: Date): ClueCollection => ({
 
 const getCrosswordList = async (date: Date, userId?: string): Promise<ClueCollection[]> => {
     const result = await sqlQuery(true, 'get_crosswords_list', [
-        { name: 'p_date', value: date.toISOString().split('T')[0] }
+        { name: 'p_date', value: formatDateKey(date) }
     ]);
 
     const rawData = result?.[0]?.get_crosswords_list;

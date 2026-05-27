@@ -152,6 +152,7 @@ create table user__collection (
   in_progress int not null default 0,
   completed int not null default 0,
   hints_used int not null default 0,
+  collection_completed boolean not null default false, -- for crosswords where they might only complete entries 6 letters or longer
   primary key(user_id, collection_id)
 );
 

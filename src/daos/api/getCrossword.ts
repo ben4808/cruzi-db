@@ -8,10 +8,6 @@ const mapClueProgress = (progress: any) => {
     }
 
     return {
-        correctSolvesNeeded: progress.correct_solves_needed ?? 0,
-        correctSolves: progress.correct_solves ?? 0,
-        incorrectSolves: progress.incorrect_solves ?? 0,
-        lastSolveDate: progress.last_solve ? new Date(progress.last_solve) : undefined,
         hintsUsed: progress.hints_used ?? 0,
     };
 };
@@ -68,7 +64,7 @@ const getCrossword = async (collectionId: string, userId?: string): Promise<Clue
         modifiedDate: raw.modified_date ? new Date(raw.modified_date) : new Date(raw.created_date),
         source: raw.source,
         isPrivate: raw.is_private ?? false,
-        aiCompositeScore: raw.metadata1,
+        metadata1: raw.metadata1,
         metadata2: raw.metadata2,
         clueCount: raw.clue_count,
         clueCount6Plus: raw.clue_count_6_plus,

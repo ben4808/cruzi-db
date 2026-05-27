@@ -8,20 +8,25 @@ RETURNS JSONB
 LANGUAGE plpgsql
 AS $$
 BEGIN
+    IF p_user_id IS NULL THEN
+        RETURN '[]'::jsonb;
+    END IF;
+
     RETURN (
         SELECT COALESCE(jsonb_agg(
             jsonb_build_object(
                 'date', to_char(p.date, 'YYYY-MM-DD'),
-                'hints_used', CASE
-                    WHEN p_user_id IS NULL THEN 0
-                    ELSE COALESCE(uc.hints_used, 0)
-                END
+                'progress_state', CASE
+                    WHEN uc.collection_completed THEN 'completed'
+                    ELSE 'in_progress'
+                END,
+                'hints_used', COALESCE(uc.hints_used, 0)
             )
             ORDER BY p.date
         ), '[]'::jsonb)
         FROM puzzle p
         JOIN clue_collection cc ON cc.puzzle_id = p.id
-        LEFT JOIN user__collection uc
+        JOIN user__collection uc
             ON uc.collection_id = cc.id
             AND uc.user_id = p_user_id
         WHERE p.publication_id = p_publication_id

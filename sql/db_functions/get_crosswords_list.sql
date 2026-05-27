@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION get_crosswords_list(
-  p_date DATE
+  p_date text
 )
 RETURNS jsonb AS $$
 DECLARE
@@ -27,7 +27,7 @@ BEGIN
       'puzzle_lang', p.lang,
       'width', p.width,
       'height', p.height,
-      'publication_id', pub.id,
+      'publication_id', p.publication_id,
       'creator', CASE WHEN u.id IS NOT NULL
                       THEN jsonb_build_object(
                           'creator_id', u.id,
@@ -40,10 +40,9 @@ BEGIN
   )
   INTO result
   FROM clue_collection cc
-  JOIN puzzle p ON cc.puzzle_id = p.id
-  JOIN publication pub ON p.publication_id = pub.id
+  LEFT JOIN puzzle p ON cc.puzzle_id = p.id
   LEFT JOIN "user" u ON cc.creator_id = u.id
-  WHERE DATE(cc.created_date) = p_date;
+  WHERE cc.metadata1 = p_date;
 
   RETURN result;
 END;

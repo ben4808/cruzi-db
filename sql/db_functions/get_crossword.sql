@@ -75,11 +75,7 @@ BEGIN
                             'sense', NULL,
                             'user_progress', CASE
                                 WHEN p_user_id IS NOT NULL THEN jsonb_build_object(
-                                    'correct_solves_needed', COALESCE(ucl.correct_solves_needed, 2),
-                                    'correct_solves', COALESCE(ucl.correct_solves, 0),
-                                    'incorrect_solves', COALESCE(ucl.incorrect_solves, 0),
-                                    'last_solve', ucl.last_solve,
-                                    'hints_used', COALESCE(upc.hints_used, ucl.hints_used, 0)
+                                    'hints_used', COALESCE(upc.hints_used, 0)
                                 )
                                 ELSE NULL
                             END
@@ -90,7 +86,6 @@ BEGIN
                 FROM collection__clue ccl
                 JOIN clue c ON ccl.clue_id = c.id
                 LEFT JOIN entry e ON c.entry = e.entry AND c.lang = e.lang
-                LEFT JOIN user__clue ucl ON c.id = ucl.clue_id AND ucl.user_id = p_user_id
                 LEFT JOIN user__puzzle_clue upc ON c.id = upc.clue_id AND upc.user_id = p_user_id
                 WHERE ccl.collection_id = cc.id
             ), '[]'::jsonb)
