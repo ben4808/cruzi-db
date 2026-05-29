@@ -1,10 +1,5 @@
 import { sqlQuery } from "../../pool/postgres";
-
-export interface CrosswordCalendarDay {
-    date: string;
-    progress_state: 'completed' | 'in_progress';
-    hints_used: number;
-}
+import { CrosswordCalendarDay } from "cruzi-models";
 
 const getCrosswordCalendar = async (
     publicationId: string,
@@ -23,8 +18,8 @@ const getCrosswordCalendar = async (
 
     return rawData.map((raw: any) => ({
         date: raw.date,
-        progress_state: raw.progress_state,
-        hints_used: raw.hints_used ?? 0,
+        progressState: raw.progress_state,
+        hintsUsed: raw.hints_used ?? 0,
     }));
 };
 

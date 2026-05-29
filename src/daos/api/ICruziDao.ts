@@ -9,8 +9,8 @@ import {
     User,
     UserResponse,
     CrosswordResponse,
+    CrosswordCalendarDay,
 } from 'cruzi-models';
-import { CrosswordCalendarDay } from './getCrosswordCalendar';
 
 export interface ICruziDao {
   getCrosswordList(date: Date, userId?: string): Promise<ClueCollection[]>;

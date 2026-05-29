@@ -23,3 +23,6 @@ export { addSenseEntryTranslations, SenseEntryTranslationData } from './daos/loa
 export { assignPrimarySenseToClues } from './daos/loader/assignPrimarySenseToClues';
 export { addCrosswordQualityQueueEntries } from './daos/loader/addCrosswordQualityQueueEntries';
 export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries';
+export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';
+export { default as submitCrosswordResponse } from './daos/api/submitCrosswordResponse';
+
