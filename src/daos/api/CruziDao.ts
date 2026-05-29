@@ -10,6 +10,7 @@ import getCollectionProgress from "./getCollectionsProgress";
 import getCollectionById from "./getCollectionById";
 import getCollectionList from "./getCollectionList";
 import getCrosswordId from "./getCrosswordId";
+import getCrosswordCollectionId from "./getCrosswordCollectionId";
 import selectCollectionBatch from "./selectCollectionBatch";
 import populateCollectionBatch from "./populateCollectionBatch";
 import getCrosswordClues from "./getCrosswordClues";
@@ -41,6 +42,8 @@ class CruziDao implements ICruziDao {
     getCollectionById = getCollectionById;
 
     getCrosswordId = getCrosswordId;
+
+    getCrosswordCollectionId = getCrosswordCollectionId;
 
     selectCollectionBatch = selectCollectionBatch;
 

@@ -24,5 +24,6 @@ export { assignPrimarySenseToClues } from './daos/loader/assignPrimarySenseToClu
 export { addCrosswordQualityQueueEntries } from './daos/loader/addCrosswordQualityQueueEntries';
 export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries';
 export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';
+export { default as getCrosswordCollectionId } from './daos/api/getCrosswordCollectionId';
 export { default as submitCrosswordResponse } from './daos/api/submitCrosswordResponse';
 

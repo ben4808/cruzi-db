@@ -21,6 +21,7 @@ export interface ICruziDao {
   getCollectionById(collectionId: string, userId?: string): Promise<ClueCollection | null>;
 
   getCrosswordId(source: string, date: Date): Promise<string | null>;
+  getCrosswordCollectionId(publicationId: string, date: Date): Promise<string | null>;
   selectCollectionBatch(userId: string | undefined, collectionId: string): Promise<string[]>;
   populateCollectionBatch(clueIds: string[], userId?: string): Promise<Clue[]>;
   getCrosswordClues(collectionId: string): Promise<Clue[]>;
