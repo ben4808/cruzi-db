@@ -17,6 +17,7 @@ const mapCrosswordCollection = (raw: any, date: Date): ClueCollection => ({
     metadata1: raw.metadata1,
     metadata2: raw.metadata2,
     clueCount: raw.clue_count,
+    clueCount6Plus: raw.clue_count_6_plus,
     creator: mapCreator(raw.creator),
     puzzle: raw.puzzle_id
         ? {
