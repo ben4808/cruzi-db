@@ -37,6 +37,7 @@ export interface ICruziDao {
   submitUserResponse(userId: string, response: UserResponse): Promise<void>;
   submitCrosswordResponse(userId: string, response: CrosswordResponse): Promise<void>;
   reopenCollection(userId: string, collectionId: string): Promise<void>;
+  completeCrossword(userId: string, collectionId: string): Promise<void>;
 
   addClueToCollection(collectionId: string, clue: Clue): Promise<void>;
   removeClueFromCollection(collectionId: string, clueId: string): Promise<void>;

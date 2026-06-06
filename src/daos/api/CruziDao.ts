@@ -18,6 +18,7 @@ import getCollectionClues from "./getCollectionClues";
 import submitUserResponse from "./submitUserResponse";
 import submitCrosswordResponse from "./submitCrosswordResponse";
 import reopenCollection from "./reopenCollection";
+import completeCrossword from "./completeCrossword";
 import getSingleClue from "./getSingleClue";
 import updateSingleClue from "./updateSingleClue";
 import getEntry from "./getEntry";
@@ -58,6 +59,8 @@ class CruziDao implements ICruziDao {
     submitCrosswordResponse = submitCrosswordResponse;
 
     reopenCollection = reopenCollection;
+
+    completeCrossword = completeCrossword;
 
     addClueToCollection = addClueToCollection;
 

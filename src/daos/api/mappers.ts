@@ -17,6 +17,7 @@ export const mapCollectionProgressData = (progress: any, userId?: string) => {
         inProgress: progress.in_progress ?? 0,
         completed: progress.completed ?? 0,
         hintsUsed: progress.hints_used ?? 0,
+        collectionCompleted: progress.collection_completed ?? false,
     };
 };
 

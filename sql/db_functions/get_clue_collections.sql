@@ -30,7 +30,8 @@ BEGIN
                         jsonb_build_object(
                             'unseen', uc.unseen,
                             'in_progress', uc.in_progress,
-                            'completed', uc.completed
+                            'completed', uc.completed,
+                            'collection_completed', uc.collection_completed
                         )
                     ELSE
                         NULL

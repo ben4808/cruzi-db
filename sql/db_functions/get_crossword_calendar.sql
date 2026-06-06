@@ -15,14 +15,14 @@ BEGIN
     RETURN (
         SELECT COALESCE(jsonb_agg(
             jsonb_build_object(
-                'date', to_char(p.date, 'YYYY-MM-DD'),
+                'date', cc.metadata1,
                 'progress_state', CASE
                     WHEN uc.collection_completed THEN 'completed'
                     ELSE 'in_progress'
                 END,
                 'hints_used', COALESCE(uc.hints_used, 0)
             )
-            ORDER BY p.date
+            ORDER BY cc.metadata1
         ), '[]'::jsonb)
         FROM puzzle p
         JOIN clue_collection cc ON cc.puzzle_id = p.id
@@ -30,8 +30,9 @@ BEGIN
             ON uc.collection_id = cc.id
             AND uc.user_id = p_user_id
         WHERE p.publication_id = p_publication_id
-          AND EXTRACT(MONTH FROM p.date) = p_month
-          AND EXTRACT(YEAR FROM p.date) = p_year
+          AND cc.metadata1 IS NOT NULL
+          AND EXTRACT(MONTH FROM cc.metadata1::date) = p_month
+          AND EXTRACT(YEAR FROM cc.metadata1::date) = p_year
     );
 END;
 $$;

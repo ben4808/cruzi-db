@@ -50,7 +50,8 @@ BEGIN
                     'unseen', uc.unseen,
                     'in_progress', uc.in_progress,
                     'completed', uc.completed,
-                    'hints_used', COALESCE(uc.hints_used, 0)
+                    'hints_used', COALESCE(uc.hints_used, 0),
+                    'collection_completed', uc.collection_completed
                 )
                 ELSE NULL
             END,
@@ -74,8 +75,8 @@ BEGIN
                             'custom_display_text', c.custom_display_text,
                             'sense', NULL,
                             'user_progress', CASE
-                                WHEN p_user_id IS NOT NULL THEN jsonb_build_object(
-                                    'hints_used', COALESCE(upc.hints_used, 0)
+                                WHEN p_user_id IS NOT NULL AND upc.user_id IS NOT NULL THEN jsonb_build_object(
+                                    'hints_used', upc.hints_used
                                 )
                                 ELSE NULL
                             END

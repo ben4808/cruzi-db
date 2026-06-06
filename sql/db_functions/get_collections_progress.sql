@@ -17,23 +17,11 @@ BEGIN
                 'unseen', uc.unseen,
                 'in_progress', uc.in_progress,
                 'completed', uc.completed,
-                'hints_used', COALESCE(h.hints_used, 0)
+                'hints_used', uc.hints_used,
+                'collection_completed', uc.collection_completed
             )
         ), '[]'::jsonb)
         FROM user__collection uc
-        LEFT JOIN (
-            SELECT
-                cc.collection_id,
-                SUM(COALESCE(ucl.hints_used, 0))::int AS hints_used
-            FROM collection__clue cc
-            LEFT JOIN user__clue ucl
-                ON cc.clue_id = ucl.clue_id
-                AND ucl.user_id = p_user_id
-            WHERE cc.collection_id IN (
-                SELECT jsonb_array_elements_text(p_collection_ids)
-            )
-            GROUP BY cc.collection_id
-        ) h ON h.collection_id = uc.collection_id
         WHERE uc.user_id = p_user_id
           AND uc.collection_id IN (
               SELECT jsonb_array_elements_text(p_collection_ids)
