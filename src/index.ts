@@ -22,6 +22,7 @@ export { insertEntries, EntryInsertData } from './daos/loader/insertEntries';
 export { addSenseEntryTranslations, SenseEntryTranslationData } from './daos/loader/addSenseEntryTranslations';
 export { assignPrimarySenseToClues } from './daos/loader/assignPrimarySenseToClues';
 export { addCrosswordQualityQueueEntries } from './daos/loader/addCrosswordQualityQueueEntries';
+export { addCrosswordFamiliarityQueueEntries } from './daos/loader/addCrosswordFamiliarityQueueEntries';
 export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries';
 export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';
 export { default as getCrosswordCollectionId } from './daos/api/getCrosswordCollectionId';

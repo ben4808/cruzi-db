@@ -10,7 +10,6 @@ RETURNS TABLE (
     entry_type text,
     familiarity_score integer,
     quality_score integer,
-    crossword_score integer,
     loading_status text
 )
 LANGUAGE plpgsql
@@ -26,7 +25,6 @@ BEGIN
         e.entry_type,
         e.familiarity_score,
         e.quality_score,
-        e.crossword_score,
         e.loading_status
     FROM "entry" e
     INNER JOIN (

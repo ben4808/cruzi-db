@@ -24,7 +24,7 @@ BEGIN
             c.custom_display_text,
             c.sense_id,
             -- Answer: custom_display_text if exists, otherwise display_text from entry
-            COALESCE(c.custom_display_text, e.display_text, '') AS answer,
+            COALESCE(c.custom_display_text, e.display_text, e.entry, '') AS answer,
             -- Sense: summary from sense_translation (entry's lang, or English, or N/A)
             COALESCE(
                 (SELECT st.summary
