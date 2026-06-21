@@ -29,6 +29,7 @@ create table "entry" (
   -- directly set if no senses exist, otherwise the average of sense scores
   familiarity_score int,
   quality_score int,
+  idiomacity_score int,
   loading_status text not null default 'Ready', -- Ready, Processing, Error, Invalid
   primary key("entry", lang)
 );
@@ -202,6 +203,20 @@ create table crossword_familiarity_queue (
 create table crossword_quality_queue (
   id serial primary key,
   "entry" text not null,
+  lang text not null,
+  added_at timestamp not null default now()
+);
+
+create table idiomacity_queue (
+  id serial primary key,
+  "entry" text not null,
+  lang text not null,
+  added_at timestamp not null default now()
+);
+
+create table phrase_generator_queue (
+  id serial primary key,
+  prompt text not null,
   lang text not null,
   added_at timestamp not null default now()
 );

@@ -5,14 +5,16 @@ const upsertEntries = async (entries: Entry[]) => {
     const payload = entries.map((e) => ({
         entry: e.entry,
         lang: e.lang,
-        rootEntry: e.rootEntry ?? undefined,
-        displayText: e.displayText ?? undefined,
-        entryType: e.entryType ?? undefined,
-        familiarityScore: e.familiarityScore ?? undefined,
-        qualityScore: e.qualityScore ?? undefined,
-        loadingStatus: e.loadingStatus ?? undefined,
+        length: e.entry.length,
+        root_entry: e.rootEntry ?? undefined,
+        display_text: e.displayText ?? undefined,
+        entry_type: e.entryType ?? undefined,
+        familiarity_score: e.familiarityScore ?? undefined,
+        quality_score: e.qualityScore ?? undefined,
+        idiomacity_score: e.idiomacityScore ?? undefined,
+        loading_status: e.loadingStatus ?? undefined,
     }));
-    await sqlQuery(true, "add_entries", [{ name: "p_entries", value: payload }]);
+    await sqlQuery(true, "upsert_entries", [{ name: "entries_data", value: payload }]);
 };
 
 export default upsertEntries;
