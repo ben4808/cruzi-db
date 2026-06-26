@@ -221,6 +221,13 @@ create table phrase_generator_queue (
   added_at timestamp not null default now()
 );
 
+create table phrase_generator_result (
+  phrase_generator_queue_id int not null references phrase_generator_queue(id) on delete cascade,
+  phrase text not null,
+  added_at timestamp not null default now(),
+  primary key(phrase_generator_queue_id, phrase)
+);
+
 -- Indexes
 create index ix_clue_collection_created_date on clue_collection(created_date asc);
 create index ix_puzzle_publication_date on puzzle(publication_id, "date");

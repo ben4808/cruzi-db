@@ -19,6 +19,7 @@ export { default as getExampleSentenceQueueTop10, ExampleSentenceQueueItem } fro
 export { default as addExampleSentences } from './daos/loader/addExampleSentences';
 export { updateEntriesLoadingStatus, EntryKey } from './daos/loader/updateEntriesLoadingStatus';
 export { insertEntries, EntryInsertData } from './daos/loader/insertEntries';
+export { insertScrabbleEntries, ScrabbleEntryInsertData } from './daos/loader/insertScrabbleEntries';
 export { addSenseEntryTranslations, SenseEntryTranslationData } from './daos/loader/addSenseEntryTranslations';
 export { assignPrimarySenseToClues } from './daos/loader/assignPrimarySenseToClues';
 export { addCrosswordQualityQueueEntries } from './daos/loader/addCrosswordQualityQueueEntries';
@@ -27,7 +28,14 @@ export { default as getEntriesWithoutIdiomacityTop50, EntryWithoutIdiomacity } f
 export { default as getEntriesLowIdiomacityTop150, EntryWithLowIdiomacity } from './daos/loader/getEntriesLowIdiomacityTop150';
 export { default as getEntriesLowIdiomacity } from './daos/loader/getEntriesLowIdiomacity';
 export { default as getEntriesWithoutFamiliarityTop50, EntryWithoutFamiliarity } from './daos/loader/getEntriesWithoutFamiliarityTop50';
+export { default as getEntriesWithoutQualityTop50, EntryWithoutQuality } from './daos/loader/getEntriesWithoutQualityTop50';
+export { default as getEntriesWithMismatchedDisplayText, EntryWithMismatchedDisplayText } from './daos/loader/getEntriesWithMismatchedDisplayText';
+export { default as resetEntryDisplayFields } from './daos/loader/resetEntryDisplayFields';
 export { addPhraseGeneratorQueueEntries, PhraseGeneratorQueueItem } from './daos/loader/addPhraseGeneratorQueueEntries';
+export { default as getPhraseGeneratorQueueTop1, PhraseGeneratorQueueRow } from './daos/loader/getPhraseGeneratorQueueTop1';
+export { default as getEntriesByBaseWord, BaseWordPosition } from './daos/loader/getEntriesByBaseWord';
+export { default as addPhraseGeneratorResults } from './daos/loader/addPhraseGeneratorResults';
+export { default as addEntryTags, EntryTagInput } from './daos/loader/addEntryTags';
 export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries';
 export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';
 export { default as getCrosswordCollectionId } from './daos/api/getCrosswordCollectionId';
