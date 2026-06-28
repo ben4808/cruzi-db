@@ -73,21 +73,14 @@ create table sense (
   summary text,
   "definition" text,
   part_of_speech text,
-  commonness text,
+  frequency text,
+  classification text,
   -- average of AI opinions
   familiarity_score int,
   quality_score int,
   similar_entries text[],
   source_ai text, -- for summary, definition
   foreign key ("entry", lang) references "entry"("entry", lang) on delete cascade
-);
-
-create table sense_translation (
-  sense_id text not null references sense(id) on delete cascade,
-  lang text not null,
-  summary text not null,
-  definition text,
-  primary key(sense_id, lang)
 );
 
 create table entry_tags (

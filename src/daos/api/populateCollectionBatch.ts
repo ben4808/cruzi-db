@@ -70,7 +70,8 @@ const populateCollectionBatch = async (clueIds: string[], userId?: string): Prom
                       id: raw.sense.id,
                       entry: entryModel,
                       partOfSpeech: raw.sense.partOfSpeech,
-                      commonness: raw.sense.commonness,
+                      classification: raw.sense.classification,
+                      frequency: raw.sense.frequency,
                       summary: pickLocalizedText(raw.sense.summary),
                       definition: pickLocalizedText(raw.sense.definition),
                       exampleSentences: transformExampleSentences(

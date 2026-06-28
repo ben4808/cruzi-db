@@ -12,8 +12,11 @@ export { default as getEntries, GetEntriesInput } from './daos/loader/getEntries
 export { default as upsertEntries } from './daos/loader/upsertEntries';
 export { default as getCrosswordQualityQueueTop25, CrosswordQualityQueueItem } from './daos/loader/getCrosswordQualityQueueTop25';
 export { default as getCrosswordFamiliarityQueueTop25, CrosswordFamiliarityQueueItem } from './daos/loader/getCrosswordFamiliarityQueueTop25';
-export { default as getEntryInfoQueueTop10, EntryInfoQueueItem, ExistingSenseInfo } from './daos/loader/getEntryInfoQueueTop10';
+export { default as getEntryInfoQueueTop1, EntryInfoQueueItem, ExistingSenseInfo } from './daos/loader/getEntryInfoQueueTop1';
+export { default as getEntryInfoQueueTop10 } from './daos/loader/getEntryInfoQueueTop10';
+export { removeFromEntryInfoQueue } from './daos/loader/removeFromEntryInfoQueue';
 export { upsertEntryInfo, getSensesForEntry } from './daos/loader/upsertEntryInfo';
+export { upsertSense } from './daos/loader/upsertSense';
 export { addExampleSentenceQueueEntries } from './daos/loader/addExampleSentenceQueueEntry';
 export { default as getExampleSentenceQueueTop10, ExampleSentenceQueueItem } from './daos/loader/getExampleSentenceQueueTop10';
 export { default as addExampleSentences } from './daos/loader/addExampleSentences';

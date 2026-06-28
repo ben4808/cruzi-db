@@ -24,7 +24,7 @@ BEGIN
         -- Insert translations for each language
         FOR lang, sentence_text IN SELECT key, value FROM jsonb_each_text(sentence_record->'translations')
         LOOP
-            INSERT INTO example_sentence_translation (example_id, lang, sentence)
+            INSERT INTO example_sentence_translation (example_sentence_id, lang, sentence)
             VALUES (example_id, lang, sentence_text);
         END LOOP;
     END LOOP;

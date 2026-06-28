@@ -4,7 +4,8 @@ export interface SenseEntryTranslationData {
   sense_id: string;
   entry: string;
   lang: string;
-  display_text: string;
+  natural_translations?: string[];
+  colloquial_translations?: string[];
 }
 
 export const addSenseEntryTranslations = async (translations: SenseEntryTranslationData[]): Promise<void> => {

@@ -25,6 +25,8 @@ BEGIN
             s.id as sense_id_full,
             s.part_of_speech,
             s.commonness,
+            s.summary,
+            s.definition,
             s.familiarity_score,
             s.quality_score,
             s.source_ai,
@@ -34,19 +36,6 @@ BEGIN
             uc.correct_solves_needed,
             e.display_text,
             e.loading_status,
-            -- Get sense translations directly
-            COALESCE(
-                (SELECT jsonb_agg(DISTINCT
-                    jsonb_build_object(
-                        'lang', st2.lang,
-                        'summary', st2.summary,
-                        'definition', st2.definition
-                    )
-                )
-                FROM sense_translation st2
-                WHERE st2.sense_id = s.id),
-                '[]'::jsonb
-            ) as sense_translations,
             -- Get example sentences directly
             COALESCE(
                 (SELECT jsonb_agg(DISTINCT
@@ -57,7 +46,7 @@ BEGIN
                     )
                 )
                 FROM example_sentence es2
-                LEFT JOIN example_sentence_translation est2 ON es2.id = est2.example_id
+                LEFT JOIN example_sentence_translation est2 ON es2.id = est2.example_sentence_id
                 WHERE es2.sense_id = s.id),
                 '[]'::jsonb
             ) as example_sentences
@@ -84,16 +73,14 @@ BEGIN
                         'id', cd.sense_id_full,
                         'partOfSpeech', cd.part_of_speech,
                         'commonness', cd.commonness,
-                        'summary', (
-                            SELECT jsonb_object_agg(lang, summary)
-                            FROM jsonb_to_recordset(cd.sense_translations) AS t(lang text, summary text)
-                            WHERE summary IS NOT NULL
-                        ),
-                        'definition', (
-                            SELECT jsonb_object_agg(lang, definition)
-                            FROM jsonb_to_recordset(cd.sense_translations) AS t(lang text, definition text)
-                            WHERE definition IS NOT NULL
-                        ),
+                        'summary', CASE
+                            WHEN cd.summary IS NOT NULL THEN jsonb_build_object(cd.lang, cd.summary)
+                            ELSE NULL
+                        END,
+                        'definition', CASE
+                            WHEN cd.definition IS NOT NULL THEN jsonb_build_object(cd.lang, cd.definition)
+                            ELSE NULL
+                        END,
                         'exampleSentences', cd.example_sentences,
                         'familiarityScore', cd.familiarity_score,
                         'qualityScore', cd.quality_score,

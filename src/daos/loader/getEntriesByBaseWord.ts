@@ -6,11 +6,13 @@ const getEntriesByBaseWord = async (
   baseWord: string,
   lang: string,
   position: BaseWordPosition,
+  separatedOnly = false,
 ): Promise<string[]> => {
   const results = await sqlQuery(true, 'get_entries_by_base_word', [
     { name: 'p_base_word', value: baseWord },
     { name: 'p_lang', value: lang },
     { name: 'p_position', value: position },
+    { name: 'p_separated_only', value: separatedOnly },
   ]);
 
   return results.map((row) => row.display_text as string);

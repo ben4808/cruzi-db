@@ -17,8 +17,8 @@ BEGIN
                 'senses', jsonb_agg(
                     jsonb_build_object(
                         'id', es.id,
-                        'summary', st.summary,
-                        'definition', st.definition,
+                        'summary', es.summary,
+                        'definition', es.definition,
                         'familiarity_score', es.familiarity_score,
                         'quality_score', es.quality_score,
                         'source_ai', es.source_ai,
@@ -44,8 +44,6 @@ BEGIN
             entry e
         LEFT JOIN
             sense es ON e.entry = es.entry AND e.lang = es.lang
-        LEFT JOIN
-            sense_translation st ON es.id = st.sense_id
         WHERE
             e.entry = p_entry
         GROUP BY

@@ -29,11 +29,9 @@ BEGIN
             -- Find existing sense by summary match
             SELECT s.id INTO current_sense_id
             FROM sense s
-            JOIN sense_translation st ON st.sense_id = s.id
             WHERE s.entry = entry_name
               AND s.lang = entry_lang
-              AND st.lang = entry_lang
-              AND st.summary = (sense_record->>'corresponds_with')
+              AND s.summary = (sense_record->>'corresponds_with')
             LIMIT 1;
 
             IF current_sense_id IS NULL THEN
@@ -56,36 +54,74 @@ BEGIN
             "entry",
             lang,
             part_of_speech,
-            commonness,
+            classification,
+            frequency,
+            summary,
+            "definition",
+            similar_entries,
             source_ai
         ) VALUES (
             current_sense_id,
             entry_name,
             entry_lang,
             (sense_record->>'part_of_speech')::text,
-            (sense_record->>'commonness')::text,
+            (sense_record->>'classification')::text,
+            (sense_record->>'frequency')::text,
+            (sense_record->>'summary')::text,
+            (sense_record->>'definition')::text,
+            CASE
+                WHEN sense_record ? 'similar_entries'
+                     AND jsonb_typeof(sense_record->'similar_entries') = 'array'
+                     AND jsonb_array_length(sense_record->'similar_entries') > 0
+                THEN ARRAY(
+                    SELECT jsonb_array_elements_text(sense_record->'similar_entries')
+                )
+                ELSE NULL
+            END,
             (sense_record->>'source_ai')::text
         )
         ON CONFLICT (id) DO UPDATE SET
             part_of_speech = EXCLUDED.part_of_speech,
-            commonness = EXCLUDED.commonness,
+            classification = EXCLUDED.classification,
+            frequency = EXCLUDED.frequency,
+            summary = EXCLUDED.summary,
+            "definition" = EXCLUDED."definition",
+            similar_entries = EXCLUDED.similar_entries,
             source_ai = EXCLUDED.source_ai;
 
-        -- Insert or update sense translation
-        INSERT INTO sense_translation (
-            sense_id,
-            lang,
-            summary,
-            "definition"
-        ) VALUES (
-            current_sense_id,
-            entry_lang,
-            (sense_record->>'summary')::text,
-            (sense_record->>'definition')::text
-        )
-        ON CONFLICT (sense_id, lang) DO UPDATE SET
-            summary = EXCLUDED.summary,
-            "definition" = EXCLUDED."definition";
+        IF sense_record ? 'translation_lang'
+           AND (sense_record->>'translation_lang') IS NOT NULL THEN
+            INSERT INTO sense_entry_translation (
+                sense_id,
+                "entry",
+                lang,
+                natural_translations,
+                colloquial_translations
+            ) VALUES (
+                current_sense_id,
+                entry_name,
+                (sense_record->>'translation_lang')::text,
+                CASE
+                    WHEN sense_record ? 'natural_translations'
+                         AND jsonb_typeof(sense_record->'natural_translations') = 'array'
+                    THEN ARRAY(
+                        SELECT jsonb_array_elements_text(sense_record->'natural_translations')
+                    )
+                    ELSE NULL
+                END,
+                CASE
+                    WHEN sense_record ? 'colloquial_translations'
+                         AND jsonb_typeof(sense_record->'colloquial_translations') = 'array'
+                    THEN ARRAY(
+                        SELECT jsonb_array_elements_text(sense_record->'colloquial_translations')
+                    )
+                    ELSE NULL
+                END
+            )
+            ON CONFLICT (sense_id, "entry", lang) DO UPDATE SET
+                natural_translations = EXCLUDED.natural_translations,
+                colloquial_translations = EXCLUDED.colloquial_translations;
+        END IF;
     END LOOP;
 END;
 $$;

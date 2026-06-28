@@ -5,9 +5,11 @@ CREATE OR REPLACE FUNCTION get_senses_for_entry(
 RETURNS TABLE(
     id text,
     part_of_speech text,
-    commonness text,
-    summary jsonb,
-    definition jsonb,
+    classification text,
+    frequency text,
+    summary text,
+    definition text,
+    similar_entries text[],
     example_sentences jsonb,
     translations jsonb,
     source_ai text
@@ -19,40 +21,40 @@ BEGIN
     SELECT
         s.id,
         s.part_of_speech,
-        s.commonness,
-        -- Aggregate summaries by language
-        jsonb_object_agg(st.lang, st.summary) FILTER (WHERE st.summary IS NOT NULL) as summary,
-        -- Aggregate definitions by language
-        jsonb_object_agg(st.lang, st.definition) FILTER (WHERE st.definition IS NOT NULL) as definition,
-        -- Aggregate example sentences
-        COALESCE(
-            jsonb_agg(
-                jsonb_build_object(
-                    'id', es.id,
-                    'sentence', est.sentence,
-                    'lang', est.lang
-                )
-            ) FILTER (WHERE es.id IS NOT NULL),
-            '[]'::jsonb
-        ) as example_sentences,
-        -- Aggregate translations
-        COALESCE(
-            jsonb_agg(
-                jsonb_build_object(
-                    'entry', set.entry,
-                    'lang', set.lang,
-                    'display_text', set.display_text
-                )
-            ) FILTER (WHERE set.entry IS NOT NULL),
-            '[]'::jsonb
-        ) as translations,
+        s.classification,
+        s.frequency,
+        s.summary,
+        s.definition,
+        s.similar_entries,
+        COALESCE(example_data.example_sentences, '[]'::jsonb) as example_sentences,
+        COALESCE(translation_data.translations, '{}'::jsonb) as translations,
         s.source_ai
     FROM sense s
-    LEFT JOIN sense_translation st ON s.id = st.sense_id
-    LEFT JOIN example_sentence es ON s.id = es.sense_id
-    LEFT JOIN example_sentence_translation est ON es.id = est.example_id
-    LEFT JOIN sense_entry_translation set ON s.id = set.sense_id
+    LEFT JOIN LATERAL (
+        SELECT jsonb_agg(
+            jsonb_build_object(
+                'id', es.id,
+                'sentence', est.sentence,
+                'lang', est.lang
+            )
+            ORDER BY es.id, est.lang
+        ) as example_sentences
+        FROM example_sentence es
+        LEFT JOIN example_sentence_translation est ON es.id = est.example_sentence_id
+        WHERE es.sense_id = s.id
+    ) example_data ON true
+    LEFT JOIN LATERAL (
+        SELECT jsonb_object_agg(
+            set_row.lang,
+            jsonb_build_object(
+                'naturalTranslations', COALESCE(to_jsonb(set_row.natural_translations), '[]'::jsonb),
+                'colloquialTranslations', COALESCE(to_jsonb(set_row.colloquial_translations), '[]'::jsonb)
+            )
+        ) as translations
+        FROM sense_entry_translation set_row
+        WHERE set_row.sense_id = s.id
+    ) translation_data ON true
     WHERE s.entry = p_entry AND s.lang = p_lang
-    GROUP BY s.id, s.part_of_speech, s.commonness, s.source_ai;
+    GROUP BY s.id, s.part_of_speech, s.classification, s.frequency, s.summary, s.definition, s.similar_entries, s.source_ai, example_data.example_sentences, translation_data.translations;
 END;
 $$;

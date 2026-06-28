@@ -6,9 +6,11 @@ const addOrUpdateSense = async (entry: Entry, sense: Sense): Promise<void> => {
     const senseData = deepConvertToObject({
         id: sense.id,
         part_of_speech: sense.partOfSpeech,
-        commonness: sense.commonness,
+        classification: sense.classification,
+        frequency: sense.frequency,
         summary: sense.summary,
         definition: sense.definition,
+        similar_entries: sense.similarEntries,
         example_sentences: sense.exampleSentences,
         translations: sense.translations,
         source_ai: sense.sourceAi,

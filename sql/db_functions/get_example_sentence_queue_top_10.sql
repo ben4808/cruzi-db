@@ -15,11 +15,10 @@ BEGIN
         s.entry,
         e.display_text,
         s.lang,
-        st.summary as sense_summary
+        s.summary as sense_summary
     FROM example_sentence_queue esq
     JOIN sense s ON s.id = esq.sense_id
     LEFT JOIN entry e ON e.entry = s.entry AND e.lang = s.lang
-    LEFT JOIN sense_translation st ON st.sense_id = esq.sense_id AND st.lang = s.lang
     ORDER BY esq.added_at ASC
     LIMIT 10;
 

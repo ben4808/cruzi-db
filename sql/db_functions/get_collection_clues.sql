@@ -25,17 +25,11 @@ BEGIN
             c.sense_id,
             -- Answer: custom_display_text if exists, otherwise display_text from entry
             COALESCE(c.custom_display_text, e.display_text, e.entry, '') AS answer,
-            -- Sense: summary from sense_translation (entry's lang, or English, or N/A)
+            -- Sense: summary from sense row
             COALESCE(
-                (SELECT st.summary
-                 FROM sense_translation st
-                 WHERE st.sense_id = c.sense_id
-                 AND st.lang = c.lang
-                 LIMIT 1),
-                (SELECT st.summary
-                 FROM sense_translation st
-                 WHERE st.sense_id = c.sense_id
-                 AND st.lang = 'en'
+                (SELECT s.summary
+                 FROM sense s
+                 WHERE s.id = c.sense_id
                  LIMIT 1),
                 'N/A'
             ) AS sense,
@@ -68,19 +62,7 @@ BEGIN
                 SELECT jsonb_agg(
                     jsonb_build_object(
                         'sense_id', s.id,
-                        'sense_summary', COALESCE(
-                            (SELECT st.summary
-                             FROM sense_translation st
-                             WHERE st.sense_id = s.id
-                             AND st.lang = c.lang
-                             LIMIT 1),
-                            (SELECT st.summary
-                             FROM sense_translation st
-                             WHERE st.sense_id = s.id
-                             AND st.lang = 'en'
-                             LIMIT 1),
-                            'N/A'
-                        )
+                        'sense_summary', COALESCE(s.summary, 'N/A')
                     )
                 )
                 FROM sense s
