@@ -15,7 +15,7 @@ BEGIN
       AND NOT EXISTS (
           SELECT 1
           FROM entry_tags et
-          WHERE et."entry" = e."entry" AND et.lang = e.lang
+          WHERE et."entry" = e."entry" AND et.lang = e.lang AND et.tag = 'scrabble'
       )
     ORDER BY e."entry", e.lang
     LIMIT 50;

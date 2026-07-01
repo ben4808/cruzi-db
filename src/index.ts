@@ -10,6 +10,7 @@ export { ILoaderDao } from './daos/loader/ILoaderDao';
 
 export { default as getEntries, GetEntriesInput } from './daos/loader/getEntries';
 export { default as upsertEntries } from './daos/loader/upsertEntries';
+export { default as insertEntriesOrFillNulls } from './daos/loader/insertEntriesOrFillNulls';
 export { default as getCrosswordQualityQueueTop25, CrosswordQualityQueueItem } from './daos/loader/getCrosswordQualityQueueTop25';
 export { default as getCrosswordFamiliarityQueueTop25, CrosswordFamiliarityQueueItem } from './daos/loader/getCrosswordFamiliarityQueueTop25';
 export { default as getEntryInfoQueueTop1, EntryInfoQueueItem, ExistingSenseInfo } from './daos/loader/getEntryInfoQueueTop1';
@@ -31,6 +32,9 @@ export { default as getEntriesWithoutIdiomacityTop50, EntryWithoutIdiomacity } f
 export { default as getEntriesLowIdiomacityTop150, EntryWithLowIdiomacity } from './daos/loader/getEntriesLowIdiomacityTop150';
 export { default as getEntriesLowIdiomacity } from './daos/loader/getEntriesLowIdiomacity';
 export { default as getEntriesWithoutFamiliarityTop50, EntryWithoutFamiliarity } from './daos/loader/getEntriesWithoutFamiliarityTop50';
+export { default as getSensesWithoutFamiliarityTop50, SenseWithoutFamiliarity } from './daos/loader/getSensesWithoutFamiliarityTop50';
+export { default as getSensesWithoutExampleSentencesTop10, SenseWithoutExampleSentences } from './daos/loader/getSensesWithoutExampleSentencesTop10';
+export { updateSenseFamiliarityScores, SenseFamiliarityScoreUpdate } from './daos/loader/updateSenseFamiliarityScores';
 export { default as getEntriesWithoutQualityTop50, EntryWithoutQuality } from './daos/loader/getEntriesWithoutQualityTop50';
 export { default as getEntriesWithMismatchedDisplayText, EntryWithMismatchedDisplayText } from './daos/loader/getEntriesWithMismatchedDisplayText';
 export { default as resetEntryDisplayFields } from './daos/loader/resetEntryDisplayFields';
