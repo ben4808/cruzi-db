@@ -24,7 +24,7 @@ BEGIN
             c.source,
             s.id as sense_id_full,
             s.part_of_speech,
-            s.commonness,
+            s.frequency,
             s.summary,
             s.definition,
             s.familiarity_score,
@@ -72,7 +72,7 @@ BEGIN
                     jsonb_build_object(
                         'id', cd.sense_id_full,
                         'partOfSpeech', cd.part_of_speech,
-                        'commonness', cd.commonness,
+                        'frequency', cd.frequency,
                         'summary', CASE
                             WHEN cd.summary IS NOT NULL THEN jsonb_build_object(cd.lang, cd.summary)
                             ELSE NULL

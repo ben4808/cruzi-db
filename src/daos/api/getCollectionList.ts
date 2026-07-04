@@ -21,6 +21,7 @@ const getCollectionList = async (userId?: string): Promise<ClueCollection[]> => 
         isPrivate: raw.is_private,
         createdDate: new Date(raw.created_date),
         modifiedDate: raw.modified_date ? new Date(raw.modified_date) : new Date(raw.created_date),
+        lastAccessedDate: raw.last_accessed ? new Date(raw.last_accessed) : undefined,
         clueCount: raw.clue_count,
         metadata1: raw.metadata1,
         metadata2: raw.metadata2,
