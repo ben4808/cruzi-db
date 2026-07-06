@@ -34,7 +34,9 @@ export { default as getEntriesLowIdiomacity } from './daos/loader/getEntriesLowI
 export { default as getEntriesWithoutFamiliarityTop50, EntryWithoutFamiliarity } from './daos/loader/getEntriesWithoutFamiliarityTop50';
 export { default as getSensesWithoutFamiliarityTop50, SenseWithoutFamiliarity } from './daos/loader/getSensesWithoutFamiliarityTop50';
 export { default as getSensesWithoutExampleSentencesTop10, SenseWithoutExampleSentences } from './daos/loader/getSensesWithoutExampleSentencesTop10';
+export { default as getPrimaryNounSensesLowFamiliarity, PrimaryNounSenseLowFamiliarity } from './daos/loader/getPrimaryNounSensesLowFamiliarity';
 export { updateSenseFamiliarityScores, SenseFamiliarityScoreUpdate } from './daos/loader/updateSenseFamiliarityScores';
+export { deleteExampleSentencesForSenses } from './daos/loader/deleteExampleSentencesForSenses';
 export { default as getEntriesWithoutQualityTop50, EntryWithoutQuality } from './daos/loader/getEntriesWithoutQualityTop50';
 export { default as getEntriesWithMismatchedDisplayText, EntryWithMismatchedDisplayText } from './daos/loader/getEntriesWithMismatchedDisplayText';
 export { default as resetEntryDisplayFields } from './daos/loader/resetEntryDisplayFields';

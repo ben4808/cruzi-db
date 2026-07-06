@@ -54,15 +54,11 @@ BEGIN
     AND (uc.correct_solves IS NULL OR uc.correct_solves < uc.correct_solves_needed)  -- not completed
     AND (uc.last_solve IS NULL OR uc.last_solve < CURRENT_DATE - INTERVAL '1 day'); -- not seen recently
 
-    -- Get unseen clues ordered by earliest last_solve (NULL first, then oldest)
+    -- All eligible unseen clues (selection order does not matter; picked randomly below)
     SELECT array_agg(clue_id)
     INTO v_unseen_clues
-    FROM (
-        SELECT clue_id
-        FROM eligible_clues
-        WHERE status = 'unseen'
-        ORDER BY last_solve NULLS FIRST, clue_id
-    ) t;
+    FROM eligible_clues
+    WHERE status = 'unseen';
 
     -- Get seen clues ordered by earliest last_solve
     SELECT array_agg(clue_id)
@@ -95,14 +91,15 @@ BEGIN
     -- Build the batch according to target mix
     v_clue_ids := '{}';
 
-    -- Add unseen clues (up to target, or all available)
+    -- Add random unseen clues (up to target, or all available)
     IF array_length(v_unseen_clues, 1) IS NOT NULL AND array_length(v_unseen_clues, 1) > 0 THEN
         v_clue_ids := array_cat(
             v_clue_ids,
-            (SELECT array_agg(elem ORDER BY random())
+            (SELECT array_agg(elem)
              FROM (
                  SELECT elem
                  FROM unnest(v_unseen_clues) AS elem
+                 ORDER BY random()
                  LIMIT LEAST(v_target_unseen, array_length(v_unseen_clues, 1))
              ) sub)
         );
@@ -123,16 +120,21 @@ BEGIN
 
     -- If we have fewer than 20 clues, fill remaining with additional unseen or seen clues
     IF array_length(v_clue_ids, 1) < v_batch_size THEN
-        -- First try to fill with remaining unseen clues
-        IF array_length(v_unseen_clues, 1) IS NOT NULL AND array_length(v_unseen_clues, 1) > v_target_unseen THEN
+        -- First try to fill with additional random unseen clues not already in the batch
+        IF array_length(v_unseen_clues, 1) IS NOT NULL AND array_length(v_unseen_clues, 1) > 0 THEN
             v_clue_ids := array_cat(
                 v_clue_ids,
-                (SELECT array_agg(elem ORDER BY random())
-                 FROM (
-                     SELECT elem
-                     FROM unnest(v_unseen_clues[v_target_unseen + 1:]) AS elem
-                     LIMIT v_batch_size - array_length(v_clue_ids, 1)
-                 ) sub)
+                COALESCE(
+                    (SELECT array_agg(elem)
+                     FROM (
+                         SELECT elem
+                         FROM unnest(v_unseen_clues) AS elem
+                         WHERE NOT (elem = ANY(v_clue_ids))
+                         ORDER BY random()
+                         LIMIT v_batch_size - array_length(v_clue_ids, 1)
+                     ) sub),
+                    '{}'
+                )
             );
         END IF;
 
