@@ -113,6 +113,14 @@ create table example_sentence_translation (
   primary key(example_sentence_id, lang)
 );
 
+create table example_sentence_improvement (
+  id text not null primary key,
+  example_sentence_id text not null references example_sentence(id) on delete cascade,
+  old_sentence text not null,
+  new_sentence text not null,
+  new_translation text not null
+);
+
 create table sense_entry_score (
   sense_id text not null references sense(id) on delete cascade,
   familiarity_score int,

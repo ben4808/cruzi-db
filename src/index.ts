@@ -21,6 +21,8 @@ export { upsertSense } from './daos/loader/upsertSense';
 export { addExampleSentenceQueueEntries } from './daos/loader/addExampleSentenceQueueEntry';
 export { default as getExampleSentenceQueueTop10, ExampleSentenceQueueItem } from './daos/loader/getExampleSentenceQueueTop10';
 export { default as addExampleSentences } from './daos/loader/addExampleSentences';
+export { default as getRandomExampleSentencesTop20, RandomExampleSentence } from './daos/loader/getRandomExampleSentencesTop20';
+export { default as addExampleSentenceImprovement, ExampleSentenceImprovementInput } from './daos/loader/addExampleSentenceImprovement';
 export { updateEntriesLoadingStatus, EntryKey } from './daos/loader/updateEntriesLoadingStatus';
 export { insertEntries, EntryInsertData } from './daos/loader/insertEntries';
 export { insertScrabbleEntries, ScrabbleEntryInsertData } from './daos/loader/insertScrabbleEntries';
