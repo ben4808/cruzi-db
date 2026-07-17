@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION insert_entries_or_fill_nulls(entries_data jsonb)
 RETURNS void AS $$
 BEGIN
-  INSERT INTO entry ("entry", root_entry, lang, "length", display_text, entry_type, familiarity_score, quality_score, idiomacity_score, loading_status)
+  INSERT INTO entry ("entry", root_entry, lang, "length", display_text, entry_type, familiarity_score, quality_score, idiomacity_score, unity_bucket, loading_status)
   SELECT
     elem->>'entry',
     NULLIF(trim(elem->>'root_entry'), ''),
@@ -12,6 +12,7 @@ BEGIN
     (elem->>'familiarity_score')::int,
     (elem->>'quality_score')::int,
     (elem->>'idiomacity_score')::int,
+    NULLIF(trim(elem->>'unity_bucket'), ''),
     COALESCE(NULLIF(trim(elem->>'loading_status'), ''), 'Ready')
   FROM jsonb_array_elements(entries_data) AS elem
   ON CONFLICT ("entry", lang) DO UPDATE SET
@@ -20,6 +21,7 @@ BEGIN
     entry_type = COALESCE(entry.entry_type, EXCLUDED.entry_type),
     familiarity_score = COALESCE(entry.familiarity_score, EXCLUDED.familiarity_score),
     quality_score = COALESCE(entry.quality_score, EXCLUDED.quality_score),
-    idiomacity_score = COALESCE(entry.idiomacity_score, EXCLUDED.idiomacity_score);
+    idiomacity_score = COALESCE(entry.idiomacity_score, EXCLUDED.idiomacity_score),
+    unity_bucket = COALESCE(entry.unity_bucket, EXCLUDED.unity_bucket);
 END;
 $$ LANGUAGE plpgsql;

@@ -3,6 +3,7 @@ import { sqlQuery } from "../../pool/postgres";
 export interface EntryWithoutFamiliarity {
   entry: string;
   lang: string;
+  display_text: string;
 }
 
 const getEntriesWithoutFamiliarityTop50 = async (): Promise<EntryWithoutFamiliarity[]> => {
@@ -11,6 +12,7 @@ const getEntriesWithoutFamiliarityTop50 = async (): Promise<EntryWithoutFamiliar
   return results.map((row) => ({
     entry: row.entry,
     lang: row.lang,
+    display_text: row.display_text,
   }));
 };
 

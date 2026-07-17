@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_entries_without_familiarity_top_50()
+CREATE OR REPLACE FUNCTION get_entries_for_familiarity_generator_top_50()
 RETURNS TABLE (
     entry text,
     lang text,
@@ -13,9 +13,7 @@ BEGIN
         e.lang,
         e.display_text
     FROM "entry" e
-    WHERE e.loading_status = 'Ready'
-      AND e.display_text IS NOT NULL
-      AND TRIM(e.display_text) <> ''
+    WHERE e.loading_status = 'P'
     ORDER BY e."entry", e.lang
     LIMIT 50;
 END;

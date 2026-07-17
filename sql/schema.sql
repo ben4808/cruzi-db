@@ -30,7 +30,8 @@ create table "entry" (
   familiarity_score int,
   quality_score int,
   idiomacity_score int,
-  loading_status text not null default 'Ready', -- Ready, Processing, Error, Invalid
+  unity_bucket text,
+  loading_status text not null default 'Ready', -- Ready, Processing, Error, Invalid, F, P, PF
   primary key("entry", lang)
 );
 
@@ -223,7 +224,7 @@ create table phrase_generator_queue (
 );
 
 create table phrase_generator_result (
-  phrase_generator_queue_id int not null references phrase_generator_queue(id) on delete cascade,
+  phrase_generator_queue_id int not null,
   phrase text not null,
   added_at timestamp not null default now(),
   primary key(phrase_generator_queue_id, phrase)

@@ -12,6 +12,7 @@ const insertEntriesOrFillNulls = async (entries: Entry[]) => {
         familiarity_score: e.familiarityScore ?? undefined,
         quality_score: e.qualityScore ?? undefined,
         idiomacity_score: e.idiomacityScore ?? undefined,
+        unity_bucket: e.unityBucket ?? undefined,
         loading_status: e.loadingStatus ?? undefined,
     }));
     await sqlQuery(true, "insert_entries_or_fill_nulls", [{ name: "entries_data", value: payload }]);

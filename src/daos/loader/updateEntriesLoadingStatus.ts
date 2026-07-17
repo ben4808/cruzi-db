@@ -7,7 +7,7 @@ export interface EntryKey {
 
 export const updateEntriesLoadingStatus = async (
   entries: EntryKey[],
-  status: 'Ready' | 'Processing' | 'Error' | 'Invalid'
+  status: 'Ready' | 'Processing' | 'Error' | 'Invalid' | 'F'
 ): Promise<void> => {
   if (entries.length === 0) {
     return;
