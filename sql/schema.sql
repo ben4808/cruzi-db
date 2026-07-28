@@ -21,17 +21,21 @@ create table "user" (
 
 create table "entry" (
   "entry" text not null,
-  root_entry text, -- For inflected forms, the base form
+  base_form text,
   lang text not null,
   "length" int not null,
   display_text text,
   entry_type text,
-  -- directly set if no senses exist, otherwise the average of sense scores
+  
+  familiarity_bucket text,
   familiarity_score int,
+  quality_bucket text,
   quality_score int,
-  idiomacity_score int,
   unity_bucket text,
-  loading_status text not null default 'Ready', -- Ready, Processing, Error, Invalid, F, P, PF
+  unity_score int,
+  is_vulgar boolean,
+  loading_status text not null default 'Ready', -- Ready, Processing, Error, Invalid
+  reviewed_status text, -- F, P, PF, R
   primary key("entry", lang)
 );
 
@@ -228,6 +232,33 @@ create table phrase_generator_result (
   phrase text not null,
   added_at timestamp not null default now(),
   primary key(phrase_generator_queue_id, phrase)
+);
+
+create table short_phrase_result (
+  id serial primary key,
+  prompt text not null,
+  "entry" text not null,
+  lang text not null,
+  display_text text,
+  unity_bucket text,
+  frequency text,
+  familiarity_bucket text
+);
+
+create table short_phrase_summary (
+  result_id int not null references short_phrase_result(id) on delete cascade,
+  "entry" text not null,
+  lang text not null,
+  summary text not null,
+  frequency text not null
+);
+
+create table short_phrase_queue (
+  prompt text not null,
+  lang text not null,
+  "length" int not null,
+  added_at timestamp not null default now(),
+  primary key(prompt, lang)
 );
 
 -- Indexes

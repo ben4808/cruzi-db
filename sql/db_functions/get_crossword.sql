@@ -67,7 +67,7 @@ BEGIN
                             'lang', c.lang,
                             'display_text', e.display_text,
                             'loading_status', e.loading_status,
-                            'root_entry', e.root_entry,
+                            'base_form', e.base_form,
                             'entry_type', e.entry_type,
                             'familiarity_score', e.familiarity_score,
                             'quality_score', e.quality_score,

@@ -19,7 +19,7 @@ const mapCollectionClue = (raw: any): CollectionClueWithProgress => {
         lang: clueRaw.lang,
         displayText: clueRaw.display_text,
         loadingStatus: clueRaw.loading_status,
-        rootEntry: clueRaw.root_entry,
+        baseForm: clueRaw.base_form,
         entryType: clueRaw.entry_type,
         familiarityScore: clueRaw.familiarity_score,
         qualityScore: clueRaw.quality_score,

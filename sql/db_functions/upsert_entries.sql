@@ -1,10 +1,10 @@
 CREATE OR REPLACE FUNCTION upsert_entries(entries_data jsonb)
 RETURNS void AS $$
 BEGIN
-  INSERT INTO entry ("entry", root_entry, lang, "length", display_text, entry_type, familiarity_score, quality_score, idiomacity_score, unity_bucket, loading_status)
+  INSERT INTO entry ("entry", base_form, lang, "length", display_text, entry_type, familiarity_score, quality_score, idiomacity_score, unity_bucket, loading_status)
   SELECT
     elem->>'entry',
-    NULLIF(trim(elem->>'root_entry'), ''),
+    NULLIF(trim(elem->>'base_form'), ''),
     elem->>'lang',
     COALESCE((elem->>'length')::int, length((elem->>'entry')::text)),
     NULLIF(trim(elem->>'display_text'), ''),
@@ -16,7 +16,7 @@ BEGIN
     COALESCE(NULLIF(trim(elem->>'loading_status'), ''), 'Ready')
   FROM jsonb_array_elements(entries_data) AS elem
   ON CONFLICT ("entry", lang) DO UPDATE SET
-    root_entry = COALESCE(EXCLUDED.root_entry, entry.root_entry),
+    base_form = COALESCE(EXCLUDED.base_form, entry.base_form),
     "length" = COALESCE(EXCLUDED."length", entry."length"),
     display_text = COALESCE(EXCLUDED.display_text, entry.display_text),
     entry_type = COALESCE(EXCLUDED.entry_type, entry.entry_type),

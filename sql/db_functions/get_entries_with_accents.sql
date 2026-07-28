@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_entries_for_entry_parser_top_50()
+CREATE OR REPLACE FUNCTION get_entries_with_accents(p_limit integer)
 RETURNS TABLE (
     entry text,
     lang text
@@ -11,8 +11,9 @@ BEGIN
         e."entry",
         e.lang
     FROM "entry" e
-    WHERE e.loading_status = 'Ready'
+    WHERE e.lang = 'en'
+      AND e."entry" <> strip_entry_accents(e."entry")
     ORDER BY e."entry", e.lang
-    LIMIT 50;
+    LIMIT p_limit;
 END;
 $$;

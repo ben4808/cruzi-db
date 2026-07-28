@@ -12,7 +12,7 @@ Prerequisite: clue_collection row with id = 'idaho_counties' must already exist.
 --('idaho_counties', 'Idaho Counties', 'Clues for Idaho counties', 'en', 'Cruzi', 'Cruzi');
 
 -- Entries for all answer strings (county names and county seats)
-INSERT INTO "entry" ("entry", root_entry, lang, "length", display_text, entry_type) VALUES
+INSERT INTO "entry" ("entry", base_form, lang, "length", display_text, entry_type) VALUES
 -- County names
 ('ADA', null, 'en', 3, 'Ada', 'Proper Name'),
 ('ADAMS', null, 'en', 5, 'Adams', 'Proper Name'),

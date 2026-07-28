@@ -20,7 +20,7 @@ const getEntries = async (items: GetEntriesInput[]): Promise<Entry[]> => {
   return rows.map((row) => ({
     entry: row.entry,
     lang: row.lang,
-    rootEntry: row.root_entry ?? undefined,
+    baseForm: row.base_form ?? undefined,
     displayText: row.display_text ?? undefined,
     entryType: row.entry_type ?? undefined,
     familiarityScore: row.familiarity_score ?? undefined,

@@ -14,7 +14,8 @@ BEGIN
       'AAAAAAACEEEEIIIIDNOOOOOOUUUUYYaaaaaaaceeeeiiiidnoooooouuuuyyaaaccccddeeeeegggghhiiiiijklllllnnnnoooorrsssstttuuuuuuwyyeIUY'
     )
   );
-  result := regexp_replace(result, '[^A-Z]', '', 'g');
+  -- Keep ASCII letters and numerals only (accents already stripped above).
+  result := regexp_replace(result, '[^A-Z0-9]', '', 'g');
   RETURN result;
 END;
 $$;

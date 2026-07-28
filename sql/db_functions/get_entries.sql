@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION get_entries (
 RETURNS TABLE (
     entry text,
     lang text,
-    root_entry text,
+    base_form text,
     length integer,
     display_text text,
     entry_type text,
@@ -19,7 +19,7 @@ BEGIN
     SELECT
         e."entry",
         e.lang,
-        e.root_entry,
+        e.base_form,
         e."length",
         e.display_text,
         e.entry_type,

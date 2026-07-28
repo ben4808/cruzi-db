@@ -8,11 +8,16 @@ BEGIN
     UPDATE "entry" e
     SET
         display_text = NULL,
-        idiomacity_score = NULL,
-        familiarity_score = NULL,
-        quality_score = NULL,
+        base_form = NULL,
         entry_type = NULL,
-        root_entry = NULL
+        unity_bucket = NULL,
+        unity_score = NULL,
+        familiarity_bucket = NULL,
+        familiarity_score = NULL,
+        quality_bucket = NULL,
+        quality_score = NULL,
+        is_vulgar = NULL,
+        reviewed_status = NULL
     WHERE (e."entry", e.lang) IN (
         SELECT
             (elem->>'entry')::text,

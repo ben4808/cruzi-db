@@ -6,7 +6,7 @@ const addOrUpdateEntries = async (entries: Entry[]): Promise<void> => {
         entry: entry.entry,
         lang: entry.lang,
         length: entry.entry.length,
-        root_entry: entry.rootEntry,
+        base_form: entry.baseForm,
         display_text: entry.displayText,
         entry_type: entry.entryType,
         loading_status: entry.loadingStatus,

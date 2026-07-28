@@ -37,6 +37,9 @@ export { default as getEntriesWithoutFamiliarityTop50, EntryWithoutFamiliarity }
 export { default as getEntriesWithoutUnityBucketTop50, EntryWithoutUnityBucket } from './daos/loader/getEntriesWithoutUnityBucketTop50';
 export { default as getEntriesWithoutDisplayTextTop50, EntryWithoutDisplayText } from './daos/loader/getEntriesWithoutDisplayTextTop50';
 export { default as getEntriesForEntryParserTop50, EntryForEntryParser } from './daos/loader/getEntriesForEntryParserTop50';
+export { default as getEntriesForEntryImprover, EntryForEntryImprover } from './daos/loader/getEntriesForEntryImprover';
+export { default as upsertEntryImproverResults } from './daos/loader/upsertEntryImproverResults';
+export { default as deleteEntries } from './daos/loader/deleteEntries';
 export { default as getEntriesForFamiliarityGeneratorTop50, EntryForFamiliarityGenerator } from './daos/loader/getEntriesForFamiliarityGeneratorTop50';
 export { default as getEntriesForSpokenFamiliarityGeneratorTop50, EntryForSpokenFamiliarityGenerator } from './daos/loader/getEntriesForSpokenFamiliarityGeneratorTop50';
 export { default as getEntriesForSpokenFamiliarityGeneratorTop250 } from './daos/loader/getEntriesForSpokenFamiliarityGeneratorTop250';
@@ -49,6 +52,8 @@ export { deleteExampleSentencesForSenses } from './daos/loader/deleteExampleSent
 export { default as getEntriesWithoutQualityTop50, EntryWithoutQuality } from './daos/loader/getEntriesWithoutQualityTop50';
 export { default as getEntriesWithMismatchedDisplayText, EntryWithMismatchedDisplayText } from './daos/loader/getEntriesWithMismatchedDisplayText';
 export { default as resetEntryDisplayFields } from './daos/loader/resetEntryDisplayFields';
+export { default as getEntriesWithAccents, EntryWithAccent } from './daos/loader/getEntriesWithAccents';
+export { default as fixAccentedEntries } from './daos/loader/fixAccentedEntries';
 export { addPhraseGeneratorQueueEntries, PhraseGeneratorQueueItem } from './daos/loader/addPhraseGeneratorQueueEntries';
 export { default as getPhraseGeneratorQueueTop1, PhraseGeneratorQueueRow } from './daos/loader/getPhraseGeneratorQueueTop1';
 export { default as getEntriesByBaseWord, BaseWordPosition } from './daos/loader/getEntriesByBaseWord';
@@ -61,6 +66,24 @@ export {
   default as deletePhraseGeneratorResults,
   PhraseGeneratorResultKey,
 } from './daos/loader/deletePhraseGeneratorResults';
+export {
+  default as getShortPhraseQueue,
+  ShortPhraseQueueRow,
+} from './daos/loader/getShortPhraseQueue';
+
+export {
+  default as getEntriesMatchingShortPhrasePrompt,
+  ShortPhrasePosition,
+} from './daos/loader/getEntriesMatchingShortPhrasePrompt';
+export {
+  default as addShortPhraseResults,
+  ShortPhraseResultInput,
+} from './daos/loader/addShortPhraseResults';
+export { default as deleteShortPhraseQueueItem } from './daos/loader/deleteShortPhraseQueueItem';
+export {
+  addShortPhraseQueueEntries,
+  ShortPhraseQueueItem,
+} from './daos/loader/addShortPhraseQueueEntries';
 export { default as addEntryTags, EntryTagInput } from './daos/loader/addEntryTags';
 export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries';
 export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';
