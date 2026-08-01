@@ -89,4 +89,12 @@ export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries'
 export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';
 export { default as getCrosswordCollectionId } from './daos/api/getCrosswordCollectionId';
 export { default as submitCrosswordResponse } from './daos/api/submitCrosswordResponse';
+export { default as createFriendlyWordsGame } from './daos/api/createFriendlyWordsGame';
+export { default as getFriendlyWordsGame } from './daos/api/getFriendlyWordsGame';
+export { default as getFriendlyWordsGameByCode } from './daos/api/getFriendlyWordsGameByCode';
+export { default as updateFriendlyWordsGame } from './daos/api/updateFriendlyWordsGame';
+export { default as submitFriendlyWordsTurn } from './daos/api/submitFriendlyWordsTurn';
+export { default as recommendFriendlyWordsRatings } from './daos/api/recommendFriendlyWordsRatings';
+export { default as addFriendlyWordsRatings } from './daos/api/addFriendlyWordsRatings';
+export { default as completeFriendlyWordsGame } from './daos/api/completeFriendlyWordsGame';
 

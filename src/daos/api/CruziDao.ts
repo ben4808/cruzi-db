@@ -28,6 +28,14 @@ import initializeUserCollectionProgress from "./initializeUserCollectionProgress
 import getSensesForEntry from "./getSensesForEntry";
 import getClueByEntryInCollection from "./getClueByEntryInCollection";
 import addToEntryInfoQueue from "./addToEntryInfoQueue";
+import createFriendlyWordsGame from "./createFriendlyWordsGame";
+import getFriendlyWordsGame from "./getFriendlyWordsGame";
+import getFriendlyWordsGameByCode from "./getFriendlyWordsGameByCode";
+import updateFriendlyWordsGame from "./updateFriendlyWordsGame";
+import submitFriendlyWordsTurn from "./submitFriendlyWordsTurn";
+import recommendFriendlyWordsRatings from "./recommendFriendlyWordsRatings";
+import addFriendlyWordsRatings from "./addFriendlyWordsRatings";
+import completeFriendlyWordsGame from "./completeFriendlyWordsGame";
 
 class CruziDao implements ICruziDao {
     getCrosswordList = getCrosswordList;
@@ -87,6 +95,22 @@ class CruziDao implements ICruziDao {
     insertUserIfNotExists = insertUserIfNotExists;
 
     initializeUserCollectionProgress = initializeUserCollectionProgress;
+
+    createFriendlyWordsGame = createFriendlyWordsGame;
+
+    getFriendlyWordsGame = getFriendlyWordsGame;
+
+    getFriendlyWordsGameByCode = getFriendlyWordsGameByCode;
+
+    updateFriendlyWordsGame = updateFriendlyWordsGame;
+
+    submitFriendlyWordsTurn = submitFriendlyWordsTurn;
+
+    recommendFriendlyWordsRatings = recommendFriendlyWordsRatings;
+
+    addFriendlyWordsRatings = addFriendlyWordsRatings;
+
+    completeFriendlyWordsGame = completeFriendlyWordsGame;
 }
 
 export default CruziDao;

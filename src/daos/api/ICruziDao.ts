@@ -10,6 +10,12 @@ import {
     UserResponse,
     CrosswordResponse,
     CrosswordCalendarDay,
+    FriendlyWordsGame,
+    FriendlyWordsGameState,
+    FriendlyWordsPlayer,
+    FriendlyWordsTurn,
+    FriendlyWordsPlayedWord,
+    FriendlyWordsRating,
 } from 'cruzi-models';
 
 export interface ICruziDao {
@@ -57,4 +63,32 @@ export interface ICruziDao {
   insertUserIfNotExists(user: User): Promise<void>;
 
   initializeUserCollectionProgress(userId: string, collectionId: string): Promise<void>;
+
+  createFriendlyWordsGame(input: {
+    id: string;
+    gameCode: string;
+    title: string;
+    hostPlayerId: string;
+    player1: string;
+    state: FriendlyWordsGameState;
+  }): Promise<FriendlyWordsGame>;
+  getFriendlyWordsGame(id: string): Promise<FriendlyWordsGame | null>;
+  getFriendlyWordsGameByCode(gameCode: string): Promise<FriendlyWordsGame | null>;
+  updateFriendlyWordsGame(input: {
+    id: string;
+    title: string;
+    hostPlayerId: string;
+    status: FriendlyWordsGame['status'];
+    player1: string | null;
+    player2: string | null;
+    player3: string | null;
+    player4: string | null;
+    waitlist: FriendlyWordsPlayer[];
+    state: FriendlyWordsGameState;
+    completedAt?: Date | null;
+  }): Promise<FriendlyWordsGame>;
+  submitFriendlyWordsTurn(turn: FriendlyWordsTurn, playedWords: FriendlyWordsPlayedWord[]): Promise<void>;
+  recommendFriendlyWordsRatings(entries: string[]): Promise<Record<string, string>>;
+  addFriendlyWordsRatings(ratings: FriendlyWordsRating[]): Promise<void>;
+  completeFriendlyWordsGame(id: string): Promise<void>;
 }

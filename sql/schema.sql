@@ -261,6 +261,56 @@ create table short_phrase_queue (
   primary key(prompt, lang)
 );
 
+create table friendly_words_game (
+  id text not null primary key,
+  game_code text not null,
+  title text not null,
+  host_player_id text not null,
+  "status" text not null default 'lobby', -- lobby | playing | completed
+  created_at timestamp not null default now(),
+  completed_at timestamp,
+  player1 text,
+  player2 text,
+  player3 text,
+  player4 text,
+  waitlist jsonb not null default '[]'::jsonb,
+  "state" jsonb not null default '{}'::jsonb
+);
+
+create table friendly_words_turn (
+  id text not null primary key,
+  game_id text not null references friendly_words_game(id) on delete cascade,
+  player text not null,
+  turn_number int not null,
+  rack text not null,
+  "action" text not null,
+  gross_score int,
+  total_multiplier text,
+  net_score int,
+  start_score int not null default 0,
+  end_score int not null default 0
+);
+
+create table friendly_words_played_word (
+  id text not null primary key,
+  turn_id text not null,
+  "entry" text not null,
+  lang text not null,
+  gross_score int not null default 0,
+  multiplier text not null
+);
+
+create table friendly_words_rating (
+  played_word_id text not null,
+  player_id text not null,
+  "entry" text not null,
+  lang text not null,
+  multiplier text not null,
+  -- whether the rating was updated by the player from its original word list rating
+  was_updated boolean not null default false,
+  primary key(played_word_id, player_id)
+);
+
 -- Indexes
 create index ix_clue_collection_created_date on clue_collection(created_date asc);
 create index ix_puzzle_publication_date on puzzle(publication_id, "date");
@@ -269,3 +319,6 @@ create index ix_collection__clue_collection_order on collection__clue(collection
 create index ix_user__collection_user_id on user__collection(user_id);
 create index ix_sense_entry_lang on sense("entry", lang);
 create index ix_entry_loading_status on "entry"(loading_status) where loading_status <> 'Ready';
+create unique index ux_friendly_words_game_code on friendly_words_game(game_code) where completed_at is null;
+create index ix_friendly_words_turn_game_id on friendly_words_turn(game_id, turn_number);
+create index ix_friendly_words_played_word_turn_id on friendly_words_played_word(turn_id);
