@@ -1,6 +1,7 @@
 import {
   FriendlyWordsGame,
   FriendlyWordsGameState,
+  FriendlyWordsLanguage,
   FriendlyWordsPlayedWord,
   FriendlyWordsPlayer,
   FriendlyWordsTurn,
@@ -12,6 +13,7 @@ type RawFriendlyWordsGame = {
   title: string;
   host_player_id: string;
   status: FriendlyWordsGame['status'];
+  lang?: string | null;
   created_at: string | Date;
   completed_at: string | Date | null;
   player1: string | null;
@@ -63,6 +65,10 @@ function mapPlayedWord(raw: Record<string, unknown>): FriendlyWordsPlayedWord {
   };
 }
 
+function mapLang(lang: string | null | undefined): FriendlyWordsLanguage {
+  return lang === 'es' ? 'es' : 'en';
+}
+
 export function mapFriendlyWordsGame(raw: RawFriendlyWordsGame | null | undefined): FriendlyWordsGame | null {
   if (!raw) return null;
 
@@ -75,6 +81,7 @@ export function mapFriendlyWordsGame(raw: RawFriendlyWordsGame | null | undefine
     title: raw.title,
     hostPlayerId: raw.host_player_id,
     status: raw.status,
+    lang: mapLang(raw.lang),
     createdAt: new Date(raw.created_at),
     completedAt: raw.completed_at ? new Date(raw.completed_at) : null,
     player1: raw.player1,

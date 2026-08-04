@@ -43,6 +43,7 @@ BEGIN
         'title', _row.title,
         'host_player_id', _row.host_player_id,
         'status', _row.status,
+        'lang', _row.lang,
         'created_at', _row.created_at,
         'completed_at', _row.completed_at,
         'player1', _row.player1,

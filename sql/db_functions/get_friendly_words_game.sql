@@ -11,6 +11,7 @@ BEGIN
             'title', g.title,
             'host_player_id', g.host_player_id,
             'status', g.status,
+            'lang', g.lang,
             'created_at', g.created_at,
             'completed_at', g.completed_at,
             'player1', g.player1,

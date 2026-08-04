@@ -21,10 +21,10 @@ BEGIN
             c.sense_id,
             c.custom_clue,
             c.custom_display_text,
-            c.source,
             s.id as sense_id_full,
             s.part_of_speech,
             s.frequency,
+            s.classification,
             s.summary,
             s.definition,
             s.familiarity_score,
@@ -66,13 +66,13 @@ BEGIN
             'sense_id', cd.sense_id,
             'custom_clue', cd.custom_clue,
             'custom_display_text', cd.custom_display_text,
-            'source', cd.source,
             'sense', CASE
                 WHEN cd.sense_id IS NOT NULL THEN
                     jsonb_build_object(
                         'id', cd.sense_id_full,
                         'partOfSpeech', cd.part_of_speech,
                         'frequency', cd.frequency,
+                        'classification', cd.classification,
                         'summary', CASE
                             WHEN cd.summary IS NOT NULL THEN jsonb_build_object(cd.lang, cd.summary)
                             ELSE NULL

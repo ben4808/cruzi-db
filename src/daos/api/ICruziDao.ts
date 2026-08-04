@@ -12,6 +12,7 @@ import {
     CrosswordCalendarDay,
     FriendlyWordsGame,
     FriendlyWordsGameState,
+    FriendlyWordsLanguage,
     FriendlyWordsPlayer,
     FriendlyWordsTurn,
     FriendlyWordsPlayedWord,
@@ -70,6 +71,7 @@ export interface ICruziDao {
     title: string;
     hostPlayerId: string;
     player1: string;
+    lang: FriendlyWordsLanguage;
     state: FriendlyWordsGameState;
   }): Promise<FriendlyWordsGame>;
   getFriendlyWordsGame(id: string): Promise<FriendlyWordsGame | null>;

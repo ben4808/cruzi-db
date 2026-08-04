@@ -267,6 +267,7 @@ create table friendly_words_game (
   title text not null,
   host_player_id text not null,
   "status" text not null default 'lobby', -- lobby | playing | completed
+  lang text not null default 'en', -- en | es
   created_at timestamp not null default now(),
   completed_at timestamp,
   player1 text,
