@@ -9,7 +9,7 @@ import {
 
 type RawFriendlyWordsGame = {
   id: string;
-  game_code: string;
+  game_code: string | null;
   title: string;
   host_player_id: string;
   status: FriendlyWordsGame['status'];
@@ -77,7 +77,7 @@ export function mapFriendlyWordsGame(raw: RawFriendlyWordsGame | null | undefine
 
   return {
     id: raw.id,
-    gameCode: raw.game_code,
+    gameCode: raw.game_code ?? null,
     title: raw.title,
     hostPlayerId: raw.host_player_id,
     status: raw.status,

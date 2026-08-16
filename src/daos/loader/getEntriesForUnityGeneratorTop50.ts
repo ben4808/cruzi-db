@@ -1,22 +1,20 @@
 import { sqlQuery } from "../../pool/postgres";
 
-export interface FamiliarityGeneratorSecondaryClass {
+export interface UnityGeneratorSecondaryClass {
   secondaryClass: string;
   secondaryDisplay: string;
   secondaryBaseForm?: string;
 }
 
-export interface EntryForFamiliarityGenerator {
+export interface EntryForUnityGenerator {
   entry: string;
   lang: string;
   displayText: string;
   entryType: string | null;
-  baseForm?: string;
-  unityBucket: string | null;
-  secondaryClasses: FamiliarityGeneratorSecondaryClass[];
+  secondaryClasses: UnityGeneratorSecondaryClass[];
 }
 
-function parseSecondaryClasses(raw: unknown): FamiliarityGeneratorSecondaryClass[] {
+function parseSecondaryClasses(raw: unknown): UnityGeneratorSecondaryClass[] {
   const items = typeof raw === "string" ? JSON.parse(raw) : raw;
   if (!Array.isArray(items)) {
     return [];
@@ -33,10 +31,10 @@ function parseSecondaryClasses(raw: unknown): FamiliarityGeneratorSecondaryClass
     .filter((item) => item.secondaryClass && item.secondaryDisplay);
 }
 
-const getEntriesForFamiliarityGeneratorTop50 = async (
+const getEntriesForUnityGeneratorTop50 = async (
   limit: number,
-): Promise<EntryForFamiliarityGenerator[]> => {
-  const results = await sqlQuery(true, "get_entries_for_familiarity_generator_top_50", [
+): Promise<EntryForUnityGenerator[]> => {
+  const results = await sqlQuery(true, "get_entries_for_unity_generator_top_50", [
     { name: "p_limit", value: limit },
   ]);
 
@@ -45,10 +43,8 @@ const getEntriesForFamiliarityGeneratorTop50 = async (
     lang: row.lang,
     displayText: row.display_text,
     entryType: row.entry_type ?? null,
-    baseForm: row.base_form ? String(row.base_form) : undefined,
-    unityBucket: row.unity_bucket ?? null,
     secondaryClasses: parseSecondaryClasses(row.secondary_classes),
   }));
 };
 
-export default getEntriesForFamiliarityGeneratorTop50;
+export default getEntriesForUnityGeneratorTop50;

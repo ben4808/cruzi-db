@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_entries_for_entry_parser_top_50()
+CREATE OR REPLACE FUNCTION get_entries_for_entry_parser_top_50(p_limit integer)
 RETURNS TABLE (
     entry text,
     lang text
@@ -11,8 +11,9 @@ BEGIN
         e."entry",
         e.lang
     FROM "entry" e
-    WHERE e.loading_status = 'Ready'
-    ORDER BY e."entry", e.lang
-    LIMIT 50;
+    WHERE COALESCE(e.reviewed_status, '') NOT IN ('R', 'Failed parse')
+      AND COALESCE(e.reviewed_status, '') NOT LIKE '1%'
+    ORDER BY random()
+    LIMIT p_limit;
 END;
 $$;

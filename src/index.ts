@@ -35,12 +35,34 @@ export { default as getEntriesLowIdiomacityTop150, EntryWithLowIdiomacity } from
 export { default as getEntriesLowIdiomacity } from './daos/loader/getEntriesLowIdiomacity';
 export { default as getEntriesWithoutFamiliarityTop50, EntryWithoutFamiliarity } from './daos/loader/getEntriesWithoutFamiliarityTop50';
 export { default as getEntriesWithoutUnityBucketTop50, EntryWithoutUnityBucket } from './daos/loader/getEntriesWithoutUnityBucketTop50';
+export {
+  default as getEntriesForUnityGeneratorTop50,
+  EntryForUnityGenerator,
+  UnityGeneratorSecondaryClass,
+} from './daos/loader/getEntriesForUnityGeneratorTop50';
+export {
+  default as upsertUnityGeneratorResults,
+  UnityGeneratorResult,
+} from './daos/loader/upsertUnityGeneratorResults';
 export { default as getEntriesWithoutDisplayTextTop50, EntryWithoutDisplayText } from './daos/loader/getEntriesWithoutDisplayTextTop50';
 export { default as getEntriesForEntryParserTop50, EntryForEntryParser } from './daos/loader/getEntriesForEntryParserTop50';
+export {
+  default as upsertEntryParserResults,
+  EntryParserResult,
+  EntryParserSecondaryClass,
+} from './daos/loader/upsertEntryParserResults';
 export { default as getEntriesForEntryImprover, EntryForEntryImprover } from './daos/loader/getEntriesForEntryImprover';
 export { default as upsertEntryImproverResults } from './daos/loader/upsertEntryImproverResults';
 export { default as deleteEntries } from './daos/loader/deleteEntries';
-export { default as getEntriesForFamiliarityGeneratorTop50, EntryForFamiliarityGenerator } from './daos/loader/getEntriesForFamiliarityGeneratorTop50';
+export {
+  default as getEntriesForFamiliarityGeneratorTop50,
+  EntryForFamiliarityGenerator,
+  FamiliarityGeneratorSecondaryClass,
+} from './daos/loader/getEntriesForFamiliarityGeneratorTop50';
+export {
+  default as upsertFamiliarityGeneratorResults,
+  FamiliarityGeneratorResult,
+} from './daos/loader/upsertFamiliarityGeneratorResults';
 export { default as getEntriesForSpokenFamiliarityGeneratorTop50, EntryForSpokenFamiliarityGenerator } from './daos/loader/getEntriesForSpokenFamiliarityGeneratorTop50';
 export { default as getEntriesForSpokenFamiliarityGeneratorTop250 } from './daos/loader/getEntriesForSpokenFamiliarityGeneratorTop250';
 

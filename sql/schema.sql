@@ -39,6 +39,15 @@ create table "entry" (
   primary key("entry", lang)
 );
 
+create table entry_secondary_class (
+  "entry" text not null,
+  lang text not null,
+  secondary_class text not null,
+  secondary_display text not null,
+  secondary_base_form text,
+  primary key("entry", lang, secondary_class)
+);
+
 create table puzzle (
   id text not null primary key,
   publication_id text,
@@ -263,7 +272,7 @@ create table short_phrase_queue (
 
 create table friendly_words_game (
   id text not null primary key,
-  game_code text not null,
+  game_code text,
   title text not null,
   host_player_id text not null,
   "status" text not null default 'lobby', -- lobby | playing | completed
@@ -320,6 +329,6 @@ create index ix_collection__clue_collection_order on collection__clue(collection
 create index ix_user__collection_user_id on user__collection(user_id);
 create index ix_sense_entry_lang on sense("entry", lang);
 create index ix_entry_loading_status on "entry"(loading_status) where loading_status <> 'Ready';
-create unique index ux_friendly_words_game_code on friendly_words_game(game_code) where completed_at is null;
+create unique index ux_friendly_words_game_code on friendly_words_game(game_code) where game_code is not null;
 create index ix_friendly_words_turn_game_id on friendly_words_turn(game_id, turn_number);
 create index ix_friendly_words_played_word_turn_id on friendly_words_played_word(turn_id);

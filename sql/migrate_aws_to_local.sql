@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS short_phrase_queue (
 
 CREATE TABLE IF NOT EXISTS friendly_words_game (
   id text not null primary key,
-  game_code text not null,
+  game_code text,
   title text not null,
   host_player_id text not null,
   "status" text not null default 'lobby', -- lobby | playing | completed
@@ -127,7 +127,7 @@ CREATE INDEX IF NOT EXISTS ix_collection__clue_collection_order ON collection__c
 CREATE INDEX IF NOT EXISTS ix_user__collection_user_id ON user__collection(user_id);
 CREATE INDEX IF NOT EXISTS ix_sense_entry_lang ON sense("entry", lang);
 CREATE INDEX IF NOT EXISTS ix_entry_loading_status ON "entry"(loading_status) WHERE loading_status <> 'Ready';
-CREATE UNIQUE INDEX IF NOT EXISTS ux_friendly_words_game_code ON friendly_words_game(game_code) WHERE completed_at IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS ux_friendly_words_game_code ON friendly_words_game(game_code) WHERE game_code IS NOT NULL;
 CREATE INDEX IF NOT EXISTS ix_friendly_words_turn_game_id ON friendly_words_turn(game_id, turn_number);
 CREATE INDEX IF NOT EXISTS ix_friendly_words_played_word_turn_id ON friendly_words_played_word(turn_id);
 

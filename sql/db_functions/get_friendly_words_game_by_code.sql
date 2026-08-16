@@ -1,4 +1,4 @@
--- Fetch a Friendly Words game by 4-digit join code (active games only).
+-- Fetch a Friendly Words game by 4-digit join code (assigned codes only).
 CREATE OR REPLACE FUNCTION get_friendly_words_game_by_code(p_game_code text)
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -25,7 +25,6 @@ BEGIN
         )
         FROM friendly_words_game g
         WHERE g.game_code = p_game_code
-          AND g.completed_at IS NULL
         ORDER BY g.created_at DESC
         LIMIT 1
     );

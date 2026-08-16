@@ -14,9 +14,22 @@ AS $$
 DECLARE
     _row friendly_words_game%ROWTYPE;
 BEGIN
-    IF EXISTS (SELECT 1 FROM friendly_words_game WHERE game_code = p_game_code AND completed_at IS NULL) THEN
+    -- A code is in use until the game ends, or until 6 months after creation.
+    -- Expired / completed leftovers are cleared here so the code can be reused.
+    IF EXISTS (
+        SELECT 1
+        FROM friendly_words_game
+        WHERE game_code = p_game_code
+          AND status <> 'completed'
+          AND completed_at IS NULL
+          AND created_at > (now() - interval '6 months')
+    ) THEN
         RAISE EXCEPTION 'Game code already in use: %', p_game_code;
     END IF;
+
+    UPDATE friendly_words_game
+    SET game_code = NULL
+    WHERE game_code = p_game_code;
 
     INSERT INTO friendly_words_game (
         id, game_code, title, host_player_id, status, lang, player1, waitlist, state

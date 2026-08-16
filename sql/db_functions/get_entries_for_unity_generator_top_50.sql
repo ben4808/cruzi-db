@@ -1,13 +1,9 @@
-DROP FUNCTION IF EXISTS get_entries_for_familiarity_generator_top_50();
-
-CREATE OR REPLACE FUNCTION get_entries_for_familiarity_generator_top_50(p_limit integer)
+CREATE OR REPLACE FUNCTION get_entries_for_unity_generator_top_50(p_limit integer)
 RETURNS TABLE (
     entry text,
     lang text,
     display_text text,
     entry_type text,
-    base_form text,
-    unity_bucket text,
     secondary_classes jsonb
 )
 LANGUAGE plpgsql
@@ -19,8 +15,6 @@ BEGIN
         e.lang,
         e.display_text,
         e.entry_type,
-        e.base_form,
-        e.unity_bucket,
         COALESCE(
             (
                 SELECT jsonb_agg(
@@ -37,7 +31,7 @@ BEGIN
             '[]'::jsonb
         ) AS secondary_classes
     FROM "entry" e
-    WHERE e.reviewed_status = '12'
+    WHERE e.reviewed_status = '1'
       AND e.display_text IS NOT NULL
       AND TRIM(e.display_text) <> ''
     ORDER BY random()

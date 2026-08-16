@@ -1,11 +1,11 @@
--- Mark a Friendly Words game as completed.
+-- Mark a Friendly Words game as completed and release its join code.
 CREATE OR REPLACE FUNCTION complete_friendly_words_game(p_id text)
 RETURNS void
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE friendly_words_game
-    SET status = 'completed', completed_at = now()
+    SET status = 'completed', completed_at = now(), game_code = NULL
     WHERE id = p_id;
 
     IF NOT FOUND THEN
