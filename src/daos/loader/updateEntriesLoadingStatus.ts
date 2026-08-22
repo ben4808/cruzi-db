@@ -1,3 +1,4 @@
+import { LoadingStatus } from "cruzi-models";
 import { sqlQuery } from "../../pool/postgres";
 
 export interface EntryKey {
@@ -7,7 +8,7 @@ export interface EntryKey {
 
 export const updateEntriesLoadingStatus = async (
   entries: EntryKey[],
-  status: 'Ready' | 'Processing' | 'Error' | 'Invalid' | 'F'
+  status: LoadingStatus,
 ): Promise<void> => {
   if (entries.length === 0) {
     return;

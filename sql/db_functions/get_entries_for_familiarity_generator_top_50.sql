@@ -1,5 +1,3 @@
-DROP FUNCTION IF EXISTS get_entries_for_familiarity_generator_top_50();
-
 CREATE OR REPLACE FUNCTION get_entries_for_familiarity_generator_top_50(p_limit integer)
 RETURNS TABLE (
     entry text,
@@ -40,6 +38,7 @@ BEGIN
     WHERE e.reviewed_status = '12'
       AND e.display_text IS NOT NULL
       AND TRIM(e.display_text) <> ''
+      AND e.entry_type <> 'Nonsense'
     ORDER BY random()
     LIMIT p_limit;
 END;

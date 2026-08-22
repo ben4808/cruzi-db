@@ -8,9 +8,11 @@ export interface ShortPhraseQueueRow {
 
 const getShortPhraseQueue = async (
   limit: number,
+  length: number,
 ): Promise<ShortPhraseQueueRow[]> => {
   const results = await sqlQuery(true, 'get_short_phrase_queue', [
     { name: 'p_limit', value: limit },
+    { name: 'p_length', value: length },
   ]);
 
   return results.map((row) => ({

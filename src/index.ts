@@ -18,6 +18,10 @@ export { default as getEntryInfoQueueTop10 } from './daos/loader/getEntryInfoQue
 export { removeFromEntryInfoQueue } from './daos/loader/removeFromEntryInfoQueue';
 export { upsertEntryInfo, getSensesForEntry } from './daos/loader/upsertEntryInfo';
 export { upsertSense } from './daos/loader/upsertSense';
+export {
+  default as getEntriesForSensesGenerator,
+  EntryForSensesGenerator,
+} from './daos/loader/getEntriesForSensesGenerator';
 export { addExampleSentenceQueueEntries } from './daos/loader/addExampleSentenceQueueEntry';
 export { default as getExampleSentenceQueueTop10, ExampleSentenceQueueItem } from './daos/loader/getExampleSentenceQueueTop10';
 export { default as addExampleSentences } from './daos/loader/addExampleSentences';
@@ -28,6 +32,7 @@ export { insertEntries, EntryInsertData } from './daos/loader/insertEntries';
 export { insertScrabbleEntries, ScrabbleEntryInsertData } from './daos/loader/insertScrabbleEntries';
 export { addSenseEntryTranslations, SenseEntryTranslationData } from './daos/loader/addSenseEntryTranslations';
 export { assignPrimarySenseToClues } from './daos/loader/assignPrimarySenseToClues';
+export { updateEntryFromPrimarySense } from './daos/loader/updateEntryFromPrimarySense';
 export { addCrosswordQualityQueueEntries } from './daos/loader/addCrosswordQualityQueueEntries';
 export { addCrosswordFamiliarityQueueEntries } from './daos/loader/addCrosswordFamiliarityQueueEntries';
 export { default as getEntriesWithoutIdiomacityTop50, EntryWithoutIdiomacity } from './daos/loader/getEntriesWithoutIdiomacityTop50';
@@ -77,9 +82,16 @@ export { default as resetEntryDisplayFields } from './daos/loader/resetEntryDisp
 export { default as getEntriesWithAccents, EntryWithAccent } from './daos/loader/getEntriesWithAccents';
 export { default as fixAccentedEntries } from './daos/loader/fixAccentedEntries';
 export { addPhraseGeneratorQueueEntries, PhraseGeneratorQueueItem } from './daos/loader/addPhraseGeneratorQueueEntries';
-export { default as getPhraseGeneratorQueueTop1, PhraseGeneratorQueueRow } from './daos/loader/getPhraseGeneratorQueueTop1';
+export {
+  default as getPhraseGeneratorQueue,
+  PhraseGeneratorQueueRow,
+} from './daos/loader/getPhraseGeneratorQueue';
 export { default as getEntriesByBaseWord, BaseWordPosition } from './daos/loader/getEntriesByBaseWord';
-export { default as addPhraseGeneratorResults } from './daos/loader/addPhraseGeneratorResults';
+export {
+  default as addPhraseGeneratorResults,
+  PhraseGeneratorResultInput,
+} from './daos/loader/addPhraseGeneratorResults';
+export { default as deletePhraseGeneratorQueueItem } from './daos/loader/deletePhraseGeneratorQueueItem';
 export {
   default as getPhraseGeneratorResultsRandom50,
   PhraseGeneratorResultRow,
@@ -107,6 +119,7 @@ export {
   ShortPhraseQueueItem,
 } from './daos/loader/addShortPhraseQueueEntries';
 export { default as addEntryTags, EntryTagInput } from './daos/loader/addEntryTags';
+export { default as deleteCrosswordPuzzleAndCollection } from './daos/loader/deleteCrosswordPuzzleAndCollection';
 export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries';
 export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';
 export { default as getCrosswordCollectionId } from './daos/api/getCrosswordCollectionId';

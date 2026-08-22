@@ -8,7 +8,9 @@ AS $$
 BEGIN
     -- Update loading status for the provided entries
     UPDATE "entry"
-    SET loading_status = p_status
+    SET
+        loading_status = p_status,
+        reviewed_status = NULL
     WHERE ("entry", lang) IN (
         SELECT
             (e->>'entry')::text,

@@ -34,7 +34,7 @@ create table "entry" (
   unity_bucket text,
   unity_score int,
   is_vulgar boolean,
-  loading_status text not null default 'Ready', -- Ready, Processing, Error, Invalid
+  loading_status text not null default 'Ready', -- Ready, Processing, Error, Invalid, Senses
   reviewed_status text, -- F, P, PF, R
   primary key("entry", lang)
 );
@@ -84,13 +84,19 @@ create table sense (
   id text not null primary key,
   "entry" text not null,
   lang text not null,
+  base_form text,
+  inflections text[],
+  display_text text,
   summary text,
   "definition" text,
   part_of_speech text,
   frequency text,
   classification text,
-  -- average of AI opinions
+  unity_bucket text,
+  unity_score int,
+  familiarity_bucket text,
   familiarity_score int,
+  quality_bucket text,
   quality_score int,
   similar_entries text[],
   source_ai text, -- for summary, definition
@@ -237,10 +243,14 @@ create table phrase_generator_queue (
 );
 
 create table phrase_generator_result (
-  phrase_generator_queue_id int not null,
-  phrase text not null,
-  added_at timestamp not null default now(),
-  primary key(phrase_generator_queue_id, phrase)
+  id serial primary key,
+  prompt text not null,
+  "entry" text not null,
+  lang text not null,
+  display_text text,
+  unity_bucket text,
+  familiarity_bucket text,
+  added_at timestamp not null default now()
 );
 
 create table short_phrase_result (

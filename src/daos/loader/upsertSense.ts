@@ -11,9 +11,12 @@ export const upsertSense = async (entry: string, lang: string, sense: Sense): Pr
     summary: sense.summary,
     definition: sense.definition,
     similar_entries: sense.similarEntries,
-    example_sentences: sense.exampleSentences,
     translations: sense.translations,
     source_ai: sense.sourceAi,
+    ...(sense.displayText !== undefined ? { display_text: sense.displayText } : {}),
+    ...(sense.baseForm !== undefined ? { base_form: sense.baseForm } : {}),
+    ...(sense.inflections !== undefined ? { inflections: sense.inflections } : {}),
+    ...(sense.exampleSentences !== undefined ? { example_sentences: sense.exampleSentences } : {}),
   });
 
   await sqlQuery(true, 'upsert_sense', [

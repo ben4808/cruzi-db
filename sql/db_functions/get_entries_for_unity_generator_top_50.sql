@@ -33,6 +33,7 @@ BEGIN
     FROM "entry" e
     WHERE e.reviewed_status = '1'
       AND e.display_text IS NOT NULL
+      AND e.entry_type <> 'Nonsense'
       AND TRIM(e.display_text) <> ''
     ORDER BY random()
     LIMIT p_limit;

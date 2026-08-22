@@ -1,17 +1,23 @@
+DROP FUNCTION IF EXISTS add_phrase_generator_results(integer, jsonb);
+
 CREATE OR REPLACE FUNCTION add_phrase_generator_results (
-    p_queue_id integer,
-    p_phrases jsonb
+    p_results jsonb
 )
 RETURNS void
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO phrase_generator_result (phrase_generator_queue_id, phrase)
+    INSERT INTO phrase_generator_result (prompt, "entry", lang, display_text, unity_bucket, familiarity_bucket)
     SELECT
-        p_queue_id,
-        trim(phrase_value)
-    FROM jsonb_array_elements_text(p_phrases) AS phrase_value
-    WHERE COALESCE(NULLIF(trim(phrase_value), ''), '') <> ''
-    ON CONFLICT (phrase_generator_queue_id, phrase) DO NOTHING;
+        trim((r->>'prompt')::text),
+        trim((r->>'entry')::text),
+        trim((r->>'lang')::text),
+        NULLIF(trim(r->>'display_text'), ''),
+        NULLIF(trim(r->>'unity_bucket'), ''),
+        NULLIF(trim(r->>'familiarity_bucket'), '')
+    FROM jsonb_array_elements(p_results) AS r
+    WHERE COALESCE(NULLIF(trim(r->>'prompt'), ''), '') <> ''
+      AND COALESCE(NULLIF(trim(r->>'entry'), ''), '') <> ''
+      AND COALESCE(NULLIF(trim(r->>'lang'), ''), '') <> '';
 END;
 $$;

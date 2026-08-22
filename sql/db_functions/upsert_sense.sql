@@ -11,6 +11,9 @@ BEGIN
         id,
         "entry",
         lang,
+        display_text,
+        base_form,
+        inflections,
         part_of_speech,
         classification,
         frequency,
@@ -22,6 +25,13 @@ BEGIN
         v_sense_id,
         p_entry,
         p_lang,
+        sense_data->>'display_text',
+        sense_data->>'base_form',
+        CASE
+            WHEN sense_data ? 'inflections' AND jsonb_typeof(sense_data->'inflections') = 'array'
+            THEN ARRAY(SELECT jsonb_array_elements_text(sense_data->'inflections'))
+            ELSE NULL
+        END,
         sense_data->>'part_of_speech',
         sense_data->>'classification',
         sense_data->>'frequency',
@@ -37,6 +47,9 @@ BEGIN
     ON CONFLICT (id) DO UPDATE SET
         "entry" = EXCLUDED."entry",
         lang = EXCLUDED.lang,
+        display_text = CASE WHEN sense_data ? 'display_text' THEN EXCLUDED.display_text ELSE sense.display_text END,
+        base_form = CASE WHEN sense_data ? 'base_form' THEN EXCLUDED.base_form ELSE sense.base_form END,
+        inflections = CASE WHEN sense_data ? 'inflections' THEN EXCLUDED.inflections ELSE sense.inflections END,
         part_of_speech = EXCLUDED.part_of_speech,
         classification = EXCLUDED.classification,
         frequency = EXCLUDED.frequency,
@@ -51,22 +64,28 @@ BEGIN
         p_entry AS "entry",
         lang_key AS lang,
         CASE
-            WHEN jsonb_typeof(trans->'naturalTranslations') = 'array'
+            WHEN jsonb_typeof(COALESCE(trans->'naturalTranslations', trans->'natural_translations')) = 'array'
             THEN ARRAY(
-                SELECT COALESCE(t->>'displayText', t->>'display_text', t->>'entry')
-                FROM jsonb_array_elements(trans->'naturalTranslations') AS t
+                SELECT CASE
+                    WHEN jsonb_typeof(t) = 'string' THEN t#>>'{}'
+                    ELSE COALESCE(t->>'displayText', t->>'display_text', t->>'entry')
+                END
+                FROM jsonb_array_elements(COALESCE(trans->'naturalTranslations', trans->'natural_translations')) AS t
             )
             ELSE NULL
         END AS natural_translations,
         CASE
-            WHEN jsonb_typeof(trans->'colloquialTranslations') = 'array'
+            WHEN jsonb_typeof(COALESCE(trans->'colloquialTranslations', trans->'colloquial_translations')) = 'array'
             THEN ARRAY(
-                SELECT COALESCE(t->>'displayText', t->>'display_text', t->>'entry')
-                FROM jsonb_array_elements(trans->'colloquialTranslations') AS t
+                SELECT CASE
+                    WHEN jsonb_typeof(t) = 'string' THEN t#>>'{}'
+                    ELSE COALESCE(t->>'displayText', t->>'display_text', t->>'entry')
+                END
+                FROM jsonb_array_elements(COALESCE(trans->'colloquialTranslations', trans->'colloquial_translations')) AS t
             )
             ELSE NULL
         END AS colloquial_translations
-    FROM jsonb_each(sense_data->'translations') AS x(lang_key, trans)
+    FROM jsonb_each(COALESCE(sense_data->'translations', '{}'::jsonb)) AS x(lang_key, trans)
     ON CONFLICT (sense_id, "entry", lang) DO UPDATE SET
         natural_translations = EXCLUDED.natural_translations,
         colloquial_translations = EXCLUDED.colloquial_translations;
@@ -76,7 +95,9 @@ BEGIN
         ex_sentence->>'id' AS id,
         ex_sentence->>'senseId' AS sense_id
     FROM
-        jsonb_array_elements(sense_data->'example_sentences') AS ex_sentence
+        jsonb_array_elements(COALESCE(sense_data->'example_sentences', '[]'::jsonb)) AS ex_sentence
+    WHERE
+        jsonb_typeof(COALESCE(sense_data->'example_sentences', '[]'::jsonb)) = 'array'
     ON CONFLICT (id) DO UPDATE SET
         sense_id = EXCLUDED.sense_id;
 
@@ -86,8 +107,10 @@ BEGIN
         lang,
         sentence
     FROM
-        jsonb_array_elements(sense_data->'example_sentences') AS ex_sentence,
+        jsonb_array_elements(COALESCE(sense_data->'example_sentences', '[]'::jsonb)) AS ex_sentence,
         jsonb_each_text(ex_sentence->'translations') AS translation_pair(lang, sentence)
+    WHERE
+        jsonb_typeof(COALESCE(sense_data->'example_sentences', '[]'::jsonb)) = 'array'
     ON CONFLICT (example_sentence_id, lang) DO UPDATE SET
         sentence = EXCLUDED.sentence;
 END;
