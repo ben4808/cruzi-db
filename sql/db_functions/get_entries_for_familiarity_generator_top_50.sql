@@ -25,7 +25,8 @@ BEGIN
                     jsonb_build_object(
                         'secondary_class', esc.secondary_class,
                         'secondary_display', esc.secondary_display,
-                        'secondary_base_form', esc.secondary_base_form
+                        'secondary_base_form', esc.secondary_base_form,
+                        'unity_bucket', esc.unity_bucket
                     )
                 )
                 FROM entry_secondary_class esc
@@ -38,7 +39,8 @@ BEGIN
     WHERE e.reviewed_status = '12'
       AND e.display_text IS NOT NULL
       AND TRIM(e.display_text) <> ''
-      AND e.entry_type <> 'Nonsense'
+      AND e.entry_type IS DISTINCT FROM 'Nonsense'
+      AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
     ORDER BY random()
     LIMIT p_limit;
 END;

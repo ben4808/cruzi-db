@@ -20,6 +20,7 @@ BEGIN
     WHERE e.lang = p_lang
       AND e."length" = p_length
       AND v_base_key <> ''
+      AND e.entry_type <> 'Nonsense'
       AND (
         CASE lower(trim(p_position))
           WHEN 'start' THEN e.entry LIKE v_base_key || '%'

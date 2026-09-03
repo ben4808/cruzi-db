@@ -5,11 +5,13 @@ export interface EntryForEntryParser {
   lang: string;
 }
 
-const getEntriesForEntryParserTop50 = async (
+const getEntriesForEntryParser = async (
   limit: number,
+  pattern?: string,
 ): Promise<EntryForEntryParser[]> => {
-  const results = await sqlQuery(true, "get_entries_for_entry_parser_top_50", [
+  const results = await sqlQuery(true, "get_entries_for_entry_parser", [
     { name: "p_limit", value: limit },
+    { name: "p_pattern", value: pattern ?? null },
   ]);
 
   return results.map((row) => ({
@@ -18,4 +20,4 @@ const getEntriesForEntryParserTop50 = async (
   }));
 };
 
-export default getEntriesForEntryParserTop50;
+export default getEntriesForEntryParser;

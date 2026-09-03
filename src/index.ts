@@ -48,9 +48,10 @@ export {
 export {
   default as upsertUnityGeneratorResults,
   UnityGeneratorResult,
+  UnityGeneratorSecondaryClassUpdate,
 } from './daos/loader/upsertUnityGeneratorResults';
 export { default as getEntriesWithoutDisplayTextTop50, EntryWithoutDisplayText } from './daos/loader/getEntriesWithoutDisplayTextTop50';
-export { default as getEntriesForEntryParserTop50, EntryForEntryParser } from './daos/loader/getEntriesForEntryParserTop50';
+export { default as getEntriesForEntryParser, EntryForEntryParser } from './daos/loader/getEntriesForEntryParser';
 export {
   default as upsertEntryParserResults,
   EntryParserResult,
@@ -67,7 +68,12 @@ export {
 export {
   default as upsertFamiliarityGeneratorResults,
   FamiliarityGeneratorResult,
+  FamiliarityGeneratorSecondaryClassUpdate,
 } from './daos/loader/upsertFamiliarityGeneratorResults';
+export {
+  default as getPartialPhraseItems,
+  PartialPhraseItem,
+} from './daos/loader/getPartialPhraseItems';
 export { default as getEntriesForSpokenFamiliarityGeneratorTop50, EntryForSpokenFamiliarityGenerator } from './daos/loader/getEntriesForSpokenFamiliarityGeneratorTop50';
 export { default as getEntriesForSpokenFamiliarityGeneratorTop250 } from './daos/loader/getEntriesForSpokenFamiliarityGeneratorTop250';
 
@@ -77,6 +83,14 @@ export { default as getPrimaryNounSensesLowFamiliarity, PrimaryNounSenseLowFamil
 export { updateSenseFamiliarityScores, SenseFamiliarityScoreUpdate } from './daos/loader/updateSenseFamiliarityScores';
 export { deleteExampleSentencesForSenses } from './daos/loader/deleteExampleSentencesForSenses';
 export { default as getEntriesWithoutQualityTop50, EntryWithoutQuality } from './daos/loader/getEntriesWithoutQualityTop50';
+export {
+  default as getEntriesForQualityGeneratorTop50,
+  EntryForQualityGenerator,
+} from './daos/loader/getEntriesForQualityGeneratorTop50';
+export {
+  default as upsertQualityGeneratorResults,
+  QualityGeneratorResult,
+} from './daos/loader/upsertQualityGeneratorResults';
 export { default as getEntriesWithMismatchedDisplayText, EntryWithMismatchedDisplayText } from './daos/loader/getEntriesWithMismatchedDisplayText';
 export { default as resetEntryDisplayFields } from './daos/loader/resetEntryDisplayFields';
 export { default as getEntriesWithAccents, EntryWithAccent } from './daos/loader/getEntriesWithAccents';

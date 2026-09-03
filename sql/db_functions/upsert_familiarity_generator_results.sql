@@ -25,13 +25,24 @@ BEGIN
     AND esc.lang = elem->>'lang'
     AND esc.secondary_class = trim(sc->>'secondary_class');
 
-  INSERT INTO entry_secondary_class ("entry", lang, secondary_class, secondary_display, secondary_base_form)
+  UPDATE entry_secondary_class esc
+  SET familiarity_bucket = NULLIF(trim(sc->>'familiarity_bucket'), '')
+  FROM jsonb_array_elements(entries_data) AS elem
+  CROSS JOIN LATERAL jsonb_array_elements(
+    COALESCE(elem->'secondary_classes_to_update', '[]'::jsonb)
+  ) AS sc
+  WHERE esc."entry" = elem->>'entry'
+    AND esc.lang = elem->>'lang'
+    AND esc.secondary_class = trim(sc->>'secondary_class');
+
+  INSERT INTO entry_secondary_class ("entry", lang, secondary_class, secondary_display, secondary_base_form, familiarity_bucket)
   SELECT
     elem->>'entry',
     elem->>'lang',
     trim(sc->>'secondary_class'),
     trim(sc->>'secondary_display'),
-    NULLIF(trim(sc->>'secondary_base_form'), '')
+    NULLIF(trim(sc->>'secondary_base_form'), ''),
+    NULLIF(trim(sc->>'familiarity_bucket'), '')
   FROM jsonb_array_elements(entries_data) AS elem
   CROSS JOIN LATERAL jsonb_array_elements(
     COALESCE(elem->'secondary_classes_to_insert', '[]'::jsonb)
@@ -40,6 +51,7 @@ BEGIN
     AND COALESCE(NULLIF(trim(sc->>'secondary_display'), ''), '') <> ''
   ON CONFLICT ("entry", lang, secondary_class) DO UPDATE SET
     secondary_display = EXCLUDED.secondary_display,
-    secondary_base_form = EXCLUDED.secondary_base_form;
+    secondary_base_form = EXCLUDED.secondary_base_form,
+    familiarity_bucket = EXCLUDED.familiarity_bucket;
 END;
 $$ LANGUAGE plpgsql;

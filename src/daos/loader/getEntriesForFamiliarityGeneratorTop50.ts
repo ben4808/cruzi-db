@@ -4,6 +4,7 @@ export interface FamiliarityGeneratorSecondaryClass {
   secondaryClass: string;
   secondaryDisplay: string;
   secondaryBaseForm?: string;
+  unityBucket?: string;
 }
 
 export interface EntryForFamiliarityGenerator {
@@ -28,6 +29,9 @@ function parseSecondaryClasses(raw: unknown): FamiliarityGeneratorSecondaryClass
       secondaryDisplay: String(item.secondary_display ?? "").trim(),
       secondaryBaseForm: item.secondary_base_form
         ? String(item.secondary_base_form).trim()
+        : undefined,
+      unityBucket: item.unity_bucket
+        ? String(item.unity_bucket).trim()
         : undefined,
     }))
     .filter((item) => item.secondaryClass && item.secondaryDisplay);

@@ -4,7 +4,10 @@ export interface ShortPhraseResultInput {
   prompt: string;
   entry: string;
   lang: string;
+  entryType?: string;
   displayText?: string;
+  baseForm?: string;
+  isVulgar?: boolean;
   unityBucket?: string;
   frequency?: string;
   familiarityBucket?: string;
@@ -19,7 +22,10 @@ const addShortPhraseResults = async (results: ShortPhraseResultInput[]): Promise
     prompt: result.prompt,
     entry: result.entry,
     lang: result.lang,
+    entry_type: result.entryType ?? undefined,
     display_text: result.displayText ?? undefined,
+    base_form: result.baseForm ?? undefined,
+    is_vulgar: result.isVulgar,
     unity_bucket: result.unityBucket ?? undefined,
     frequency: result.frequency ?? undefined,
     familiarity_bucket: result.familiarityBucket ?? undefined,

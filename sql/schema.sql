@@ -45,6 +45,9 @@ create table entry_secondary_class (
   secondary_class text not null,
   secondary_display text not null,
   secondary_base_form text,
+  unity_bucket text,
+  familiarity_bucket text,
+  quality_bucket text,
   primary key("entry", lang, secondary_class)
 );
 
@@ -247,6 +250,9 @@ create table phrase_generator_result (
   prompt text not null,
   "entry" text not null,
   lang text not null,
+  base_form text,
+  is_vulgar boolean,
+  entry_type text,
   display_text text,
   unity_bucket text,
   familiarity_bucket text,
@@ -258,7 +264,10 @@ create table short_phrase_result (
   prompt text not null,
   "entry" text not null,
   lang text not null,
+  entry_type text,
   display_text text,
+  base_form text,
+  is_vulgar boolean,
   unity_bucket text,
   frequency text,
   familiarity_bucket text
@@ -339,6 +348,7 @@ create index ix_collection__clue_collection_order on collection__clue(collection
 create index ix_user__collection_user_id on user__collection(user_id);
 create index ix_sense_entry_lang on sense("entry", lang);
 create index ix_entry_loading_status on "entry"(loading_status) where loading_status <> 'Ready';
+-- Unique among assigned codes only; multiple rows may have NULL game_code.
 create unique index ux_friendly_words_game_code on friendly_words_game(game_code) where game_code is not null;
 create index ix_friendly_words_turn_game_id on friendly_words_turn(game_id, turn_number);
 create index ix_friendly_words_played_word_turn_id on friendly_words_played_word(turn_id);

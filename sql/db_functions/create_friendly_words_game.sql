@@ -14,14 +14,13 @@ AS $$
 DECLARE
     _row friendly_words_game%ROWTYPE;
 BEGIN
-    -- A code is in use until the game ends, or until 6 months after creation.
-    -- Expired / completed leftovers are cleared here so the code can be reused.
+    -- A code is in use while an unfinished game created within 6 months still holds it.
+    -- Completed games and games older than 6 months can be reused (their code is NULLed below).
     IF EXISTS (
         SELECT 1
         FROM friendly_words_game
         WHERE game_code = p_game_code
           AND status <> 'completed'
-          AND completed_at IS NULL
           AND created_at > (now() - interval '6 months')
     ) THEN
         RAISE EXCEPTION 'Game code already in use: %', p_game_code;

@@ -29,11 +29,7 @@ BEGIN
         player4 = p_player4,
         waitlist = p_waitlist,
         state = p_state,
-        completed_at = p_completed_at,
-        game_code = CASE
-            WHEN p_status = 'completed' OR p_completed_at IS NOT NULL THEN NULL
-            ELSE game_code
-        END
+        completed_at = p_completed_at
     WHERE id = p_id
     RETURNING * INTO _row;
 
