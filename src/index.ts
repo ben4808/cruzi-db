@@ -9,6 +9,11 @@ export { default as LoaderDao } from './daos/loader/LoaderDao';
 export { ILoaderDao } from './daos/loader/ILoaderDao';
 
 export { default as getEntries, GetEntriesInput } from './daos/loader/getEntries';
+export {
+  default as getCrosswordListEntries,
+  CrosswordListEntry,
+} from './daos/loader/getCrosswordListEntries';
+
 export { default as upsertEntries } from './daos/loader/upsertEntries';
 export { default as insertEntriesOrFillNulls } from './daos/loader/insertEntriesOrFillNulls';
 export { default as getCrosswordQualityQueueTop25, CrosswordQualityQueueItem } from './daos/loader/getCrosswordQualityQueueTop25';

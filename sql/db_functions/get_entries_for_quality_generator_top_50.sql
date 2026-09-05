@@ -21,7 +21,7 @@ BEGIN
         e.familiarity_bucket
     FROM "entry" e
     WHERE e.reviewed_status = '123'
-      AND e.length = 5
+      AND (e.length = 4 OR e.length = 3 OR e.length = 5)
       AND e.display_text IS NOT NULL
       AND TRIM(e.display_text) <> ''
       AND e.unity_bucket IS NOT NULL
