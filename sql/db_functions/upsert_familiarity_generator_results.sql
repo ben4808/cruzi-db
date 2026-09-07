@@ -6,6 +6,11 @@ BEGIN
     familiarity_bucket = NULLIF(trim(elem->>'familiarity_bucket'), ''),
     familiarity_score = (elem->>'familiarity_score')::int,
     reviewed_status = COALESCE(NULLIF(trim(elem->>'reviewed_status'), ''), '123'),
+    unity_bucket = COALESCE(NULLIF(trim(elem->>'unity_bucket'), ''), e.unity_bucket),
+    unity_score = CASE
+      WHEN NULLIF(trim(elem->>'unity_score'), '') IS NOT NULL THEN (elem->>'unity_score')::int
+      ELSE e.unity_score
+    END,
     display_text = COALESCE(NULLIF(trim(elem->>'display_text'), ''), e.display_text),
     entry_type = COALESCE(NULLIF(trim(elem->>'entry_type'), ''), e.entry_type),
     base_form = CASE
@@ -26,7 +31,8 @@ BEGIN
     AND esc.secondary_class = trim(sc->>'secondary_class');
 
   UPDATE entry_secondary_class esc
-  SET familiarity_bucket = NULLIF(trim(sc->>'familiarity_bucket'), '')
+  SET familiarity_bucket = NULLIF(trim(sc->>'familiarity_bucket'), ''),
+      unity_bucket = COALESCE(NULLIF(trim(sc->>'unity_bucket'), ''), esc.unity_bucket)
   FROM jsonb_array_elements(entries_data) AS elem
   CROSS JOIN LATERAL jsonb_array_elements(
     COALESCE(elem->'secondary_classes_to_update', '[]'::jsonb)
@@ -35,14 +41,15 @@ BEGIN
     AND esc.lang = elem->>'lang'
     AND esc.secondary_class = trim(sc->>'secondary_class');
 
-  INSERT INTO entry_secondary_class ("entry", lang, secondary_class, secondary_display, secondary_base_form, familiarity_bucket)
+  INSERT INTO entry_secondary_class ("entry", lang, secondary_class, secondary_display, secondary_base_form, familiarity_bucket, unity_bucket)
   SELECT
     elem->>'entry',
     elem->>'lang',
     trim(sc->>'secondary_class'),
     trim(sc->>'secondary_display'),
     NULLIF(trim(sc->>'secondary_base_form'), ''),
-    NULLIF(trim(sc->>'familiarity_bucket'), '')
+    NULLIF(trim(sc->>'familiarity_bucket'), ''),
+    NULLIF(trim(sc->>'unity_bucket'), '')
   FROM jsonb_array_elements(entries_data) AS elem
   CROSS JOIN LATERAL jsonb_array_elements(
     COALESCE(elem->'secondary_classes_to_insert', '[]'::jsonb)
@@ -52,6 +59,7 @@ BEGIN
   ON CONFLICT ("entry", lang, secondary_class) DO UPDATE SET
     secondary_display = EXCLUDED.secondary_display,
     secondary_base_form = EXCLUDED.secondary_base_form,
-    familiarity_bucket = EXCLUDED.familiarity_bucket;
+    familiarity_bucket = EXCLUDED.familiarity_bucket,
+    unity_bucket = COALESCE(EXCLUDED.unity_bucket, entry_secondary_class.unity_bucket);
 END;
 $$ LANGUAGE plpgsql;

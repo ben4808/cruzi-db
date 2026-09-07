@@ -5,11 +5,13 @@ export interface FamiliarityGeneratorSecondaryClassChange {
   secondaryDisplay?: string;
   secondaryBaseForm?: string;
   familiarityBucket?: string;
+  unityBucket?: string;
 }
 
 export interface FamiliarityGeneratorSecondaryClassUpdate {
   secondaryClass: string;
   familiarityBucket: string;
+  unityBucket?: string;
 }
 
 export interface FamiliarityGeneratorResult {
@@ -18,6 +20,8 @@ export interface FamiliarityGeneratorResult {
   familiarityBucket: string;
   familiarityScore: number;
   reviewedStatus?: string;
+  unityBucket?: string;
+  unityScore?: number;
   displayText?: string;
   entryType?: string;
   baseForm?: string;
@@ -39,6 +43,8 @@ const upsertFamiliarityGeneratorResults = async (
     familiarity_bucket: e.familiarityBucket,
     familiarity_score: e.familiarityScore,
     reviewed_status: e.reviewedStatus ?? "123",
+    unity_bucket: e.unityBucket ?? undefined,
+    unity_score: e.unityScore ?? undefined,
     display_text: e.displayText ?? undefined,
     entry_type: e.entryType ?? undefined,
     base_form: e.baseForm ?? undefined,
@@ -48,12 +54,14 @@ const upsertFamiliarityGeneratorResults = async (
     secondary_classes_to_update: (e.secondaryClassesToUpdate ?? []).map((sc) => ({
       secondary_class: sc.secondaryClass,
       familiarity_bucket: sc.familiarityBucket,
+      unity_bucket: sc.unityBucket ?? undefined,
     })),
     secondary_classes_to_insert: (e.secondaryClassesToInsert ?? []).map((sc) => ({
       secondary_class: sc.secondaryClass,
       secondary_display: sc.secondaryDisplay ?? undefined,
       secondary_base_form: sc.secondaryBaseForm ?? undefined,
       familiarity_bucket: sc.familiarityBucket ?? undefined,
+      unity_bucket: sc.unityBucket ?? undefined,
     })),
   }));
 

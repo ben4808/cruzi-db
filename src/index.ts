@@ -109,6 +109,7 @@ export { default as getEntriesByBaseWord, BaseWordPosition } from './daos/loader
 export {
   default as addPhraseGeneratorResults,
   PhraseGeneratorResultInput,
+  PhraseGeneratorSecondaryClassInput,
 } from './daos/loader/addPhraseGeneratorResults';
 export { default as deletePhraseGeneratorQueueItem } from './daos/loader/deletePhraseGeneratorQueueItem';
 export {
@@ -138,6 +139,16 @@ export {
   ShortPhraseQueueItem,
 } from './daos/loader/addShortPhraseQueueEntries';
 export { default as addEntryTags, EntryTagInput } from './daos/loader/addEntryTags';
+export { default as deleteEntryTags } from './daos/loader/deleteEntryTags';
+export {
+  default as getEntriesForClassification,
+  ClassificationEntry,
+} from './daos/loader/getEntriesForClassification';
+export {
+  default as updateEntryClassifications,
+  EntryClassificationUpdate,
+} from './daos/loader/updateEntryClassifications';
+
 export { default as deleteCrosswordPuzzleAndCollection } from './daos/loader/deleteCrosswordPuzzleAndCollection';
 export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries';
 export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';

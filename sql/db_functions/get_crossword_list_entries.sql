@@ -26,6 +26,14 @@ BEGIN
       AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
       AND e.length >= p_min_length
       AND e.length <= p_max_length
+      AND e.is_vulgar IS DISTINCT FROM true
+      AND NOT EXISTS (
+          SELECT 1
+          FROM entry_tags et
+          WHERE et."entry" = e."entry"
+            AND et.lang = e.lang
+            AND et.tag = 'breakfast_test'
+      )
       AND (
           NOT p_exclude_obscure
           OR (

@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION insert_entries_or_fill_nulls(entries_data jsonb)
 RETURNS void AS $$
 BEGIN
-  INSERT INTO entry ("entry", base_form, lang, "length", display_text, entry_type, familiarity_bucket, familiarity_score, quality_score, idiomacity_score, unity_bucket, unity_score, is_vulgar, loading_status)
+  INSERT INTO entry ("entry", base_form, lang, "length", display_text, entry_type, familiarity_bucket, familiarity_score, quality_score, idiomacity_score, unity_bucket, unity_score, is_vulgar, loading_status, reviewed_status)
   SELECT
     elem->>'entry',
     NULLIF(trim(elem->>'base_form'), ''),
@@ -19,7 +19,8 @@ BEGIN
       WHEN elem->>'is_vulgar' IS NULL OR trim(elem->>'is_vulgar') = '' THEN NULL
       ELSE (elem->>'is_vulgar')::boolean
     END,
-    COALESCE(NULLIF(trim(elem->>'loading_status'), ''), 'Ready')
+    COALESCE(NULLIF(trim(elem->>'loading_status'), ''), 'Ready'),
+    NULLIF(trim(elem->>'reviewed_status'), '')
   FROM jsonb_array_elements(entries_data) AS elem
   ON CONFLICT ("entry", lang) DO UPDATE SET
     base_form = COALESCE(entry.base_form, EXCLUDED.base_form),

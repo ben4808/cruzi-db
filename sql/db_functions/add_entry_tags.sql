@@ -19,7 +19,12 @@ BEGIN
       AND COALESCE(NULLIF(trim(t->>'lang'), ''), '') <> ''
       AND COALESCE(NULLIF(trim(t->>'tag'), ''), '') <> ''
     ON CONFLICT ("entry", lang, tag) DO UPDATE SET
-        "value" = (COALESCE(NULLIF(entry_tags."value", '')::integer, 0) + 1)::text
+        "value" = CASE
+            WHEN EXCLUDED."value" ~ '^-?[0-9]+$'
+                 AND COALESCE(NULLIF(entry_tags."value", ''), '0') ~ '^-?[0-9]+$'
+            THEN (COALESCE(NULLIF(entry_tags."value", '')::integer, 0) + 1)::text
+            ELSE EXCLUDED."value"
+        END
     WHERE EXCLUDED."value" IS NOT NULL;
 END;
 $$;
