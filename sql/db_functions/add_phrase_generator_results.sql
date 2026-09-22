@@ -93,5 +93,7 @@ BEGIN
         secondary_base_form = EXCLUDED.secondary_base_form,
         unity_bucket = COALESCE(EXCLUDED.unity_bucket, entry_secondary_class.unity_bucket),
         familiarity_bucket = COALESCE(EXCLUDED.familiarity_bucket, entry_secondary_class.familiarity_bucket);
+
+    PERFORM rebuild_inflected_entries_from_payload(p_results, 'fill');
 END;
 $$;

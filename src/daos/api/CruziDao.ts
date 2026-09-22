@@ -24,6 +24,8 @@ import updateSingleClue from "./updateSingleClue";
 import getEntry from "./getEntry";
 import queryEntries from "./queryEntries";
 import insertUserIfNotExists from "./insertUserIfNotExists";
+import getUserSettings from "./getUserSettings";
+import upsertUserSettings from "./upsertUserSettings";
 import initializeUserCollectionProgress from "./initializeUserCollectionProgress";
 import getSensesForEntry from "./getSensesForEntry";
 import getClueByEntryInCollection from "./getClueByEntryInCollection";
@@ -93,6 +95,10 @@ class CruziDao implements ICruziDao {
     queryEntries = queryEntries;
 
     insertUserIfNotExists = insertUserIfNotExists;
+
+    getUserSettings = getUserSettings;
+
+    upsertUserSettings = upsertUserSettings;
 
     initializeUserCollectionProgress = initializeUserCollectionProgress;
 

@@ -39,7 +39,6 @@ BEGIN
         -- Upsert de-accented entry, filling nulls on the target from the accented source.
         INSERT INTO "entry" (
             "entry",
-            base_form,
             lang,
             "length",
             display_text,
@@ -48,7 +47,6 @@ BEGIN
             familiarity_score,
             quality_bucket,
             quality_score,
-            idiomacity_score,
             unity_bucket,
             unity_score,
             is_vulgar,
@@ -57,7 +55,6 @@ BEGIN
         )
         SELECT
             v_new_entry,
-            e.base_form,
             e.lang,
             length(v_new_entry),
             e.display_text,
@@ -66,7 +63,6 @@ BEGIN
             e.familiarity_score,
             e.quality_bucket,
             e.quality_score,
-            e.idiomacity_score,
             e.unity_bucket,
             e.unity_score,
             e.is_vulgar,
@@ -76,14 +72,12 @@ BEGIN
         WHERE e."entry" = v_old_entry
           AND e.lang = v_lang
         ON CONFLICT ("entry", lang) DO UPDATE SET
-            base_form = COALESCE("entry".base_form, EXCLUDED.base_form),
             display_text = COALESCE("entry".display_text, EXCLUDED.display_text),
             entry_type = COALESCE("entry".entry_type, EXCLUDED.entry_type),
             familiarity_bucket = COALESCE("entry".familiarity_bucket, EXCLUDED.familiarity_bucket),
             familiarity_score = COALESCE("entry".familiarity_score, EXCLUDED.familiarity_score),
             quality_bucket = COALESCE("entry".quality_bucket, EXCLUDED.quality_bucket),
             quality_score = COALESCE("entry".quality_score, EXCLUDED.quality_score),
-            idiomacity_score = COALESCE("entry".idiomacity_score, EXCLUDED.idiomacity_score),
             unity_bucket = COALESCE("entry".unity_bucket, EXCLUDED.unity_bucket),
             unity_score = COALESCE("entry".unity_score, EXCLUDED.unity_score),
             is_vulgar = COALESCE("entry".is_vulgar, EXCLUDED.is_vulgar),
@@ -94,6 +88,38 @@ BEGIN
         UPDATE sense
         SET "entry" = v_new_entry
         WHERE "entry" = v_old_entry
+          AND lang = v_lang;
+
+        UPDATE inflected_entry ie
+        SET inflected_entry = v_new_entry
+        WHERE ie.inflected_entry = v_old_entry
+          AND ie.lang = v_lang
+          AND NOT EXISTS (
+              SELECT 1
+              FROM inflected_entry existing
+              WHERE existing.base_entry = ie.base_entry
+                AND existing.inflected_entry = v_new_entry
+                AND existing.lang = ie.lang
+          );
+
+        DELETE FROM inflected_entry
+        WHERE inflected_entry = v_old_entry
+          AND lang = v_lang;
+
+        UPDATE inflected_entry ie
+        SET base_entry = v_new_entry
+        WHERE ie.base_entry = v_old_entry
+          AND ie.lang = v_lang
+          AND NOT EXISTS (
+              SELECT 1
+              FROM inflected_entry existing
+              WHERE existing.base_entry = v_new_entry
+                AND existing.inflected_entry = ie.inflected_entry
+                AND existing.lang = ie.lang
+          );
+
+        DELETE FROM inflected_entry
+        WHERE base_entry = v_old_entry
           AND lang = v_lang;
 
         DELETE FROM entry_tags et
@@ -144,11 +170,6 @@ BEGIN
           AND lang = v_lang;
 
         UPDATE crossword_quality_queue
-        SET "entry" = v_new_entry
-        WHERE "entry" = v_old_entry
-          AND lang = v_lang;
-
-        UPDATE idiomacity_queue
         SET "entry" = v_new_entry
         WHERE "entry" = v_old_entry
           AND lang = v_lang;

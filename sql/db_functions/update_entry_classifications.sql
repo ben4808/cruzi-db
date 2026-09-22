@@ -9,7 +9,6 @@ BEGIN
         "entry",
         lang,
         "length",
-        base_form,
         display_text,
         entry_type,
         unity_bucket,
@@ -25,7 +24,6 @@ BEGIN
         trim(elem->>'entry'),
         trim(elem->>'lang'),
         length(trim(elem->>'entry')),
-        NULLIF(trim(elem->>'base_form'), ''),
         NULLIF(trim(elem->>'display_text'), ''),
         NULLIF(trim(elem->>'entry_type'), ''),
         NULLIF(trim(elem->>'unity_bucket'), ''),
@@ -82,7 +80,6 @@ BEGIN
     WHERE COALESCE(NULLIF(trim(elem->>'entry'), ''), '') <> ''
       AND COALESCE(NULLIF(trim(elem->>'lang'), ''), '') <> ''
     ON CONFLICT ("entry", lang) DO UPDATE SET
-        base_form = NULLIF(trim(EXCLUDED.base_form), ''),
         display_text = NULLIF(trim(EXCLUDED.display_text), ''),
         entry_type = NULLIF(trim(EXCLUDED.entry_type), ''),
         unity_bucket = NULLIF(trim(EXCLUDED.unity_bucket), ''),
@@ -92,5 +89,7 @@ BEGIN
         quality_bucket = NULLIF(trim(EXCLUDED.quality_bucket), ''),
         quality_score = EXCLUDED.quality_score,
         is_vulgar = EXCLUDED.is_vulgar;
+
+    PERFORM rebuild_inflected_entries_from_payload(p_updates, 'replace');
 END;
 $$;

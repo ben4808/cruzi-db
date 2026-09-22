@@ -12,7 +12,6 @@ BEGIN
         "entry",
         lang,
         display_text,
-        base_form,
         inflections,
         part_of_speech,
         classification,
@@ -26,7 +25,6 @@ BEGIN
         p_entry,
         p_lang,
         sense_data->>'display_text',
-        sense_data->>'base_form',
         CASE
             WHEN sense_data ? 'inflections' AND jsonb_typeof(sense_data->'inflections') = 'array'
             THEN ARRAY(SELECT jsonb_array_elements_text(sense_data->'inflections'))
@@ -48,7 +46,6 @@ BEGIN
         "entry" = EXCLUDED."entry",
         lang = EXCLUDED.lang,
         display_text = CASE WHEN sense_data ? 'display_text' THEN EXCLUDED.display_text ELSE sense.display_text END,
-        base_form = CASE WHEN sense_data ? 'base_form' THEN EXCLUDED.base_form ELSE sense.base_form END,
         inflections = CASE WHEN sense_data ? 'inflections' THEN EXCLUDED.inflections ELSE sense.inflections END,
         part_of_speech = EXCLUDED.part_of_speech,
         classification = EXCLUDED.classification,
@@ -113,5 +110,46 @@ BEGIN
         jsonb_typeof(COALESCE(sense_data->'example_sentences', '[]'::jsonb)) = 'array'
     ON CONFLICT (example_sentence_id, lang) DO UPDATE SET
         sentence = EXCLUDED.sentence;
+
+    INSERT INTO inflected_entry (
+        base_entry,
+        inflected_entry,
+        lang,
+        display_text,
+        inflected_type
+    )
+    SELECT
+        normalize_display_text_to_entry_key(sense_data->>'base_form'),
+        p_entry,
+        p_lang,
+        NULLIF(trim(sense_data->>'display_text'), ''),
+        NULLIF(trim(sense_data->>'classification'), '')
+    WHERE normalize_display_text_to_entry_key(COALESCE(sense_data->>'base_form', '')) <> ''
+      AND normalize_display_text_to_entry_key(sense_data->>'base_form') IS DISTINCT FROM p_entry
+    ON CONFLICT (base_entry, inflected_entry, lang) DO UPDATE SET
+        display_text = COALESCE(EXCLUDED.display_text, inflected_entry.display_text),
+        inflected_type = COALESCE(EXCLUDED.inflected_type, inflected_entry.inflected_type);
+
+    INSERT INTO inflected_entry (
+        base_entry,
+        inflected_entry,
+        lang,
+        display_text,
+        inflected_type
+    )
+    SELECT
+        p_entry,
+        normalize_display_text_to_entry_key(infl),
+        p_lang,
+        NULLIF(trim(infl), ''),
+        NULLIF(trim(sense_data->>'classification'), '')
+    FROM jsonb_array_elements_text(COALESCE(sense_data->'inflections', '[]'::jsonb)) AS infl
+    WHERE sense_data ? 'inflections'
+      AND jsonb_typeof(sense_data->'inflections') = 'array'
+      AND normalize_display_text_to_entry_key(infl) <> ''
+      AND normalize_display_text_to_entry_key(infl) IS DISTINCT FROM p_entry
+    ON CONFLICT (base_entry, inflected_entry, lang) DO UPDATE SET
+        display_text = COALESCE(EXCLUDED.display_text, inflected_entry.display_text),
+        inflected_type = COALESCE(EXCLUDED.inflected_type, inflected_entry.inflected_type);
 END;
 $$ LANGUAGE plpgsql;

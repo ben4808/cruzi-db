@@ -17,6 +17,19 @@ BEGIN
         WHERE COALESCE(NULLIF(trim(i->>'entry'), ''), '') <> ''
           AND COALESCE(NULLIF(trim(i->>'lang'), ''), '') <> ''
     )
+    DELETE FROM inflected_entry ie
+    USING requested r
+    WHERE ie.lang = r.lang
+      AND (ie.inflected_entry = r.entry OR ie.base_entry = r.entry);
+
+    WITH requested AS (
+        SELECT DISTINCT
+            trim(i->>'entry') AS entry,
+            trim(i->>'lang') AS lang
+        FROM jsonb_array_elements(p_entries) AS i
+        WHERE COALESCE(NULLIF(trim(i->>'entry'), ''), '') <> ''
+          AND COALESCE(NULLIF(trim(i->>'lang'), ''), '') <> ''
+    )
     DELETE FROM "entry" e
     USING requested r
     WHERE e."entry" = r.entry

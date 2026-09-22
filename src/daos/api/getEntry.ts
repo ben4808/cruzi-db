@@ -17,6 +17,7 @@ const getEntry = async (entry: string): Promise<Entry | null> => {
         lang: raw.lang,
         displayText: raw.display_text,
         entryType: raw.entry_type,
+        baseForm: raw.base_form,
         familiarityScore: raw.familiarity_score,
         qualityScore: raw.quality_score,
         loadingStatus: raw.loading_status,

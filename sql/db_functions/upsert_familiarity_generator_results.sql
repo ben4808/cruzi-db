@@ -12,11 +12,7 @@ BEGIN
       ELSE e.unity_score
     END,
     display_text = COALESCE(NULLIF(trim(elem->>'display_text'), ''), e.display_text),
-    entry_type = COALESCE(NULLIF(trim(elem->>'entry_type'), ''), e.entry_type),
-    base_form = CASE
-      WHEN NULLIF(trim(elem->>'display_text'), '') IS NOT NULL THEN NULLIF(trim(elem->>'base_form'), '')
-      ELSE e.base_form
-    END
+    entry_type = COALESCE(NULLIF(trim(elem->>'entry_type'), ''), e.entry_type)
   FROM jsonb_array_elements(entries_data) AS elem
   WHERE e."entry" = elem->>'entry'
     AND e.lang = elem->>'lang';
@@ -61,5 +57,17 @@ BEGIN
     secondary_base_form = EXCLUDED.secondary_base_form,
     familiarity_bucket = EXCLUDED.familiarity_bucket,
     unity_bucket = COALESCE(EXCLUDED.unity_bucket, entry_secondary_class.unity_bucket);
+
+  PERFORM rebuild_inflected_entries_from_payload(
+    COALESCE(
+      (
+        SELECT jsonb_agg(elem)
+        FROM jsonb_array_elements(entries_data) AS elem
+        WHERE NULLIF(trim(elem->>'display_text'), '') IS NOT NULL
+      ),
+      '[]'::jsonb
+    ),
+    'replace'
+  );
 END;
 $$ LANGUAGE plpgsql;

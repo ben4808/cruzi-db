@@ -17,7 +17,7 @@ BEGIN
         e.lang,
         e.display_text,
         e.entry_type,
-        e.base_form,
+        inflected_base_form_for_entry(e."entry", e.lang) AS base_form,
         e.unity_bucket,
         COALESCE(
             (

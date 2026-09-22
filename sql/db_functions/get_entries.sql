@@ -19,7 +19,7 @@ BEGIN
     SELECT
         e."entry",
         e.lang,
-        e.base_form,
+        inflected_base_form_for_entry(e."entry", e.lang) AS base_form,
         e."length",
         e.display_text,
         e.entry_type,

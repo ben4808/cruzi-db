@@ -22,7 +22,10 @@ const mapCollectionClue = (raw: any): CollectionClueWithProgress => {
         baseForm: clueRaw.base_form,
         entryType: clueRaw.entry_type,
         familiarityScore: clueRaw.familiarity_score,
+        familiarityBucket: clueRaw.familiarity_bucket,
         qualityScore: clueRaw.quality_score,
+        qualityBucket: clueRaw.quality_bucket,
+        unityBucket: clueRaw.unity_bucket,
     } as Entry;
 
     return {
@@ -78,7 +81,7 @@ const getCrossword = async (collectionId: string, userId?: string): Promise<Clue
                   date: puzzleDate,
                   width: puzzleRaw.width ?? 0,
                   height: puzzleRaw.height ?? 0,
-                  author: puzzleRaw.author,
+                  authors: puzzleRaw.author?.split(', ') ?? [],
                   copyright: puzzleRaw.copyright,
                   notes: puzzleRaw.notes,
                   lang: puzzleRaw.lang ?? raw.lang,

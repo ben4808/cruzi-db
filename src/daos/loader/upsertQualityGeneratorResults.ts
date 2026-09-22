@@ -6,6 +6,7 @@ export interface QualityGeneratorResult {
   qualityBucket: string;
   qualityScore: number;
   reviewedStatus?: string;
+  flags?: string[];
 }
 
 const upsertQualityGeneratorResults = async (
@@ -21,6 +22,7 @@ const upsertQualityGeneratorResults = async (
     quality_bucket: e.qualityBucket,
     quality_score: e.qualityScore,
     reviewed_status: e.reviewedStatus ?? "1234",
+    flags: e.flags ?? [],
   }));
 
   await sqlQuery(true, "upsert_quality_generator_results", [

@@ -9,7 +9,6 @@ BEGIN
         "entry",
         lang,
         "length",
-        base_form,
         display_text,
         entry_type,
         familiarity_score,
@@ -20,7 +19,6 @@ BEGIN
         (e->>'entry')::text,
         (e->>'lang')::text,
         COALESCE((e->>'length')::integer, length((e->>'entry')::text)),
-        NULLIF(trim(e->>'baseForm'), ''),
         NULLIF(trim(e->>'displayText'), ''),
         NULLIF(trim(e->>'entryType'), ''),
         (e->>'familiarityScore')::integer,
@@ -28,11 +26,12 @@ BEGIN
         COALESCE(NULLIF(trim(e->>'loadingStatus'), ''), 'Ready')
     FROM jsonb_array_elements(p_entries) AS e
     ON CONFLICT ("entry", lang) DO UPDATE SET
-        base_form = COALESCE(EXCLUDED.base_form, "entry".base_form),
         display_text = COALESCE(EXCLUDED.display_text, "entry".display_text),
         entry_type = COALESCE(EXCLUDED.entry_type, "entry".entry_type),
         familiarity_score = COALESCE(EXCLUDED.familiarity_score, "entry".familiarity_score),
         quality_score = COALESCE(EXCLUDED.quality_score, "entry".quality_score),
         loading_status = COALESCE(EXCLUDED.loading_status, "entry".loading_status);
+
+    PERFORM rebuild_inflected_entries_from_payload(p_entries, 'fill');
 END;
 $$;

@@ -19,24 +19,38 @@ create table "user" (
   created_at timestamp not null default now()
 );
 
+create table user_settings (
+  user_id text not null primary key references "user"(id) on delete cascade,
+  crossword_solver_minigame boolean not null default false
+);
+
 create table "entry" (
   "entry" text not null,
-  base_form text,
   lang text not null,
   "length" int not null,
   display_text text,
   entry_type text,
   
+  unity_bucket text,
+  unity_score int,
   familiarity_bucket text,
   familiarity_score int,
   quality_bucket text,
   quality_score int,
-  unity_bucket text,
-  unity_score int,
-  is_vulgar boolean,
-  loading_status text not null default 'Ready', -- Ready, Processing, Error, Invalid, Senses
-  reviewed_status text, -- F, P, PF, R
+
+  loading_status text,
+  reviewed_status text,
   primary key("entry", lang)
+);
+
+create table inflected_entry (
+  base_entry text not null,
+  inflected_entry text not null,
+  lang text not null,
+  display_text text,
+  inflected_type text,
+  is_common boolean not null default true,
+  primary key(base_entry, inflected_entry, lang)
 );
 
 create table entry_secondary_class (
@@ -79,30 +93,23 @@ create table clue_collection (
   metadata1 text, -- AI composite score
   metadata2 text,
   "source" text, -- Book it came from? AI source? Important in case I need to remove copyrighted data.
-  clue_count int not null default 0,
-  clue_count_6_plus int not null default 0
+  clue_count int not null default 0
 );
 
 create table sense (
   id text not null primary key,
   "entry" text not null,
   lang text not null,
-  base_form text,
-  inflections text[],
   display_text text,
   summary text,
   "definition" text,
   part_of_speech text,
-  frequency text,
   classification text,
   unity_bucket text,
-  unity_score int,
   familiarity_bucket text,
-  familiarity_score int,
   quality_bucket text,
-  quality_score int,
   similar_entries text[],
-  source_ai text, -- for summary, definition
+  reviewed_status text,
   foreign key ("entry", lang) references "entry"("entry", lang) on delete cascade
 );
 
@@ -118,10 +125,26 @@ create table entry_tags (
 create table sense_entry_translation (
   sense_id text not null references sense(id) on delete cascade,
   "entry" text not null,
-  lang text not null,
+  translation_lang text not null,
   natural_translations text[],
   colloquial_translations text[],
-  primary key(sense_id, "entry", lang)
+  primary key(sense_id, "entry", translation_lang)
+);
+
+create table sense_reference (
+  id text not null primary key,
+  sense_id text not null references sense(id) on delete cascade,
+  reference_type text not null,
+  reference_text text not null,
+  reference_source text,
+  reference_url text
+);
+
+create table sense_tags (
+  sense_id text not null references sense(id) on delete cascade,
+  tag text not null,
+  "value" text,
+  primary key(sense_id, tag)
 );
 
 create table example_sentence (
@@ -131,9 +154,9 @@ create table example_sentence (
 
 create table example_sentence_translation (
   example_sentence_id text not null references example_sentence(id) on delete cascade,
-  lang text not null,
+  translation_lang text not null,
   sentence text not null,
-  primary key(example_sentence_id, lang)
+  primary key(example_sentence_id, translation_lang)
 );
 
 create table example_sentence_improvement (
@@ -144,21 +167,14 @@ create table example_sentence_improvement (
   new_translation text not null
 );
 
-create table sense_entry_score (
-  sense_id text not null references sense(id) on delete cascade,
-  familiarity_score int,
-  quality_score int,
-  source_ai text not null,
-  primary key(sense_id, source_ai)
-);
-
 create table clue (
   id text not null primary key,
   "entry" text not null, -- in some cases only for reference if there is a sense provided
   lang text not null, -- in some cases only for reference if there is a sense provided
   sense_id text references sense(id) on delete set null, -- optional, if linked to a specific sense
   custom_clue text,
-  custom_display_text text
+  custom_display_text text,
+  match_attempted boolean not null default false
 );
 
 create table collection__clue (
@@ -217,24 +233,32 @@ create table collection_access (
   primary key(collection_id, user_id)
 );
 
-create table crossword_familiarity_queue (
+create table crossword_processing_queue (
   id serial primary key,
-  "entry" text not null,
-  lang text not null,
+  puzzle_id text not null references puzzle(id) on delete cascade,
   added_at timestamp not null default now()
 );
 
-create table crossword_quality_queue (
+create table sense_generator_queue (
   id serial primary key,
+  puzzle_id text,
   "entry" text not null,
   lang text not null,
+  "hint" text,
   added_at timestamp not null default now()
 );
 
-create table idiomacity_queue (
+create table sense_reference_queue (
   id serial primary key,
-  "entry" text not null,
-  lang text not null,
+  puzzle_id text,
+  sense_id text not null references sense(id) on delete cascade,
+  added_at timestamp not null default now()
+);
+
+create table sense_scoring_queue (
+  id serial primary key,
+  puzzle_id text,
+  sense_id text not null references sense(id) on delete cascade,
   added_at timestamp not null default now()
 );
 
@@ -347,6 +371,8 @@ create index ix_clue_collection_puzzle_id on clue_collection(puzzle_id);
 create index ix_collection__clue_collection_order on collection__clue(collection_id, "order");
 create index ix_user__collection_user_id on user__collection(user_id);
 create index ix_sense_entry_lang on sense("entry", lang);
+create index ix_inflected_entry_inflected_lang on inflected_entry(inflected_entry, lang);
+create index ix_inflected_entry_base_lang on inflected_entry(base_entry, lang);
 create index ix_entry_loading_status on "entry"(loading_status) where loading_status <> 'Ready';
 -- Unique among assigned codes only; multiple rows may have NULL game_code.
 create unique index ux_friendly_words_game_code on friendly_words_game(game_code) where game_code is not null;

@@ -26,7 +26,7 @@ BEGIN
         requested.fill_word,
         e."entry",
         e.lang,
-        e.base_form,
+        inflected_base_form_for_entry(COALESCE(e."entry", requested.fill_word), COALESCE(e.lang, 'en')) AS base_form,
         e.display_text,
         e.entry_type,
         e.unity_bucket,

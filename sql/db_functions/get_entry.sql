@@ -11,6 +11,7 @@ BEGIN
                 'length', e.length,
                 'display_text', e.display_text,
                 'entry_type', e.entry_type,
+                'base_form', inflected_base_form_for_entry(e.entry, e.lang),
                 'familiarity_score', e.familiarity_score,
                 'quality_score', e.quality_score,
                 'loading_status', e.loading_status,
@@ -47,7 +48,8 @@ BEGIN
         WHERE
             e.entry = p_entry
         GROUP BY
-            e.entry, e.lang, e.length, e.display_text, e.entry_type, e.familiarity_score, e.quality_score, e.loading_status
+            e.entry, e.lang, e.length, e.display_text, e.entry_type, e.familiarity_score, e.quality_score, e.loading_status,
+            inflected_base_form_for_entry(e.entry, e.lang)
     );
 END;
 $$ LANGUAGE plpgsql;

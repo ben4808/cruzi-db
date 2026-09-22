@@ -8,7 +8,6 @@ BEGIN
     UPDATE "entry" e
     SET
         display_text = NULL,
-        base_form = NULL,
         entry_type = NULL,
         unity_bucket = NULL,
         unity_score = NULL,
@@ -26,6 +25,15 @@ BEGIN
     );
 
     GET DIAGNOSTICS updated_count = ROW_COUNT;
+
+    DELETE FROM inflected_entry ie
+    WHERE (ie.inflected_entry, ie.lang) IN (
+        SELECT
+            (elem->>'entry')::text,
+            (elem->>'lang')::text
+        FROM jsonb_array_elements(p_entries) AS elem
+    );
+
     RETURN updated_count;
 END;
 $$;

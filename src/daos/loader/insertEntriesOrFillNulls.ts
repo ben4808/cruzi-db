@@ -12,7 +12,6 @@ const insertEntriesOrFillNulls = async (entries: Entry[]) => {
         familiarity_bucket: e.familiarityBucket ?? undefined,
         familiarity_score: e.familiarityScore ?? undefined,
         quality_score: e.qualityScore ?? undefined,
-        idiomacity_score: e.idiomacityScore ?? undefined,
         unity_bucket: e.unityBucket ?? undefined,
         unity_score: e.unityScore ?? undefined,
         is_vulgar: e.isVulgar,

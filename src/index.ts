@@ -40,9 +40,6 @@ export { assignPrimarySenseToClues } from './daos/loader/assignPrimarySenseToClu
 export { updateEntryFromPrimarySense } from './daos/loader/updateEntryFromPrimarySense';
 export { addCrosswordQualityQueueEntries } from './daos/loader/addCrosswordQualityQueueEntries';
 export { addCrosswordFamiliarityQueueEntries } from './daos/loader/addCrosswordFamiliarityQueueEntries';
-export { default as getEntriesWithoutIdiomacityTop50, EntryWithoutIdiomacity } from './daos/loader/getEntriesWithoutIdiomacityTop50';
-export { default as getEntriesLowIdiomacityTop150, EntryWithLowIdiomacity } from './daos/loader/getEntriesLowIdiomacityTop150';
-export { default as getEntriesLowIdiomacity } from './daos/loader/getEntriesLowIdiomacity';
 export { default as getEntriesWithoutFamiliarityTop50, EntryWithoutFamiliarity } from './daos/loader/getEntriesWithoutFamiliarityTop50';
 export { default as getEntriesWithoutUnityBucketTop50, EntryWithoutUnityBucket } from './daos/loader/getEntriesWithoutUnityBucketTop50';
 export {
@@ -154,6 +151,8 @@ export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries'
 export { default as getCrosswordCalendar } from './daos/api/getCrosswordCalendar';
 export { default as getCrosswordCollectionId } from './daos/api/getCrosswordCollectionId';
 export { default as submitCrosswordResponse } from './daos/api/submitCrosswordResponse';
+export { default as getUserSettings } from './daos/api/getUserSettings';
+export { default as upsertUserSettings } from './daos/api/upsertUserSettings';
 export { default as createFriendlyWordsGame } from './daos/api/createFriendlyWordsGame';
 export { default as getFriendlyWordsGame } from './daos/api/getFriendlyWordsGame';
 export { default as getFriendlyWordsGameByCode } from './daos/api/getFriendlyWordsGameByCode';
@@ -162,4 +161,40 @@ export { default as submitFriendlyWordsTurn } from './daos/api/submitFriendlyWor
 export { default as recommendFriendlyWordsRatings } from './daos/api/recommendFriendlyWordsRatings';
 export { default as addFriendlyWordsRatings } from './daos/api/addFriendlyWordsRatings';
 export { default as completeFriendlyWordsGame } from './daos/api/completeFriendlyWordsGame';
+
+export {
+  pullCrosswordProcessingPuzzle,
+  enqueueCrosswordProcessingPuzzle,
+  deleteCrosswordProcessingPuzzle,
+  deferCrosswordProcessingPuzzle,
+  getPuzzleCluesForProcessing,
+  PuzzleClueForProcessing,
+  PuzzleSenseForProcessing,
+  enqueueSenseGeneratorItems,
+  SenseGeneratorQueueItemInput,
+  updateClueSenseMatches,
+  ClueSenseMatchUpdate,
+  enqueueSenseScoringItems,
+  enqueueSenseReferenceItems,
+  getSenseGeneratorQueueForPuzzle,
+  SenseGeneratorQueueItem,
+  ExistingSenseSummary,
+  deleteSenseGeneratorQueueItems,
+  insertGeneratedSenses,
+  GeneratedSenseInsert,
+  getMatchedSensesForScoring,
+  PuzzleSenseScoringItem,
+  getSenseScoringQueueForPuzzle,
+  SenseScoringQueueItem,
+  updateSenseScoringResults,
+  SenseScoringUpdate,
+  deleteSenseScoringQueueItems,
+  getMatchedSensesWithoutReferences,
+  PuzzleSenseReferenceItem,
+  getSenseReferenceQueueForPuzzle,
+  SenseReferenceQueueItem,
+  insertSenseReferences,
+  SenseReferenceInsert,
+  deleteSenseReferenceQueueItems,
+} from './daos/loader/crosswordProcessing';
 

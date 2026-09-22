@@ -5,8 +5,6 @@ BEGIN
   SET
     display_text = NULLIF(trim(elem->>'display_text'), ''),
     entry_type = NULLIF(trim(elem->>'entry_type'), ''),
-    base_form = NULLIF(trim(elem->>'base_form'), ''),
-    is_vulgar = (elem->>'is_vulgar')::boolean,
     reviewed_status = COALESCE(NULLIF(trim(elem->>'reviewed_status'), ''), '1'),
     familiarity_bucket = CASE
       WHEN NULLIF(trim(elem->>'entry_type'), '') = 'Nonsense' THEN NULL
@@ -67,5 +65,7 @@ BEGIN
   ON CONFLICT ("entry", lang, secondary_class) DO UPDATE SET
     secondary_display = EXCLUDED.secondary_display,
     secondary_base_form = EXCLUDED.secondary_base_form;
+
+  PERFORM rebuild_inflected_entries_from_payload(entries_data, 'replace');
 END;
 $$ LANGUAGE plpgsql;

@@ -7,7 +7,6 @@ BEGIN
     "length",
     entry_type,
     display_text,
-    base_form,
     unity_bucket,
     unity_score,
     familiarity_bucket,
@@ -24,7 +23,6 @@ BEGIN
     COALESCE((elem->>'length')::int, length((elem->>'entry')::text)),
     NULLIF(trim(elem->>'entry_type'), ''),
     NULLIF(trim(elem->>'display_text'), ''),
-    NULLIF(trim(elem->>'base_form'), ''),
     NULLIF(trim(elem->>'unity_bucket'), ''),
     (elem->>'unity_score')::int,
     NULLIF(trim(elem->>'familiarity_bucket'), ''),
@@ -38,7 +36,6 @@ BEGIN
   ON CONFLICT ("entry", lang) DO UPDATE SET
     entry_type = EXCLUDED.entry_type,
     display_text = EXCLUDED.display_text,
-    base_form = EXCLUDED.base_form,
     unity_bucket = EXCLUDED.unity_bucket,
     unity_score = EXCLUDED.unity_score,
     familiarity_bucket = EXCLUDED.familiarity_bucket,
@@ -47,5 +44,7 @@ BEGIN
     quality_score = EXCLUDED.quality_score,
     is_vulgar = EXCLUDED.is_vulgar,
     reviewed_status = EXCLUDED.reviewed_status;
+
+  PERFORM rebuild_inflected_entries_from_payload(entries_data, 'replace');
 END;
 $$ LANGUAGE plpgsql;

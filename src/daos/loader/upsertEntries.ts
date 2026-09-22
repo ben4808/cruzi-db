@@ -11,7 +11,6 @@ const upsertEntries = async (entries: Entry[]) => {
         entry_type: e.entryType ?? undefined,
         familiarity_score: e.familiarityScore ?? undefined,
         quality_score: e.qualityScore ?? undefined,
-        idiomacity_score: e.idiomacityScore ?? undefined,
         unity_bucket: e.unityBucket ?? undefined,
         loading_status: e.loadingStatus ?? undefined,
     }));

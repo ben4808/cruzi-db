@@ -12,7 +12,6 @@ export interface EntryParserResult {
   displayText: string;
   entryType: string;
   baseForm?: string;
-  isVulgar: boolean;
   reviewedStatus?: string;
   secondaryClasses?: EntryParserSecondaryClass[];
 }
@@ -28,7 +27,6 @@ const upsertEntryParserResults = async (entries: EntryParserResult[]): Promise<v
     display_text: e.displayText,
     entry_type: e.entryType,
     base_form: e.baseForm ?? undefined,
-    is_vulgar: e.isVulgar,
     reviewed_status: e.reviewedStatus ?? "1",
     secondary_classes: (e.secondaryClasses ?? []).map((sc) => ({
       secondary_class: sc.secondaryClass,
