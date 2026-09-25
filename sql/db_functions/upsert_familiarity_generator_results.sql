@@ -12,7 +12,11 @@ BEGIN
       ELSE e.unity_score
     END,
     display_text = COALESCE(NULLIF(trim(elem->>'display_text'), ''), e.display_text),
-    entry_type = COALESCE(NULLIF(trim(elem->>'entry_type'), ''), e.entry_type)
+    entry_type = COALESCE(NULLIF(trim(elem->>'entry_type'), ''), e.entry_type),
+    domain = CASE
+      WHEN elem ? 'domain' THEN NULLIF(trim(elem->>'domain'), '')
+      ELSE e.domain
+    END
   FROM jsonb_array_elements(entries_data) AS elem
   WHERE e."entry" = elem->>'entry'
     AND e.lang = elem->>'lang';

@@ -25,6 +25,7 @@ export interface FamiliarityGeneratorResult {
   displayText?: string;
   entryType?: string;
   baseForm?: string;
+  domain?: string;
   secondaryClassesToDelete?: string[];
   secondaryClassesToUpdate?: FamiliarityGeneratorSecondaryClassUpdate[];
   secondaryClassesToInsert?: FamiliarityGeneratorSecondaryClassChange[];
@@ -48,6 +49,7 @@ const upsertFamiliarityGeneratorResults = async (
     display_text: e.displayText ?? undefined,
     entry_type: e.entryType ?? undefined,
     base_form: e.baseForm ?? undefined,
+    domain: e.domain ?? '',
     secondary_classes_to_delete: (e.secondaryClassesToDelete ?? []).map((secondaryClass) => ({
       secondary_class: secondaryClass,
     })),

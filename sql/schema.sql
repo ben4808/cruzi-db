@@ -37,6 +37,7 @@ create table "entry" (
   familiarity_score int,
   quality_bucket text,
   quality_score int,
+  domain text,
 
   loading_status text,
   reviewed_status text,
@@ -108,6 +109,7 @@ create table sense (
   unity_bucket text,
   familiarity_bucket text,
   quality_bucket text,
+  domain text,
   similar_entries text[],
   reviewed_status text,
   foreign key ("entry", lang) references "entry"("entry", lang) on delete cascade
@@ -378,3 +380,6 @@ create index ix_entry_loading_status on "entry"(loading_status) where loading_st
 create unique index ux_friendly_words_game_code on friendly_words_game(game_code) where game_code is not null;
 create index ix_friendly_words_turn_game_id on friendly_words_turn(game_id, turn_number);
 create index ix_friendly_words_played_word_turn_id on friendly_words_played_word(turn_id);
+CREATE INDEX ix_entry_en_normalized_key
+  ON "entry" ((normalize_display_text_to_entry_key("entry")))
+  WHERE lang = 'en';

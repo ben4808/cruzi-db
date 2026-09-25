@@ -44,6 +44,29 @@ BEGIN
         classification = EXCLUDED.classification,
         similar_entries = EXCLUDED.similar_entries;
 
+    DELETE FROM sense_tags st
+    USING jsonb_array_elements(p_senses) AS elem
+    WHERE st.sense_id = btrim(elem->>'id')
+      AND st.tag = 'regionality'
+      AND COALESCE(btrim(elem->>'id'), '') <> '';
+
+    INSERT INTO sense_tags (sense_id, tag, value)
+    SELECT DISTINCT
+        btrim(elem->>'id'),
+        btrim(tag_elem->>'tag'),
+        NULLIF(btrim(tag_elem->>'value'), '')
+    FROM jsonb_array_elements(p_senses) AS elem
+    CROSS JOIN LATERAL jsonb_array_elements(
+        CASE
+            WHEN jsonb_typeof(elem->'tags') = 'array' THEN elem->'tags'
+            ELSE '[]'::jsonb
+        END
+    ) AS tag_elem
+    WHERE COALESCE(btrim(elem->>'id'), '') <> ''
+      AND COALESCE(btrim(tag_elem->>'tag'), '') <> ''
+    ON CONFLICT (sense_id, tag) DO UPDATE SET
+        value = EXCLUDED.value;
+
     INSERT INTO sense_entry_translation (
         sense_id,
         "entry",

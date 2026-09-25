@@ -140,11 +140,18 @@ export { default as deleteEntryTags } from './daos/loader/deleteEntryTags';
 export {
   default as getEntriesForClassification,
   ClassificationEntry,
+  ClassificationSense,
 } from './daos/loader/getEntriesForClassification';
 export {
   default as updateEntryClassifications,
   EntryClassificationUpdate,
 } from './daos/loader/updateEntryClassifications';
+export {
+  default as updateSenseClassifications,
+  SenseClassificationUpdate,
+} from './daos/loader/updateSenseClassifications';
+export { default as addSenseTags, SenseTagInput } from './daos/loader/addSenseTags';
+export { default as deleteSenseTags } from './daos/loader/deleteSenseTags';
 
 export { default as deleteCrosswordPuzzleAndCollection } from './daos/loader/deleteCrosswordPuzzleAndCollection';
 export { EntryInfoQueueItemInput } from './daos/loader/addEntryInfoQueueEntries';
@@ -182,12 +189,15 @@ export {
   deleteSenseGeneratorQueueItems,
   insertGeneratedSenses,
   GeneratedSenseInsert,
+  GeneratedSenseTag,
   getMatchedSensesForScoring,
   PuzzleSenseScoringItem,
   getSenseScoringQueueForPuzzle,
   SenseScoringQueueItem,
   updateSenseScoringResults,
   SenseScoringUpdate,
+  fillEntryFieldsFromScoredSenses,
+  ScoredSenseEntryFill,
   deleteSenseScoringQueueItems,
   getMatchedSensesWithoutReferences,
   PuzzleSenseReferenceItem,

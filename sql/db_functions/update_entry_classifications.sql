@@ -17,6 +17,7 @@ BEGIN
         familiarity_score,
         quality_bucket,
         quality_score,
+        domain,
         is_vulgar,
         loading_status
     )
@@ -71,6 +72,7 @@ BEGIN
             WHEN 'Normal' THEN 30
             ELSE NULL
         END,
+        NULLIF(trim(elem->>'domain'), ''),
         CASE
             WHEN elem->>'is_vulgar' IS NULL OR btrim(elem->>'is_vulgar') = '' THEN false
             ELSE (elem->>'is_vulgar')::boolean
@@ -88,6 +90,7 @@ BEGIN
         familiarity_score = EXCLUDED.familiarity_score,
         quality_bucket = NULLIF(trim(EXCLUDED.quality_bucket), ''),
         quality_score = EXCLUDED.quality_score,
+        domain = NULLIF(trim(EXCLUDED.domain), ''),
         is_vulgar = EXCLUDED.is_vulgar;
 
     PERFORM rebuild_inflected_entries_from_payload(p_updates, 'replace');

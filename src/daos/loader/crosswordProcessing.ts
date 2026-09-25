@@ -61,6 +61,11 @@ export interface GeneratedSenseTranslation {
   colloquial_translations: string[];
 }
 
+export interface GeneratedSenseTag {
+  tag: string;
+  value?: string;
+}
+
 export interface GeneratedSenseInsert {
   id: string;
   entry: string;
@@ -71,6 +76,7 @@ export interface GeneratedSenseInsert {
   part_of_speech: string;
   classification: string;
   similar_entries: string[];
+  tags?: GeneratedSenseTag[];
   translations: GeneratedSenseTranslation[];
 }
 
@@ -110,6 +116,14 @@ export interface SenseScoringUpdate {
   qualityBucket?: string;
   reviewedStatus: string;
   flags?: string[];
+  domain?: string;
+}
+
+export interface ScoredSenseEntryFill {
+  senseId: string;
+  unityScore?: number;
+  familiarityScore?: number;
+  qualityScore?: number;
 }
 
 export interface SenseReferenceQueueItem {
@@ -396,6 +410,19 @@ export async function updateSenseScoringResults(updates: SenseScoringUpdate[]): 
       ...(update.qualityBucket ? { quality_bucket: update.qualityBucket } : {}),
       reviewed_status: update.reviewedStatus,
       ...(update.flags ? { flags: update.flags } : {}),
+      ...(update.domain !== undefined ? { domain: update.domain } : {}),
+    })),
+  }]);
+}
+
+export async function fillEntryFieldsFromScoredSenses(updates: ScoredSenseEntryFill[]): Promise<void> {
+  await callVoid('fill_entry_fields_from_scored_senses', [{
+    name: 'p_updates',
+    value: updates.map((update) => ({
+      sense_id: update.senseId,
+      ...(update.unityScore != null ? { unity_score: update.unityScore } : {}),
+      ...(update.familiarityScore != null ? { familiarity_score: update.familiarityScore } : {}),
+      ...(update.qualityScore != null ? { quality_score: update.qualityScore } : {}),
     })),
   }]);
 }

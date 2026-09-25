@@ -12,6 +12,10 @@ BEGIN
         unity_bucket = COALESCE(NULLIF(btrim(elem->>'unity_bucket'), ''), s.unity_bucket),
         familiarity_bucket = COALESCE(NULLIF(btrim(elem->>'familiarity_bucket'), ''), s.familiarity_bucket),
         quality_bucket = COALESCE(NULLIF(btrim(elem->>'quality_bucket'), ''), s.quality_bucket),
+        domain = CASE
+            WHEN elem ? 'domain' THEN NULLIF(btrim(elem->>'domain'), '')
+            ELSE s.domain
+        END,
         reviewed_status = COALESCE(NULLIF(btrim(elem->>'reviewed_status'), ''), s.reviewed_status)
     FROM jsonb_array_elements(p_updates) AS elem
     WHERE s.id = elem->>'sense_id';
