@@ -22,7 +22,7 @@ const getEntries = async (items: GetEntriesInput[]): Promise<Entry[]> => {
     lang: row.lang,
     baseForm: row.base_form ?? undefined,
     displayText: row.display_text ?? undefined,
-    entryType: row.entry_type ?? undefined,
+    classification: row.classification ?? undefined,
     familiarityScore: row.familiarity_score ?? undefined,
     qualityScore: row.quality_score ?? undefined,
     crosswordScore: row.crossword_score ?? undefined,

@@ -7,7 +7,7 @@ RETURNS TABLE (
     base_form text,
     length integer,
     display_text text,
-    entry_type text,
+    classification text,
     familiarity_score integer,
     quality_score integer,
     loading_status text
@@ -22,7 +22,7 @@ BEGIN
         inflected_base_form_for_entry(e."entry", e.lang) AS base_form,
         e."length",
         e.display_text,
-        e.entry_type,
+        e.classification,
         e.familiarity_score,
         e.quality_score,
         e.loading_status

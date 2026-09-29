@@ -7,7 +7,7 @@ BEGIN
     unity_score = (elem->>'unity_score')::int,
     reviewed_status = COALESCE(NULLIF(trim(elem->>'reviewed_status'), ''), '12'),
     display_text = COALESCE(NULLIF(trim(elem->>'display_text'), ''), e.display_text),
-    entry_type = COALESCE(NULLIF(trim(elem->>'entry_type'), ''), e.entry_type),
+    classification = COALESCE(NULLIF(trim(elem->>'classification'), ''), e.classification),
     familiarity_bucket = CASE
       WHEN NULLIF(trim(elem->>'unity_bucket'), '') = 'Nonsense' THEN NULL
       ELSE e.familiarity_bucket

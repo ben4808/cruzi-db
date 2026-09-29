@@ -12,7 +12,7 @@ BEGIN
       ELSE e.unity_score
     END,
     display_text = COALESCE(NULLIF(trim(elem->>'display_text'), ''), e.display_text),
-    entry_type = COALESCE(NULLIF(trim(elem->>'entry_type'), ''), e.entry_type),
+    classification = COALESCE(NULLIF(trim(elem->>'classification'), ''), e.classification),
     domain = CASE
       WHEN elem ? 'domain' THEN NULLIF(trim(elem->>'domain'), '')
       ELSE e.domain

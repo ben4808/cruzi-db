@@ -10,7 +10,7 @@ BEGIN
         lang,
         "length",
         display_text,
-        entry_type,
+        classification,
         familiarity_score,
         quality_score,
         loading_status
@@ -20,14 +20,14 @@ BEGIN
         (e->>'lang')::text,
         COALESCE((e->>'length')::integer, length((e->>'entry')::text)),
         NULLIF(trim(e->>'displayText'), ''),
-        NULLIF(trim(e->>'entryType'), ''),
+        NULLIF(trim(e->>'classification'), ''),
         (e->>'familiarityScore')::integer,
         (e->>'qualityScore')::integer,
         COALESCE(NULLIF(trim(e->>'loadingStatus'), ''), 'Ready')
     FROM jsonb_array_elements(p_entries) AS e
     ON CONFLICT ("entry", lang) DO UPDATE SET
         display_text = COALESCE(EXCLUDED.display_text, "entry".display_text),
-        entry_type = COALESCE(EXCLUDED.entry_type, "entry".entry_type),
+        classification = COALESCE(EXCLUDED.classification, "entry".classification),
         familiarity_score = COALESCE(EXCLUDED.familiarity_score, "entry".familiarity_score),
         quality_score = COALESCE(EXCLUDED.quality_score, "entry".quality_score),
         loading_status = COALESCE(EXCLUDED.loading_status, "entry".loading_status);

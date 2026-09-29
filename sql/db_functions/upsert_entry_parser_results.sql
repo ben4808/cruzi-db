@@ -4,30 +4,30 @@ BEGIN
   UPDATE "entry" e
   SET
     display_text = NULLIF(trim(elem->>'display_text'), ''),
-    entry_type = NULLIF(trim(elem->>'entry_type'), ''),
+    classification = NULLIF(trim(elem->>'classification'), ''),
     reviewed_status = COALESCE(NULLIF(trim(elem->>'reviewed_status'), ''), '1'),
     familiarity_bucket = CASE
-      WHEN NULLIF(trim(elem->>'entry_type'), '') = 'Nonsense' THEN NULL
+      WHEN NULLIF(trim(elem->>'classification'), '') = 'Nonsense' THEN NULL
       ELSE e.familiarity_bucket
     END,
     familiarity_score = CASE
-      WHEN NULLIF(trim(elem->>'entry_type'), '') = 'Nonsense' THEN NULL
+      WHEN NULLIF(trim(elem->>'classification'), '') = 'Nonsense' THEN NULL
       ELSE e.familiarity_score
     END,
     unity_bucket = CASE
-      WHEN NULLIF(trim(elem->>'entry_type'), '') = 'Nonsense' THEN NULL
+      WHEN NULLIF(trim(elem->>'classification'), '') = 'Nonsense' THEN NULL
       ELSE e.unity_bucket
     END,
     unity_score = CASE
-      WHEN NULLIF(trim(elem->>'entry_type'), '') = 'Nonsense' THEN NULL
+      WHEN NULLIF(trim(elem->>'classification'), '') = 'Nonsense' THEN NULL
       ELSE e.unity_score
     END,
     quality_bucket = CASE
-      WHEN NULLIF(trim(elem->>'entry_type'), '') = 'Nonsense' THEN NULL
+      WHEN NULLIF(trim(elem->>'classification'), '') = 'Nonsense' THEN NULL
       ELSE e.quality_bucket
     END,
     quality_score = CASE
-      WHEN NULLIF(trim(elem->>'entry_type'), '') = 'Nonsense' THEN NULL
+      WHEN NULLIF(trim(elem->>'classification'), '') = 'Nonsense' THEN NULL
       ELSE e.quality_score
     END
   FROM jsonb_array_elements(entries_data) AS elem

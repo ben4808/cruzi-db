@@ -27,11 +27,7 @@ BEGIN
     JOIN sense s ON s.id = c.sense_id
     LEFT JOIN "entry" e ON e."entry" = s."entry" AND e.lang = s.lang
     WHERE cc.puzzle_id = p_puzzle_id
-      AND NOT EXISTS (
-          SELECT 1
-          FROM sense_reference sr
-          WHERE sr.sense_id = s.id
-      )
+      AND NOT s.references_attempted
       AND NOT EXISTS (
           SELECT 1
           FROM jsonb_array_elements_text(COALESCE(p_exclude, '[]'::jsonb)) AS ex(id)

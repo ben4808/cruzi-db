@@ -7,70 +7,162 @@ BEGIN
         RETURN;
     END IF;
 
-    WITH src AS (
-        SELECT DISTINCT ON (s."entry", s.lang)
-            s."entry" AS entry,
-            s.lang AS lang,
-            NULLIF(btrim(s.display_text), '') AS display_text,
-            NULLIF(btrim(s.classification), '') AS entry_type,
-            NULLIF(btrim(s.unity_bucket), '') AS unity_bucket,
-            NULLIF(btrim(s.familiarity_bucket), '') AS familiarity_bucket,
-            NULLIF(btrim(s.quality_bucket), '') AS quality_bucket,
-            NULLIF(btrim(s.domain), '') AS domain,
-            (elem->>'unity_score')::int AS unity_score,
-            (elem->>'familiarity_score')::int AS familiarity_score,
-            (elem->>'quality_score')::int AS quality_score
+    WITH newly_scored AS (
+        SELECT DISTINCT s."entry", s.lang
         FROM jsonb_array_elements(p_updates) AS elem
         JOIN sense s ON s.id = elem->>'sense_id'
         WHERE s.reviewed_status = '234'
           AND NULLIF(btrim(s.unity_bucket), '') IS NOT NULL
           AND NULLIF(btrim(s.familiarity_bucket), '') IS NOT NULL
           AND NULLIF(btrim(s.quality_bucket), '') IS NOT NULL
-        ORDER BY s."entry", s.lang, s.id
+    ),
+    entry_sense_stats AS (
+        SELECT
+            ns."entry",
+            ns.lang,
+            COUNT(*)::int AS sense_count,
+            COUNT(*) FILTER (
+                WHERE s.reviewed_status = '234'
+                  AND NULLIF(btrim(s.unity_bucket), '') IS NOT NULL
+                  AND NULLIF(btrim(s.familiarity_bucket), '') IS NOT NULL
+                  AND NULLIF(btrim(s.quality_bucket), '') IS NOT NULL
+            )::int AS scored_count
+        FROM newly_scored ns
+        JOIN sense s ON s."entry" = ns."entry" AND s.lang = ns.lang
+        GROUP BY ns."entry", ns.lang
+    ),
+    eligible AS (
+        SELECT ess."entry", ess.lang
+        FROM entry_sense_stats ess
+        WHERE ess.scored_count >= 2
+           OR ess.sense_count = 1
+    ),
+    selected AS (
+        SELECT DISTINCT ON (s."entry", s.lang)
+            s.id AS sense_id,
+            s."entry" AS entry,
+            s.lang AS lang,
+            NULLIF(btrim(s.display_text), '') AS display_text,
+            NULLIF(btrim(s.classification), '') AS classification,
+            NULLIF(btrim(s.unity_bucket), '') AS unity_bucket,
+            NULLIF(btrim(s.familiarity_bucket), '') AS familiarity_bucket,
+            NULLIF(btrim(s.quality_bucket), '') AS quality_bucket,
+            NULLIF(btrim(s.domain), '') AS domain
+        FROM eligible e
+        JOIN sense s ON s."entry" = e."entry" AND s.lang = e.lang
+        WHERE s.reviewed_status = '234'
+          AND NULLIF(btrim(s.unity_bucket), '') IS NOT NULL
+          AND NULLIF(btrim(s.familiarity_bucket), '') IS NOT NULL
+          AND NULLIF(btrim(s.quality_bucket), '') IS NOT NULL
+        ORDER BY
+            s."entry",
+            s.lang,
+            CASE NULLIF(btrim(s.unity_bucket), '')
+                WHEN 'Concept' THEN 1
+                WHEN 'Collocation' THEN 2
+                WHEN 'Formula' THEN 3
+                WHEN 'Formulaic' THEN 4
+                WHEN 'Variant' THEN 5
+                WHEN 'Partial' THEN 6
+                WHEN 'Non-unit' THEN 7
+                WHEN 'Nonsense' THEN 8
+                ELSE 9
+            END,
+            CASE NULLIF(btrim(s.familiarity_bucket), '')
+                WHEN 'Ubiquitous' THEN 1
+                WHEN 'Active' THEN 2
+                WHEN 'Literal' THEN 3
+                WHEN 'Common Name' THEN 4
+                WHEN 'General Knowledge' THEN 5
+                WHEN 'Inferred' THEN 6
+                WHEN 'Niche' THEN 7
+                WHEN 'Obscure' THEN 8
+                WHEN 'Barely Exists' THEN 9
+                WHEN 'Nonsense' THEN 10
+                ELSE 11
+            END,
+            CASE NULLIF(btrim(s.quality_bucket), '')
+                WHEN 'Idiomatic' THEN 1
+                WHEN 'Interesting' THEN 2
+                WHEN 'Appealing' THEN 3
+                WHEN 'Positive' THEN 4
+                WHEN 'Trendy' THEN 5
+                WHEN 'Normal' THEN 6
+                WHEN 'Uncommon Inflection' THEN 7
+                WHEN 'Clunky' THEN 8
+                WHEN 'Non-unit' THEN 9
+                ELSE 10
+            END,
+            random()
+    ),
+    updated AS (
+        UPDATE "entry" e
+        SET
+            display_text = COALESCE(selected.display_text, e.display_text),
+            classification = COALESCE(selected.classification, e.classification),
+            unity_bucket = selected.unity_bucket,
+            unity_score = CASE selected.unity_bucket
+                WHEN 'Concept' THEN 5
+                WHEN 'Collocation' THEN 4
+                WHEN 'Formula' THEN 3
+                WHEN 'Partial' THEN 2
+                WHEN 'Variant' THEN 2
+                WHEN 'Formulaic' THEN 2
+                WHEN 'Non-unit' THEN 2
+                WHEN 'Nonsense' THEN 1
+                ELSE NULL
+            END,
+            familiarity_bucket = selected.familiarity_bucket,
+            familiarity_score = CASE selected.familiarity_bucket
+                WHEN 'Ubiquitous' THEN 45
+                WHEN 'Active' THEN 40
+                WHEN 'Literal' THEN 35
+                WHEN 'Common Name' THEN 30
+                WHEN 'General Knowledge' THEN 30
+                WHEN 'Inferred' THEN 25
+                WHEN 'Niche' THEN 20
+                WHEN 'Obscure' THEN 15
+                WHEN 'Barely Exists' THEN 10
+                WHEN 'Nonsense' THEN 0
+                ELSE NULL
+            END,
+            quality_bucket = selected.quality_bucket,
+            quality_score = CASE selected.quality_bucket
+                WHEN 'Non-unit' THEN 20
+                WHEN 'Uncommon Inflection' THEN 20
+                WHEN 'Clunky' THEN 20
+                WHEN 'Idiomatic' THEN 40
+                WHEN 'Interesting' THEN 40
+                WHEN 'Appealing' THEN 40
+                WHEN 'Positive' THEN 40
+                WHEN 'Trendy' THEN 40
+                WHEN 'Normal' THEN 30
+                ELSE NULL
+            END,
+            domain = selected.domain
+        FROM selected
+        WHERE e."entry" = selected.entry
+          AND e.lang = selected.lang
+        RETURNING selected.sense_id, selected.entry, selected.lang
+    ),
+    deleted AS (
+        DELETE FROM entry_tags et
+        USING updated u
+        WHERE et."entry" = u.entry
+          AND et.lang = u.lang
+          AND lower(et.tag) IN ('vulgar', 'sensitive')
+        RETURNING et."entry"
     )
-    UPDATE "entry" e
-    SET
-        display_text = CASE
-            WHEN NULLIF(btrim(e.display_text), '') IS NULL THEN src.display_text
-            ELSE e.display_text
-        END,
-        entry_type = CASE
-            WHEN NULLIF(btrim(e.entry_type), '') IS NULL THEN src.entry_type
-            ELSE e.entry_type
-        END,
-        unity_score = CASE
-            WHEN NULLIF(btrim(e.unity_bucket), '') IS NULL AND src.unity_bucket IS NOT NULL
-                THEN src.unity_score
-            ELSE e.unity_score
-        END,
-        unity_bucket = CASE
-            WHEN NULLIF(btrim(e.unity_bucket), '') IS NULL THEN src.unity_bucket
-            ELSE e.unity_bucket
-        END,
-        familiarity_score = CASE
-            WHEN NULLIF(btrim(e.familiarity_bucket), '') IS NULL AND src.familiarity_bucket IS NOT NULL
-                THEN src.familiarity_score
-            ELSE e.familiarity_score
-        END,
-        familiarity_bucket = CASE
-            WHEN NULLIF(btrim(e.familiarity_bucket), '') IS NULL THEN src.familiarity_bucket
-            ELSE e.familiarity_bucket
-        END,
-        quality_score = CASE
-            WHEN NULLIF(btrim(e.quality_bucket), '') IS NULL AND src.quality_bucket IS NOT NULL
-                THEN src.quality_score
-            ELSE e.quality_score
-        END,
-        quality_bucket = CASE
-            WHEN NULLIF(btrim(e.quality_bucket), '') IS NULL THEN src.quality_bucket
-            ELSE e.quality_bucket
-        END,
-        domain = CASE
-            WHEN NULLIF(btrim(e.domain), '') IS NULL THEN src.domain
-            ELSE e.domain
-        END
-    FROM src
-    WHERE e."entry" = src.entry
-      AND e.lang = src.lang;
+    INSERT INTO entry_tags ("entry", lang, tag, "value")
+    SELECT DISTINCT
+        u.entry,
+        u.lang,
+        lower(st.tag),
+        st.value
+    FROM updated u
+    JOIN sense_tags st ON st.sense_id = u.sense_id
+    WHERE lower(st.tag) IN ('vulgar', 'sensitive')
+      AND (SELECT COUNT(*) FROM deleted) IS NOT NULL
+    ON CONFLICT ("entry", lang, tag) DO UPDATE SET "value" = EXCLUDED."value";
 END;
 $$;

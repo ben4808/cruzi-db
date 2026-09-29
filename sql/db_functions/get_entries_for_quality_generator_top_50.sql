@@ -28,7 +28,7 @@ BEGIN
       AND TRIM(e.unity_bucket) <> ''
       AND e.familiarity_bucket IS NOT NULL
       AND TRIM(e.familiarity_bucket) <> ''
-      AND e.entry_type IS DISTINCT FROM 'Nonsense'
+      AND e.classification IS DISTINCT FROM 'Nonsense'
       AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
       AND (p_pattern IS NULL OR p_pattern = '' OR e.entry LIKE p_pattern)
     ORDER BY random()

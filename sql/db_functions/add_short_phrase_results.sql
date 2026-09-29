@@ -9,7 +9,7 @@ BEGIN
         prompt,
         "entry",
         lang,
-        entry_type,
+        classification,
         display_text,
         base_form,
         is_vulgar,
@@ -21,7 +21,7 @@ BEGIN
         trim((r->>'prompt')::text),
         trim((r->>'entry')::text),
         trim((r->>'lang')::text),
-        NULLIF(trim(r->>'entry_type'), ''),
+        NULLIF(trim(r->>'classification'), ''),
         NULLIF(trim(r->>'display_text'), ''),
         NULLIF(trim(r->>'base_form'), ''),
         CASE

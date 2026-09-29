@@ -4,7 +4,7 @@ export interface ShortPhraseResultInput {
   prompt: string;
   entry: string;
   lang: string;
-  entryType?: string;
+  classification?: string;
   displayText?: string;
   baseForm?: string;
   isVulgar?: boolean;
@@ -22,7 +22,7 @@ const addShortPhraseResults = async (results: ShortPhraseResultInput[]): Promise
     prompt: result.prompt,
     entry: result.entry,
     lang: result.lang,
-    entry_type: result.entryType ?? undefined,
+    classification: result.classification ?? undefined,
     display_text: result.displayText ?? undefined,
     base_form: result.baseForm ?? undefined,
     is_vulgar: result.isVulgar,

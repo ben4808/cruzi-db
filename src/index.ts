@@ -16,11 +16,8 @@ export {
 
 export { default as upsertEntries } from './daos/loader/upsertEntries';
 export { default as insertEntriesOrFillNulls } from './daos/loader/insertEntriesOrFillNulls';
-export { default as getCrosswordQualityQueueTop25, CrosswordQualityQueueItem } from './daos/loader/getCrosswordQualityQueueTop25';
-export { default as getCrosswordFamiliarityQueueTop25, CrosswordFamiliarityQueueItem } from './daos/loader/getCrosswordFamiliarityQueueTop25';
-export { default as getEntryInfoQueueTop1, EntryInfoQueueItem, ExistingSenseInfo } from './daos/loader/getEntryInfoQueueTop1';
+export { EntryInfoQueueItem, ExistingSenseInfo } from './daos/loader/mapEntryInfoQueueRow';
 export { default as getEntryInfoQueueTop10 } from './daos/loader/getEntryInfoQueueTop10';
-export { removeFromEntryInfoQueue } from './daos/loader/removeFromEntryInfoQueue';
 export { upsertEntryInfo, getSensesForEntry } from './daos/loader/upsertEntryInfo';
 export { upsertSense } from './daos/loader/upsertSense';
 export {
@@ -36,9 +33,7 @@ export { updateEntriesLoadingStatus, EntryKey } from './daos/loader/updateEntrie
 export { insertEntries, EntryInsertData } from './daos/loader/insertEntries';
 export { insertScrabbleEntries, ScrabbleEntryInsertData } from './daos/loader/insertScrabbleEntries';
 export { addSenseEntryTranslations, SenseEntryTranslationData } from './daos/loader/addSenseEntryTranslations';
-export { assignPrimarySenseToClues } from './daos/loader/assignPrimarySenseToClues';
 export { updateEntryFromPrimarySense } from './daos/loader/updateEntryFromPrimarySense';
-export { addCrosswordQualityQueueEntries } from './daos/loader/addCrosswordQualityQueueEntries';
 export { addCrosswordFamiliarityQueueEntries } from './daos/loader/addCrosswordFamiliarityQueueEntries';
 export { default as getEntriesWithoutFamiliarityTop50, EntryWithoutFamiliarity } from './daos/loader/getEntriesWithoutFamiliarityTop50';
 export { default as getEntriesWithoutUnityBucketTop50, EntryWithoutUnityBucket } from './daos/loader/getEntriesWithoutUnityBucketTop50';
@@ -52,7 +47,6 @@ export {
   UnityGeneratorResult,
   UnityGeneratorSecondaryClassUpdate,
 } from './daos/loader/upsertUnityGeneratorResults';
-export { default as getEntriesWithoutDisplayTextTop50, EntryWithoutDisplayText } from './daos/loader/getEntriesWithoutDisplayTextTop50';
 export { default as getEntriesForEntryParser, EntryForEntryParser } from './daos/loader/getEntriesForEntryParser';
 export {
   default as upsertEntryParserResults,
@@ -76,14 +70,10 @@ export {
   default as getPartialPhraseItems,
   PartialPhraseItem,
 } from './daos/loader/getPartialPhraseItems';
-export { default as getEntriesForSpokenFamiliarityGeneratorTop50, EntryForSpokenFamiliarityGenerator } from './daos/loader/getEntriesForSpokenFamiliarityGeneratorTop50';
-export { default as getEntriesForSpokenFamiliarityGeneratorTop250 } from './daos/loader/getEntriesForSpokenFamiliarityGeneratorTop250';
 
 export { default as getSensesWithoutFamiliarityTop50, SenseWithoutFamiliarity } from './daos/loader/getSensesWithoutFamiliarityTop50';
 export { default as getSensesWithoutExampleSentencesTop10, SenseWithoutExampleSentences } from './daos/loader/getSensesWithoutExampleSentencesTop10';
-export { default as getPrimaryNounSensesLowFamiliarity, PrimaryNounSenseLowFamiliarity } from './daos/loader/getPrimaryNounSensesLowFamiliarity';
 export { updateSenseFamiliarityScores, SenseFamiliarityScoreUpdate } from './daos/loader/updateSenseFamiliarityScores';
-export { deleteExampleSentencesForSenses } from './daos/loader/deleteExampleSentencesForSenses';
 export { default as getEntriesWithoutQualityTop50, EntryWithoutQuality } from './daos/loader/getEntriesWithoutQualityTop50';
 export {
   default as getEntriesForQualityGeneratorTop50,
@@ -95,8 +85,6 @@ export {
 } from './daos/loader/upsertQualityGeneratorResults';
 export { default as getEntriesWithMismatchedDisplayText, EntryWithMismatchedDisplayText } from './daos/loader/getEntriesWithMismatchedDisplayText';
 export { default as resetEntryDisplayFields } from './daos/loader/resetEntryDisplayFields';
-export { default as getEntriesWithAccents, EntryWithAccent } from './daos/loader/getEntriesWithAccents';
-export { default as fixAccentedEntries } from './daos/loader/fixAccentedEntries';
 export { addPhraseGeneratorQueueEntries, PhraseGeneratorQueueItem } from './daos/loader/addPhraseGeneratorQueueEntries';
 export {
   default as getPhraseGeneratorQueue,
@@ -109,14 +97,6 @@ export {
   PhraseGeneratorSecondaryClassInput,
 } from './daos/loader/addPhraseGeneratorResults';
 export { default as deletePhraseGeneratorQueueItem } from './daos/loader/deletePhraseGeneratorQueueItem';
-export {
-  default as getPhraseGeneratorResultsRandom50,
-  PhraseGeneratorResultRow,
-} from './daos/loader/getPhraseGeneratorResultsRandom50';
-export {
-  default as deletePhraseGeneratorResults,
-  PhraseGeneratorResultKey,
-} from './daos/loader/deletePhraseGeneratorResults';
 export {
   default as getShortPhraseQueue,
   ShortPhraseQueueRow,
@@ -140,7 +120,7 @@ export { default as deleteEntryTags } from './daos/loader/deleteEntryTags';
 export {
   default as getEntriesForClassification,
   ClassificationEntry,
-  ClassificationSense,
+  ClassificationRequest,
 } from './daos/loader/getEntriesForClassification';
 export {
   default as updateEntryClassifications,
@@ -188,12 +168,14 @@ export {
   ExistingSenseSummary,
   deleteSenseGeneratorQueueItems,
   insertGeneratedSenses,
+  fillEntryDisplayAndTypeIfNull,
   GeneratedSenseInsert,
   GeneratedSenseTag,
   getMatchedSensesForScoring,
   PuzzleSenseScoringItem,
   getSenseScoringQueueForPuzzle,
   SenseScoringQueueItem,
+  deleteSensesAndClearClueMatches,
   updateSenseScoringResults,
   SenseScoringUpdate,
   fillEntryFieldsFromScoredSenses,
@@ -206,5 +188,15 @@ export {
   insertSenseReferences,
   SenseReferenceInsert,
   deleteSenseReferenceQueueItems,
+  getPuzzleEntriesForInflections,
+  PuzzleEntryForInflections,
+  resetPuzzleClueMatchAttemptedForEntries,
+  applyInflectionGeneratorResults,
+  InflectionGeneratorResult,
+  InflectionGeneratorForm,
+  getPuzzleEntriesForSenseGeneration,
+  PuzzleEntryForSenseGeneration,
+  SenseGenerationExistingSense,
+  markSensesReferencesAttempted,
 } from './daos/loader/crosswordProcessing';
 

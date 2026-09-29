@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION update_entry_from_primary_sense(
     p_entry text,
     p_lang text,
     p_display_text text,
-    p_entry_type text,
+    p_classification text,
     p_base_form text DEFAULT NULL
 )
 RETURNS void
@@ -14,7 +14,7 @@ BEGIN
     UPDATE "entry"
     SET
         display_text = COALESCE(NULLIF(TRIM(p_display_text), ''), display_text),
-        entry_type = COALESCE(NULLIF(TRIM(p_entry_type), ''), entry_type),
+        classification = COALESCE(NULLIF(TRIM(p_classification), ''), classification),
         loading_status = 'Senses',
         reviewed_status = '1'
     WHERE "entry" = p_entry
@@ -28,7 +28,7 @@ BEGIN
                     'lang', p_lang,
                     'base_form', p_base_form,
                     'display_text', p_display_text,
-                    'entry_type', p_entry_type
+                    'classification', p_classification
                 )
             ),
             'replace'

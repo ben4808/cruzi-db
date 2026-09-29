@@ -23,7 +23,7 @@ export interface FamiliarityGeneratorResult {
   unityBucket?: string;
   unityScore?: number;
   displayText?: string;
-  entryType?: string;
+  classification?: string;
   baseForm?: string;
   domain?: string;
   secondaryClassesToDelete?: string[];
@@ -47,7 +47,7 @@ const upsertFamiliarityGeneratorResults = async (
     unity_bucket: e.unityBucket ?? undefined,
     unity_score: e.unityScore ?? undefined,
     display_text: e.displayText ?? undefined,
-    entry_type: e.entryType ?? undefined,
+    classification: e.classification ?? undefined,
     base_form: e.baseForm ?? undefined,
     domain: e.domain ?? '',
     secondary_classes_to_delete: (e.secondaryClassesToDelete ?? []).map((secondaryClass) => ({

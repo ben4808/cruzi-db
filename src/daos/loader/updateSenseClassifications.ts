@@ -7,7 +7,7 @@ export interface SenseClassificationUpdate {
   unityBucket: string | null;
   familiarityBucket: string | null;
   qualityBucket: string | null;
-  domain: string | null;
+  domain?: string | null;
 }
 
 const updateSenseClassifications = async (

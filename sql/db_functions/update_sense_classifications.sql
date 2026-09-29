@@ -16,7 +16,10 @@ BEGIN
         unity_bucket = NULLIF(btrim(elem->>'unity_bucket'), ''),
         familiarity_bucket = NULLIF(btrim(elem->>'familiarity_bucket'), ''),
         quality_bucket = NULLIF(btrim(elem->>'quality_bucket'), ''),
-        domain = NULLIF(btrim(elem->>'domain'), '')
+        domain = CASE
+            WHEN elem ? 'domain' THEN NULLIF(btrim(elem->>'domain'), '')
+            ELSE s.domain
+        END
     FROM jsonb_array_elements(p_updates) AS elem
     WHERE s.id = btrim(elem->>'sense_id')
       AND COALESCE(btrim(elem->>'sense_id'), '') <> '';

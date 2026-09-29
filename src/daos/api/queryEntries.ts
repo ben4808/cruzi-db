@@ -24,7 +24,7 @@ const queryEntries = async (params: EntryQueryParams): Promise<Entry[]> => {
         entry: raw.entry,
         lang: raw.lang,
         displayText: raw.display_text,
-        entryType: raw.entry_type,
+        classification: raw.classification,
         familiarityScore: raw.familiarity_score,
         qualityScore: raw.quality_score,
         loadingStatus: raw.loading_status,

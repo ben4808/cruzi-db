@@ -9,6 +9,7 @@ RETURNS TABLE (
     display_text text,
     entry_exists boolean,
     clue_order integer,
+    base_entries jsonb,
     senses jsonb
 )
 LANGUAGE plpgsql
@@ -27,6 +28,15 @@ BEGIN
         (e."entry" IS NOT NULL) AS entry_exists,
         ccl."order" AS clue_order,
         COALESCE((
+            SELECT jsonb_agg(ie.base_entry ORDER BY ie.base_entry)
+            FROM (
+                SELECT DISTINCT ie.base_entry
+                FROM inflected_entry ie
+                WHERE ie.inflected_entry = c."entry"
+                  AND ie.lang = c.lang
+            ) ie
+        ), '[]'::jsonb) AS base_entries,
+        COALESCE((
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'id', s.id,
@@ -43,7 +53,7 @@ BEGIN
                         WHERE sr.sense_id = s.id
                     )
                 )
-                ORDER BY s."entry", s.summary, s.id
+                ORDER BY (s."entry" = c."entry"), s."entry", s.summary, s.id
             )
             FROM sense s
             WHERE s.lang = c.lang

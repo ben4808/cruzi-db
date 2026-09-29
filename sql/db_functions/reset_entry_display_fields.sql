@@ -8,7 +8,7 @@ BEGIN
     UPDATE "entry" e
     SET
         display_text = NULL,
-        entry_type = NULL,
+        classification = NULL,
         unity_bucket = NULL,
         unity_score = NULL,
         familiarity_bucket = NULL,

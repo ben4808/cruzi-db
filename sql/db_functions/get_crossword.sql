@@ -68,7 +68,7 @@ BEGIN
                             'display_text', e.display_text,
                             'loading_status', e.loading_status,
                             'base_form', inflected_base_form_for_entry(c.entry, c.lang),
-                            'entry_type', e.entry_type,
+                            'classification', e.classification,
                             'familiarity_score', e.familiarity_score,
                             'familiarity_bucket', e.familiarity_bucket,
                             'quality_score', e.quality_score,

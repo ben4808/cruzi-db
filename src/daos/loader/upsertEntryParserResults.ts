@@ -10,7 +10,7 @@ export interface EntryParserResult {
   entry: string;
   lang: string;
   displayText: string;
-  entryType: string;
+  classification: string;
   baseForm?: string;
   reviewedStatus?: string;
   secondaryClasses?: EntryParserSecondaryClass[];
@@ -25,7 +25,7 @@ const upsertEntryParserResults = async (entries: EntryParserResult[]): Promise<v
     entry: e.entry,
     lang: e.lang,
     display_text: e.displayText,
-    entry_type: e.entryType,
+    classification: e.classification,
     base_form: e.baseForm ?? undefined,
     reviewed_status: e.reviewedStatus ?? "1",
     secondary_classes: (e.secondaryClasses ?? []).map((sc) => ({

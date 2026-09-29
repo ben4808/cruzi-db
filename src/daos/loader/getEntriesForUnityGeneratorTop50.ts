@@ -10,7 +10,7 @@ export interface EntryForUnityGenerator {
   entry: string;
   lang: string;
   displayText: string;
-  entryType: string | null;
+  classification: string | null;
   secondaryClasses: UnityGeneratorSecondaryClass[];
 }
 
@@ -42,7 +42,7 @@ const getEntriesForUnityGeneratorTop50 = async (
     entry: row.entry,
     lang: row.lang,
     displayText: row.display_text,
-    entryType: row.entry_type ?? null,
+    classification: row.classification ?? null,
     secondaryClasses: parseSecondaryClasses(row.secondary_classes),
   }));
 };

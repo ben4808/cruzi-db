@@ -6,7 +6,7 @@ RETURNS TABLE(
   lang text,
   "length" int,
   display_text text,
-  entry_type text,
+  classification text,
   familiarity_score int,
   quality_score int,
   loading_status text
@@ -42,7 +42,7 @@ BEGIN
         e.lang,
         e."length",
         e.display_text,
-        e.entry_type,
+        e.classification,
         e.familiarity_score,
         e.quality_score,
         e.loading_status

@@ -10,7 +10,7 @@ BEGIN
         lang,
         "length",
         display_text,
-        entry_type,
+        classification,
         unity_bucket,
         unity_score,
         familiarity_bucket,
@@ -26,7 +26,7 @@ BEGIN
         trim(elem->>'lang'),
         length(trim(elem->>'entry')),
         NULLIF(trim(elem->>'display_text'), ''),
-        NULLIF(trim(elem->>'entry_type'), ''),
+        NULLIF(trim(elem->>'classification'), ''),
         NULLIF(trim(elem->>'unity_bucket'), ''),
         CASE NULLIF(trim(elem->>'unity_bucket'), '')
             WHEN 'Concept' THEN 5
@@ -83,16 +83,25 @@ BEGIN
       AND COALESCE(NULLIF(trim(elem->>'lang'), ''), '') <> ''
     ON CONFLICT ("entry", lang) DO UPDATE SET
         display_text = NULLIF(trim(EXCLUDED.display_text), ''),
-        entry_type = NULLIF(trim(EXCLUDED.entry_type), ''),
+        classification = NULLIF(trim(EXCLUDED.classification), ''),
         unity_bucket = NULLIF(trim(EXCLUDED.unity_bucket), ''),
         unity_score = EXCLUDED.unity_score,
         familiarity_bucket = NULLIF(trim(EXCLUDED.familiarity_bucket), ''),
         familiarity_score = EXCLUDED.familiarity_score,
         quality_bucket = NULLIF(trim(EXCLUDED.quality_bucket), ''),
         quality_score = EXCLUDED.quality_score,
-        domain = NULLIF(trim(EXCLUDED.domain), ''),
+        domain = CASE
+            WHEN EXCLUDED.domain IS NULL THEN "entry".domain
+            ELSE NULLIF(trim(EXCLUDED.domain), '')
+        END,
         is_vulgar = EXCLUDED.is_vulgar;
 
-    PERFORM rebuild_inflected_entries_from_payload(p_updates, 'replace');
+    IF EXISTS (
+        SELECT 1
+        FROM jsonb_array_elements(p_updates) AS elem
+        WHERE COALESCE(NULLIF(trim(COALESCE(elem->>'base_form', elem->>'baseForm')), ''), '') <> ''
+    ) THEN
+        PERFORM rebuild_inflected_entries_from_payload(p_updates, 'replace'::text);
+    END IF;
 END;
 $$;

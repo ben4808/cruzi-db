@@ -11,7 +11,7 @@ BEGIN
         lang,
         base_form,
         is_vulgar,
-        entry_type,
+        classification,
         display_text,
         unity_bucket,
         familiarity_bucket
@@ -25,7 +25,7 @@ BEGIN
             WHEN r->>'is_vulgar' IS NULL OR trim(r->>'is_vulgar') = '' THEN NULL
             ELSE (r->>'is_vulgar')::boolean
         END,
-        NULLIF(trim(r->>'entry_type'), ''),
+        NULLIF(trim(r->>'classification'), ''),
         NULLIF(trim(r->>'display_text'), ''),
         NULLIF(trim(r->>'unity_bucket'), ''),
         NULLIF(trim(r->>'familiarity_bucket'), '')

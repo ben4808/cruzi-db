@@ -8,7 +8,7 @@ const upsertEntries = async (entries: Entry[]) => {
         length: e.entry.length,
         base_form: e.baseForm ?? undefined,
         display_text: e.displayText ?? undefined,
-        entry_type: e.entryType ?? undefined,
+        classification: e.classification ?? undefined,
         familiarity_score: e.familiarityScore ?? undefined,
         quality_score: e.qualityScore ?? undefined,
         unity_bucket: e.unityBucket ?? undefined,

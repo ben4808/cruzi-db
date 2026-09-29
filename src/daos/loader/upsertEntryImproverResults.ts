@@ -6,7 +6,7 @@ const upsertEntryImproverResults = async (entries: Entry[]): Promise<void> => {
     entry: e.entry,
     lang: e.lang,
     length: e.entry.length,
-    entry_type: e.entryType ?? undefined,
+    classification: e.classification ?? undefined,
     display_text: e.displayText ?? undefined,
     base_form: e.baseForm ?? undefined,
     unity_bucket: e.unityBucket ?? undefined,

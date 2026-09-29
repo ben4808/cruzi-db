@@ -21,7 +21,7 @@ BEGIN
         e.familiarity_bucket,
         e.quality_bucket
     FROM "entry" e
-    WHERE e.entry_type IS DISTINCT FROM 'Nonsense'
+    WHERE e.classification IS DISTINCT FROM 'Nonsense'
       AND e.unity_bucket IS DISTINCT FROM 'Non-unit'
       AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
       AND e.length >= p_min_length

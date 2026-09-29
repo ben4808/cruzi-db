@@ -10,7 +10,7 @@ BEGIN
                 'lang', e.lang,
                 'length', e.length,
                 'display_text', e.display_text,
-                'entry_type', e.entry_type,
+                'classification', e.classification,
                 'base_form', inflected_base_form_for_entry(e.entry, e.lang),
                 'familiarity_score', e.familiarity_score,
                 'quality_score', e.quality_score,
@@ -48,7 +48,7 @@ BEGIN
         WHERE
             e.entry = p_entry
         GROUP BY
-            e.entry, e.lang, e.length, e.display_text, e.entry_type, e.familiarity_score, e.quality_score, e.loading_status,
+            e.entry, e.lang, e.length, e.display_text, e.classification, e.familiarity_score, e.quality_score, e.loading_status,
             inflected_base_form_for_entry(e.entry, e.lang)
     );
 END;

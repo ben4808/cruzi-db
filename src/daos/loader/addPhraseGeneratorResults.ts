@@ -14,7 +14,7 @@ export interface PhraseGeneratorResultInput {
   lang: string;
   baseForm?: string;
   isVulgar?: boolean;
-  entryType?: string;
+  classification?: string;
   displayText?: string;
   unityBucket?: string;
   familiarityBucket?: string;
@@ -32,7 +32,7 @@ const addPhraseGeneratorResults = async (results: PhraseGeneratorResultInput[]):
     lang: result.lang,
     base_form: result.baseForm ?? undefined,
     is_vulgar: result.isVulgar,
-    entry_type: result.entryType ?? undefined,
+    classification: result.classification ?? undefined,
     display_text: result.displayText ?? undefined,
     unity_bucket: result.unityBucket ?? undefined,
     familiarity_bucket: result.familiarityBucket ?? undefined,

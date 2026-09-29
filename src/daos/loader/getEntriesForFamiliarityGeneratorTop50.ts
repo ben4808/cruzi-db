@@ -11,7 +11,7 @@ export interface EntryForFamiliarityGenerator {
   entry: string;
   lang: string;
   displayText: string;
-  entryType: string | null;
+  classification: string | null;
   baseForm?: string;
   unityBucket: string | null;
   secondaryClasses: FamiliarityGeneratorSecondaryClass[];
@@ -48,7 +48,7 @@ const getEntriesForFamiliarityGeneratorTop50 = async (
     entry: row.entry,
     lang: row.lang,
     displayText: row.display_text,
-    entryType: row.entry_type ?? null,
+    classification: row.classification ?? null,
     baseForm: row.base_form ? String(row.base_form) : undefined,
     unityBucket: row.unity_bucket ?? null,
     secondaryClasses: parseSecondaryClasses(row.secondary_classes),

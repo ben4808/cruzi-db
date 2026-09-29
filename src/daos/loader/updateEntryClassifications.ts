@@ -5,11 +5,11 @@ export interface EntryClassificationUpdate {
   lang: string;
   baseForm: string | null;
   displayText: string | null;
-  entryType: string | null;
+  classification: string | null;
   unityBucket: string | null;
   familiarityBucket: string | null;
   qualityBucket: string | null;
-  domain: string | null;
+  domain?: string | null;
   isVulgar: boolean | null;
 }
 
@@ -25,7 +25,7 @@ const updateEntryClassifications = async (
     lang: update.lang,
     base_form: update.baseForm ?? undefined,
     display_text: update.displayText ?? undefined,
-    entry_type: update.entryType ?? undefined,
+    classification: update.classification ?? undefined,
     unity_bucket: update.unityBucket ?? undefined,
     familiarity_bucket: update.familiarityBucket ?? undefined,
     quality_bucket: update.qualityBucket ?? undefined,

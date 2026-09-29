@@ -29,7 +29,7 @@ create table "entry" (
   lang text not null,
   "length" int not null,
   display_text text,
-  entry_type text,
+  classification text,
   
   unity_bucket text,
   unity_score int,
@@ -112,6 +112,7 @@ create table sense (
   domain text,
   similar_entries text[],
   reviewed_status text,
+  references_attempted boolean not null default false,
   foreign key ("entry", lang) references "entry"("entry", lang) on delete cascade
 );
 
@@ -278,7 +279,7 @@ create table phrase_generator_result (
   lang text not null,
   base_form text,
   is_vulgar boolean,
-  entry_type text,
+  classification text,
   display_text text,
   unity_bucket text,
   familiarity_bucket text,
@@ -290,7 +291,7 @@ create table short_phrase_result (
   prompt text not null,
   "entry" text not null,
   lang text not null,
-  entry_type text,
+  classification text,
   display_text text,
   base_form text,
   is_vulgar boolean,

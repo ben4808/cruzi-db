@@ -5,7 +5,7 @@ BEGIN
     "entry",
     lang,
     "length",
-    entry_type,
+    classification,
     display_text,
     unity_bucket,
     unity_score,
@@ -21,7 +21,7 @@ BEGIN
     elem->>'entry',
     elem->>'lang',
     COALESCE((elem->>'length')::int, length((elem->>'entry')::text)),
-    NULLIF(trim(elem->>'entry_type'), ''),
+    NULLIF(trim(elem->>'classification'), ''),
     NULLIF(trim(elem->>'display_text'), ''),
     NULLIF(trim(elem->>'unity_bucket'), ''),
     (elem->>'unity_score')::int,
@@ -34,7 +34,7 @@ BEGIN
     COALESCE(NULLIF(trim(elem->>'loading_status'), ''), 'Ready')
   FROM jsonb_array_elements(entries_data) AS elem
   ON CONFLICT ("entry", lang) DO UPDATE SET
-    entry_type = EXCLUDED.entry_type,
+    classification = EXCLUDED.classification,
     display_text = EXCLUDED.display_text,
     unity_bucket = EXCLUDED.unity_bucket,
     unity_score = EXCLUDED.unity_score,

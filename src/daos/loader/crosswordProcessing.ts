@@ -23,6 +23,7 @@ export interface PuzzleClueForProcessing {
   displayText: string | null;
   entryExists: boolean;
   clueOrder: number;
+  baseEntries: string[];
   senses: PuzzleSenseForProcessing[];
 }
 
@@ -121,9 +122,6 @@ export interface SenseScoringUpdate {
 
 export interface ScoredSenseEntryFill {
   senseId: string;
-  unityScore?: number;
-  familiarityScore?: number;
-  qualityScore?: number;
 }
 
 export interface SenseReferenceQueueItem {
@@ -133,6 +131,43 @@ export interface SenseReferenceQueueItem {
   lang: string;
   displayText: string | null;
   summary: string | null;
+}
+
+export interface PuzzleEntryForInflections {
+  entry: string;
+  lang: string;
+  displayText: string | null;
+  secondaryDisplays: string[];
+}
+
+export interface InflectionGeneratorForm {
+  displayText: string;
+  inflectedType: string;
+}
+
+export interface InflectionGeneratorResult {
+  entry: string;
+  lang: string;
+  hasResults: boolean;
+  inflections: InflectionGeneratorForm[];
+  baseForms: string[];
+}
+
+export interface SenseGenerationExistingSense {
+  id: string;
+  entry: string;
+  summary: string;
+  displayText: string;
+}
+
+export interface PuzzleEntryForSenseGeneration {
+  entry: string;
+  lang: string;
+  displayText: string | null;
+  reviewedStatus: string | null;
+  secondaryDisplays: string[];
+  hint: string | null;
+  existingSenses: SenseGenerationExistingSense[];
 }
 
 export interface PuzzleSenseReferenceItem {
@@ -264,6 +299,7 @@ export async function getPuzzleCluesForProcessing(puzzleId: string): Promise<Puz
       displayText: asNullableString(row.display_text),
       entryExists: row.entry_exists === true || row.entry_exists === 'true',
       clueOrder: Number(row.clue_order ?? 0),
+      baseEntries: parseStringList(row.base_entries),
       senses: parseSenses(row.senses),
     }))
     .filter((clue) => clue.clueId !== '')
@@ -347,6 +383,21 @@ export async function insertGeneratedSenses(senses: GeneratedSenseInsert[]): Pro
   await callVoid('insert_generated_senses', [{ name: 'p_senses', value: senses }]);
 }
 
+export async function fillEntryDisplayAndTypeIfNull(
+  entry: string,
+  lang: string,
+  displayText: string,
+  classification: string,
+): Promise<boolean> {
+  const rows = await sqlQuery(true, 'fill_entry_display_and_type_if_null', [
+    { name: 'p_entry', value: entry },
+    { name: 'p_lang', value: lang },
+    { name: 'p_display_text', value: displayText },
+    { name: 'p_classification', value: classification },
+  ]);
+  return rows[0]?.fill_entry_display_and_type_if_null === true;
+}
+
 export async function getMatchedSensesForScoring(
   puzzleId: string,
   limit: number,
@@ -400,6 +451,13 @@ export async function getSenseScoringQueueForPuzzle(
   }));
 }
 
+export async function deleteSensesAndClearClueMatches(senseIds: string[]): Promise<void> {
+  await callVoid('delete_senses_and_clear_clue_matches', [{
+    name: 'p_sense_ids',
+    value: senseIds,
+  }]);
+}
+
 export async function updateSenseScoringResults(updates: SenseScoringUpdate[]): Promise<void> {
   await callVoid('update_sense_scoring_results', [{
     name: 'p_updates',
@@ -420,9 +478,6 @@ export async function fillEntryFieldsFromScoredSenses(updates: ScoredSenseEntryF
     name: 'p_updates',
     value: updates.map((update) => ({
       sense_id: update.senseId,
-      ...(update.unityScore != null ? { unity_score: update.unityScore } : {}),
-      ...(update.familiarityScore != null ? { familiarity_score: update.familiarityScore } : {}),
-      ...(update.qualityScore != null ? { quality_score: update.qualityScore } : {}),
     })),
   }]);
 }
@@ -488,4 +543,91 @@ export async function insertSenseReferences(references: SenseReferenceInsert[]):
 
 export async function deleteSenseReferenceQueueItems(ids: number[]): Promise<void> {
   await callVoid('delete_sense_reference_queue_items', [{ name: 'p_ids', value: ids }]);
+}
+
+export async function getPuzzleEntriesForInflections(
+  puzzleId: string,
+): Promise<PuzzleEntryForInflections[]> {
+  const rows = await sqlQuery(true, 'get_puzzle_entries_for_inflections', [
+    { name: 'p_puzzle_id', value: puzzleId },
+  ]);
+
+  return rows
+    .map((row) => ({
+      entry: asString(row.entry).trim(),
+      lang: asString(row.lang).trim(),
+      displayText: asNullableString(row.display_text),
+      secondaryDisplays: parseStringList(row.secondary_displays),
+    }))
+    .filter((row) => row.entry !== '' && row.lang !== '');
+}
+
+export async function resetPuzzleClueMatchAttemptedForEntries(
+  puzzleId: string,
+  entries: Array<{ entry: string; lang: string }>,
+): Promise<void> {
+  await callVoid('reset_puzzle_clue_match_attempted_for_entries', [
+    { name: 'p_puzzle_id', value: puzzleId },
+    {
+      name: 'p_entries',
+      value: entries.map((item) => ({
+        entry: item.entry,
+        lang: item.lang,
+      })),
+    },
+  ]);
+}
+
+export async function applyInflectionGeneratorResults(
+  results: InflectionGeneratorResult[],
+): Promise<void> {
+  await callVoid('apply_inflection_generator_results', [{
+    name: 'p_results',
+    value: results.map((result) => ({
+      entry: result.entry,
+      lang: result.lang,
+      has_results: result.hasResults,
+      inflections: result.inflections.map((form) => ({
+        display_text: form.displayText,
+        inflected_type: form.inflectedType,
+      })),
+      base_forms: result.baseForms,
+    })),
+  }]);
+}
+
+export async function getPuzzleEntriesForSenseGeneration(
+  puzzleId: string,
+  baseForms: boolean,
+): Promise<PuzzleEntryForSenseGeneration[]> {
+  const rows = await sqlQuery(true, 'get_puzzle_entries_for_sense_generation', [
+    { name: 'p_puzzle_id', value: puzzleId },
+    { name: 'p_base_forms', value: baseForms },
+  ]);
+
+  return rows
+    .map((row) => ({
+      entry: asString(row.entry).trim(),
+      lang: asString(row.lang).trim(),
+      displayText: asNullableString(row.display_text),
+      reviewedStatus: asNullableString(row.reviewed_status),
+      secondaryDisplays: parseStringList(row.secondary_displays),
+      hint: asNullableString(row.hint),
+      existingSenses: asArray(row.existing_senses)
+        .map((item) => {
+          const sense = item as Record<string, unknown>;
+          return {
+            id: asString(sense.id).trim(),
+            entry: asString(sense.entry).trim(),
+            summary: asString(sense.summary).trim(),
+            displayText: asString(sense.display_text).trim(),
+          };
+        })
+        .filter((sense) => sense.id !== ''),
+    }))
+    .filter((row) => row.entry !== '' && row.lang !== '');
+}
+
+export async function markSensesReferencesAttempted(senseIds: string[]): Promise<void> {
+  await callVoid('mark_senses_references_attempted', [{ name: 'p_sense_ids', value: senseIds }]);
 }

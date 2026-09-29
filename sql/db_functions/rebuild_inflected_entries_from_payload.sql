@@ -38,7 +38,7 @@ BEGIN
             elem->>'entry' AS inflected_entry,
             elem->>'lang' AS lang,
             NULLIF(trim(COALESCE(elem->>'display_text', elem->>'displayText')), '') AS display_text,
-            NULLIF(trim(COALESCE(elem->>'entry_type', elem->>'entryType')), '') AS inflected_type,
+            NULLIF(trim(elem->>'classification'), '') AS inflected_type,
             0 AS sort_ord
         FROM jsonb_array_elements(entries_data) AS elem
         WHERE normalize_display_text_to_entry_key(

@@ -1,13 +1,13 @@
 CREATE OR REPLACE FUNCTION upsert_entries(entries_data jsonb)
 RETURNS void AS $$
 BEGIN
-  INSERT INTO entry ("entry", lang, "length", display_text, entry_type, familiarity_score, quality_score, unity_bucket, loading_status)
+  INSERT INTO entry ("entry", lang, "length", display_text, classification, familiarity_score, quality_score, unity_bucket, loading_status)
   SELECT
     elem->>'entry',
     elem->>'lang',
     COALESCE((elem->>'length')::int, length((elem->>'entry')::text)),
     NULLIF(trim(elem->>'display_text'), ''),
-    NULLIF(trim(elem->>'entry_type'), ''),
+    NULLIF(trim(elem->>'classification'), ''),
     (elem->>'familiarity_score')::int,
     (elem->>'quality_score')::int,
     NULLIF(trim(elem->>'unity_bucket'), ''),
@@ -16,7 +16,7 @@ BEGIN
   ON CONFLICT ("entry", lang) DO UPDATE SET
     "length" = COALESCE(EXCLUDED."length", entry."length"),
     display_text = COALESCE(EXCLUDED.display_text, entry.display_text),
-    entry_type = COALESCE(EXCLUDED.entry_type, entry.entry_type),
+    classification = COALESCE(EXCLUDED.classification, entry.classification),
     familiarity_score = COALESCE(EXCLUDED.familiarity_score, entry.familiarity_score),
     quality_score = COALESCE(EXCLUDED.quality_score, entry.quality_score),
     unity_bucket = COALESCE(EXCLUDED.unity_bucket, entry.unity_bucket),

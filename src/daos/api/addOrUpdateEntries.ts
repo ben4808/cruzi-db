@@ -8,7 +8,7 @@ const addOrUpdateEntries = async (entries: Entry[]): Promise<void> => {
         length: entry.entry.length,
         base_form: entry.baseForm,
         display_text: entry.displayText,
-        entry_type: entry.entryType,
+        classification: entry.classification,
         loading_status: entry.loadingStatus,
     }));
 

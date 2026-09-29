@@ -1,4 +1,15 @@
-import { EntryInfoQueueItem, ExistingSenseInfo } from './getEntryInfoQueueTop1';
+export interface ExistingSenseInfo {
+  id: string;
+  summary: string;
+}
+
+export interface EntryInfoQueueItem {
+  entry: string;
+  display_text: string;
+  lang: string;
+  existing_sense_info: ExistingSenseInfo[];
+  example_sentence_count: number;
+}
 
 export function mapEntryInfoQueueRow(row: {
   entry: string;

@@ -3,7 +3,7 @@ RETURNS TABLE (
     entry text,
     lang text,
     display_text text,
-    entry_type text,
+    classification text,
     base_form text,
     unity_bucket text,
     secondary_classes jsonb
@@ -16,7 +16,7 @@ BEGIN
         e."entry",
         e.lang,
         e.display_text,
-        e.entry_type,
+        e.classification,
         inflected_base_form_for_entry(e."entry", e.lang) AS base_form,
         e.unity_bucket,
         COALESCE(
@@ -39,7 +39,7 @@ BEGIN
     WHERE e.reviewed_status = '12'
       AND e.display_text IS NOT NULL
       AND TRIM(e.display_text) <> ''
-      AND e.entry_type IS DISTINCT FROM 'Nonsense'
+      AND e.classification IS DISTINCT FROM 'Nonsense'
       AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
     ORDER BY random()
     LIMIT p_limit;

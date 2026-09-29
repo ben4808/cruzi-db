@@ -12,7 +12,7 @@ export interface UnityGeneratorResult {
   unityScore: number;
   reviewedStatus?: string;
   displayText?: string;
-  entryType?: string;
+  classification?: string;
   secondaryClassesToDelete?: string[];
   secondaryClassesToUpdate?: UnityGeneratorSecondaryClassUpdate[];
 }
@@ -31,7 +31,7 @@ const upsertUnityGeneratorResults = async (
     unity_score: e.unityScore,
     reviewed_status: e.reviewedStatus ?? "12",
     display_text: e.displayText ?? undefined,
-    entry_type: e.entryType ?? undefined,
+    classification: e.classification ?? undefined,
     secondary_classes_to_delete: (e.secondaryClassesToDelete ?? []).map((secondaryClass) => ({
       secondary_class: secondaryClass,
     })),

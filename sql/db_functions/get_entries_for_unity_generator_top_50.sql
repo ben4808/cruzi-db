@@ -3,7 +3,7 @@ RETURNS TABLE (
     entry text,
     lang text,
     display_text text,
-    entry_type text,
+    classification text,
     secondary_classes jsonb
 )
 LANGUAGE plpgsql
@@ -14,7 +14,7 @@ BEGIN
         e."entry",
         e.lang,
         e.display_text,
-        e.entry_type,
+        e.classification,
         COALESCE(
             (
                 SELECT jsonb_agg(
@@ -33,7 +33,7 @@ BEGIN
     FROM "entry" e
     WHERE e.reviewed_status = '1'
       AND e.display_text IS NOT NULL
-      AND e.entry_type <> 'Nonsense'
+      AND e.classification <> 'Nonsense'
       AND TRIM(e.display_text) <> ''
     ORDER BY random()
     LIMIT p_limit;

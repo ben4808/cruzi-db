@@ -5,12 +5,9 @@ import addCluesToCollection from "./addCluesToCollection";
 import upsertEntries from "./upsertEntries";
 import addFamiliarityQualityResults from "./addFamiliarityQualityResults";
 import getEntryInfoQueueTop10 from "./getEntryInfoQueueTop10";
-import getEntryInfoQueueTop1 from "./getEntryInfoQueueTop1";
-import { removeFromEntryInfoQueue } from "./removeFromEntryInfoQueue";
 import addExampleSentenceQueueEntry, { addExampleSentenceQueueEntries } from "./addExampleSentenceQueueEntry";
 import addEntryInfoQueueEntry, { addEntryInfoQueueEntries } from "./addEntryInfoQueueEntries";
 import addCrosswordFamiliarityQueueEntry, { addCrosswordFamiliarityQueueEntries } from "./addCrosswordFamiliarityQueueEntries";
-import addCrosswordQualityQueueEntry, { addCrosswordQualityQueueEntries } from "./addCrosswordQualityQueueEntries";
 import { upsertEntryInfo } from "./upsertEntryInfo";
 
 class LoaderDao implements ILoaderDao {
@@ -26,10 +23,6 @@ class LoaderDao implements ILoaderDao {
 
     getEntryInfoQueueTop10 = getEntryInfoQueueTop10;
 
-    getEntryInfoQueueTop1 = getEntryInfoQueueTop1;
-
-    removeFromEntryInfoQueue = removeFromEntryInfoQueue;
-
     upsertEntryInfo = upsertEntryInfo;
 
     addExampleSentenceQueueEntry = addExampleSentenceQueueEntry;
@@ -43,10 +36,6 @@ class LoaderDao implements ILoaderDao {
     addCrosswordFamiliarityQueueEntry = addCrosswordFamiliarityQueueEntry;
 
     addCrosswordFamiliarityQueueEntries = addCrosswordFamiliarityQueueEntries;
-
-    addCrosswordQualityQueueEntry = addCrosswordQualityQueueEntry;
-
-    addCrosswordQualityQueueEntries = addCrosswordQualityQueueEntries;
 }
 
 export default LoaderDao;
