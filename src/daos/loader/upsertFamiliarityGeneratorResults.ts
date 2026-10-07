@@ -8,8 +8,12 @@ export interface FamiliarityGeneratorSecondaryClassChange {
   unityBucket?: string;
 }
 
-export interface FamiliarityGeneratorSecondaryClassUpdate {
+export interface FamiliarityGeneratorSecondaryClassRef {
   secondaryClass: string;
+  secondaryDisplay: string;
+}
+
+export interface FamiliarityGeneratorSecondaryClassUpdate extends FamiliarityGeneratorSecondaryClassRef {
   familiarityBucket: string;
   unityBucket?: string;
 }
@@ -26,7 +30,7 @@ export interface FamiliarityGeneratorResult {
   classification?: string;
   baseForm?: string;
   domain?: string;
-  secondaryClassesToDelete?: string[];
+  secondaryClassesToDelete?: FamiliarityGeneratorSecondaryClassRef[];
   secondaryClassesToUpdate?: FamiliarityGeneratorSecondaryClassUpdate[];
   secondaryClassesToInsert?: FamiliarityGeneratorSecondaryClassChange[];
 }
@@ -50,11 +54,13 @@ const upsertFamiliarityGeneratorResults = async (
     classification: e.classification ?? undefined,
     base_form: e.baseForm ?? undefined,
     domain: e.domain ?? '',
-    secondary_classes_to_delete: (e.secondaryClassesToDelete ?? []).map((secondaryClass) => ({
-      secondary_class: secondaryClass,
+    secondary_classes_to_delete: (e.secondaryClassesToDelete ?? []).map((sc) => ({
+      secondary_class: sc.secondaryClass,
+      secondary_display: sc.secondaryDisplay,
     })),
     secondary_classes_to_update: (e.secondaryClassesToUpdate ?? []).map((sc) => ({
       secondary_class: sc.secondaryClass,
+      secondary_display: sc.secondaryDisplay,
       familiarity_bucket: sc.familiarityBucket,
       unity_bucket: sc.unityBucket ?? undefined,
     })),

@@ -84,14 +84,13 @@ BEGIN
             CASE NULLIF(btrim(s.quality_bucket), '')
                 WHEN 'Idiomatic' THEN 1
                 WHEN 'Interesting' THEN 2
-                WHEN 'Appealing' THEN 3
-                WHEN 'Positive' THEN 4
-                WHEN 'Trendy' THEN 5
-                WHEN 'Normal' THEN 6
-                WHEN 'Uncommon Inflection' THEN 7
-                WHEN 'Clunky' THEN 8
-                WHEN 'Non-unit' THEN 9
-                ELSE 10
+                WHEN 'Feel-Good' THEN 3
+                WHEN 'Trendy' THEN 4
+                WHEN 'Normal' THEN 5
+                WHEN 'Uncommon Inflection' THEN 6
+                WHEN 'Clunky' THEN 7
+                WHEN 'Non-unit' THEN 8
+                ELSE 9
             END,
             random()
     ),
@@ -133,8 +132,7 @@ BEGIN
                 WHEN 'Clunky' THEN 20
                 WHEN 'Idiomatic' THEN 40
                 WHEN 'Interesting' THEN 40
-                WHEN 'Appealing' THEN 40
-                WHEN 'Positive' THEN 40
+                WHEN 'Feel-Good' THEN 40
                 WHEN 'Trendy' THEN 40
                 WHEN 'Normal' THEN 30
                 ELSE NULL

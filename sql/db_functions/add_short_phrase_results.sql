@@ -35,7 +35,5 @@ BEGIN
     WHERE COALESCE(NULLIF(trim(r->>'prompt'), ''), '') <> ''
       AND COALESCE(NULLIF(trim(r->>'entry'), ''), '') <> ''
       AND COALESCE(NULLIF(trim(r->>'lang'), ''), '') <> '';
-
-    PERFORM rebuild_inflected_entries_from_payload(p_results, 'fill');
 END;
 $$;

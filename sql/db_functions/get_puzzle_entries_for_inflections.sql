@@ -3,6 +3,7 @@ RETURNS TABLE (
     entry text,
     lang text,
     display_text text,
+    reviewed_status text,
     secondary_displays jsonb
 )
 LANGUAGE plpgsql
@@ -14,6 +15,7 @@ BEGIN
         e."entry" AS entry,
         e.lang AS lang,
         e.display_text AS display_text,
+        e.reviewed_status AS reviewed_status,
         COALESCE((
             SELECT jsonb_agg(esc.secondary_display ORDER BY esc.secondary_class)
             FROM entry_secondary_class esc

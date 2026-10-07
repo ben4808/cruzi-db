@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION insert_entries_or_fill_nulls(entries_data jsonb)
 RETURNS void AS $$
 BEGIN
-  INSERT INTO entry ("entry", lang, "length", display_text, classification, familiarity_bucket, familiarity_score, quality_score, unity_bucket, unity_score, is_vulgar, loading_status, reviewed_status)
+  INSERT INTO entry ("entry", lang, "length", display_text, classification, familiarity_bucket, familiarity_score, quality_score, unity_bucket, unity_score, domain, loading_status, reviewed_status)
   SELECT
     elem->>'entry',
     elem->>'lang',
@@ -13,10 +13,7 @@ BEGIN
     (elem->>'quality_score')::int,
     NULLIF(trim(elem->>'unity_bucket'), ''),
     (elem->>'unity_score')::int,
-    CASE
-      WHEN elem->>'is_vulgar' IS NULL OR trim(elem->>'is_vulgar') = '' THEN NULL
-      ELSE (elem->>'is_vulgar')::boolean
-    END,
+    NULLIF(trim(elem->>'domain'), ''),
     COALESCE(NULLIF(trim(elem->>'loading_status'), ''), 'Ready'),
     NULLIF(trim(elem->>'reviewed_status'), '')
   FROM jsonb_array_elements(entries_data) AS elem
@@ -28,7 +25,7 @@ BEGIN
     quality_score = COALESCE(entry.quality_score, EXCLUDED.quality_score),
     unity_bucket = COALESCE(entry.unity_bucket, EXCLUDED.unity_bucket),
     unity_score = COALESCE(entry.unity_score, EXCLUDED.unity_score),
-    is_vulgar = COALESCE(entry.is_vulgar, EXCLUDED.is_vulgar);
+    domain = COALESCE(entry.domain, EXCLUDED.domain);
 
   PERFORM rebuild_inflected_entries_from_payload(entries_data, 'fill');
 END;

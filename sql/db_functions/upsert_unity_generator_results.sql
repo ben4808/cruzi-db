@@ -35,7 +35,8 @@ BEGIN
   ) AS sc
   WHERE esc."entry" = elem->>'entry'
     AND esc.lang = elem->>'lang'
-    AND esc.secondary_class = trim(sc->>'secondary_class');
+    AND esc.secondary_class = trim(sc->>'secondary_class')
+    AND esc.secondary_display = trim(sc->>'secondary_display');
 
   UPDATE entry_secondary_class esc
   SET unity_bucket = NULLIF(trim(sc->>'unity_bucket'), '')
@@ -45,6 +46,7 @@ BEGIN
   ) AS sc
   WHERE esc."entry" = elem->>'entry'
     AND esc.lang = elem->>'lang'
-    AND esc.secondary_class = trim(sc->>'secondary_class');
+    AND esc.secondary_class = trim(sc->>'secondary_class')
+    AND esc.secondary_display = trim(sc->>'secondary_display');
 END;
 $$ LANGUAGE plpgsql;

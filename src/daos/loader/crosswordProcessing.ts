@@ -137,6 +137,7 @@ export interface PuzzleEntryForInflections {
   entry: string;
   lang: string;
   displayText: string | null;
+  reviewedStatus: string | null;
   secondaryDisplays: string[];
 }
 
@@ -158,16 +159,29 @@ export interface SenseGenerationExistingSense {
   entry: string;
   summary: string;
   displayText: string;
+  partOfSpeech: string;
+  reviewedStatus: string | null;
 }
 
 export interface PuzzleEntryForSenseGeneration {
   entry: string;
   lang: string;
   displayText: string | null;
-  reviewedStatus: string | null;
   secondaryDisplays: string[];
-  hint: string | null;
+  hints: string[];
   existingSenses: SenseGenerationExistingSense[];
+  baseEntries: string[];
+  baseDisplays: string[];
+}
+
+export interface SenseMerge {
+  keepId: string;
+  removeId: string;
+}
+
+export interface SenseSummaryUpdate {
+  senseId: string;
+  summary: string;
 }
 
 export interface PuzzleSenseReferenceItem {
@@ -557,6 +571,7 @@ export async function getPuzzleEntriesForInflections(
       entry: asString(row.entry).trim(),
       lang: asString(row.lang).trim(),
       displayText: asNullableString(row.display_text),
+      reviewedStatus: asNullableString(row.reviewed_status),
       secondaryDisplays: parseStringList(row.secondary_displays),
     }))
     .filter((row) => row.entry !== '' && row.lang !== '');
@@ -598,11 +613,9 @@ export async function applyInflectionGeneratorResults(
 
 export async function getPuzzleEntriesForSenseGeneration(
   puzzleId: string,
-  baseForms: boolean,
 ): Promise<PuzzleEntryForSenseGeneration[]> {
   const rows = await sqlQuery(true, 'get_puzzle_entries_for_sense_generation', [
     { name: 'p_puzzle_id', value: puzzleId },
-    { name: 'p_base_forms', value: baseForms },
   ]);
 
   return rows
@@ -610,9 +623,8 @@ export async function getPuzzleEntriesForSenseGeneration(
       entry: asString(row.entry).trim(),
       lang: asString(row.lang).trim(),
       displayText: asNullableString(row.display_text),
-      reviewedStatus: asNullableString(row.reviewed_status),
       secondaryDisplays: parseStringList(row.secondary_displays),
-      hint: asNullableString(row.hint),
+      hints: parseStringList(row.hints),
       existingSenses: asArray(row.existing_senses)
         .map((item) => {
           const sense = item as Record<string, unknown>;
@@ -621,13 +633,101 @@ export async function getPuzzleEntriesForSenseGeneration(
             entry: asString(sense.entry).trim(),
             summary: asString(sense.summary).trim(),
             displayText: asString(sense.display_text).trim(),
+            partOfSpeech: asString(sense.part_of_speech).trim(),
+            reviewedStatus: asNullableString(sense.reviewed_status),
           };
         })
         .filter((sense) => sense.id !== ''),
+      baseEntries: parseStringList(row.base_entries),
+      baseDisplays: parseStringList(row.base_displays),
     }))
     .filter((row) => row.entry !== '' && row.lang !== '');
 }
 
+export async function mergeSenses(merges: SenseMerge[]): Promise<void> {
+  await callVoid('merge_senses', [{
+    name: 'p_merges',
+    value: merges.map((merge) => ({
+      keep_id: merge.keepId,
+      remove_id: merge.removeId,
+    })),
+  }]);
+}
+
+export async function updateSenseSummaries(updates: SenseSummaryUpdate[]): Promise<void> {
+  await callVoid('update_sense_summaries', [{
+    name: 'p_updates',
+    value: updates.map((update) => ({
+      sense_id: update.senseId,
+      summary: update.summary,
+    })),
+  }]);
+}
+
 export async function markSensesReferencesAttempted(senseIds: string[]): Promise<void> {
   await callVoid('mark_senses_references_attempted', [{ name: 'p_sense_ids', value: senseIds }]);
+}
+
+export async function deleteInflectedEntriesForBaseEntries(
+  entries: Array<{ entry: string; lang: string }>,
+): Promise<void> {
+  await callVoid('delete_inflected_entries_for_base_entries', [{
+    name: 'p_entries',
+    value: entries.map((item) => ({ entry: item.entry, lang: item.lang })),
+  }]);
+}
+
+export async function deleteSenseReferences(senseIds: string[]): Promise<void> {
+  await callVoid('delete_sense_references', [{ name: 'p_sense_ids', value: senseIds }]);
+}
+
+export interface PuzzleSenseLoreItem {
+  senseId: string;
+  entry: string;
+  lang: string;
+  displayText: string | null;
+  summary: string | null;
+}
+
+export interface SenseLoreInsert {
+  senseId: string;
+  loreText: string;
+}
+
+export async function getMatchedSensesWithoutLore(
+  puzzleId: string,
+  limit: number,
+  excludeIds: string[] = [],
+): Promise<PuzzleSenseLoreItem[]> {
+  const rows = await sqlQuery(true, 'get_matched_senses_without_lore', [
+    { name: 'p_puzzle_id', value: puzzleId },
+    { name: 'p_limit', value: limit },
+    { name: 'p_exclude', value: excludeIds },
+  ]);
+
+  return rows.map((row) => ({
+    senseId: asString(row.sense_id).trim(),
+    entry: asString(row.entry).trim(),
+    lang: asString(row.lang).trim(),
+    displayText: asNullableString(row.display_text),
+    summary: asNullableString(row.summary),
+  })).filter((row) => row.senseId !== '');
+}
+
+export async function deleteSenseLore(senseIds: string[]): Promise<void> {
+  await callVoid('delete_sense_lore', [{ name: 'p_sense_ids', value: senseIds }]);
+}
+
+export async function insertSenseLore(items: SenseLoreInsert[]): Promise<void> {
+  await callVoid('insert_sense_lore', [{
+    name: 'p_items',
+    value: items.map((item) => ({
+      sense_id: item.senseId,
+      lore_text: item.loreText,
+    })),
+  }]);
+}
+
+export async function markSensesLoreAttempted(senseIds: string[]): Promise<void> {
+  await callVoid('mark_senses_lore_attempted', [{ name: 'p_sense_ids', value: senseIds }]);
 }

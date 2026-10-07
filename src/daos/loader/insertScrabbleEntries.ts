@@ -4,7 +4,6 @@ export interface ScrabbleEntryInsertData {
   entry: string;
   lang: string;
   length?: number;
-  display_text?: string;
 }
 
 export const insertScrabbleEntries = async (entries: ScrabbleEntryInsertData[]): Promise<void> => {

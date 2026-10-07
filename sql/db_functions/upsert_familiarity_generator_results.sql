@@ -28,7 +28,8 @@ BEGIN
   ) AS sc
   WHERE esc."entry" = elem->>'entry'
     AND esc.lang = elem->>'lang'
-    AND esc.secondary_class = trim(sc->>'secondary_class');
+    AND esc.secondary_class = trim(sc->>'secondary_class')
+    AND esc.secondary_display = trim(sc->>'secondary_display');
 
   UPDATE entry_secondary_class esc
   SET familiarity_bucket = NULLIF(trim(sc->>'familiarity_bucket'), ''),
@@ -39,7 +40,8 @@ BEGIN
   ) AS sc
   WHERE esc."entry" = elem->>'entry'
     AND esc.lang = elem->>'lang'
-    AND esc.secondary_class = trim(sc->>'secondary_class');
+    AND esc.secondary_class = trim(sc->>'secondary_class')
+    AND esc.secondary_display = trim(sc->>'secondary_display');
 
   INSERT INTO entry_secondary_class ("entry", lang, secondary_class, secondary_display, secondary_base_form, familiarity_bucket, unity_bucket)
   SELECT
@@ -56,8 +58,7 @@ BEGIN
   ) AS sc
   WHERE COALESCE(NULLIF(trim(sc->>'secondary_class'), ''), '') <> ''
     AND COALESCE(NULLIF(trim(sc->>'secondary_display'), ''), '') <> ''
-  ON CONFLICT ("entry", lang, secondary_class) DO UPDATE SET
-    secondary_display = EXCLUDED.secondary_display,
+  ON CONFLICT ("entry", lang, secondary_class, secondary_display) DO UPDATE SET
     secondary_base_form = EXCLUDED.secondary_base_form,
     familiarity_bucket = EXCLUDED.familiarity_bucket,
     unity_bucket = COALESCE(EXCLUDED.unity_bucket, entry_secondary_class.unity_bucket);

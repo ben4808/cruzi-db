@@ -45,6 +45,7 @@ export {
 export {
   default as upsertUnityGeneratorResults,
   UnityGeneratorResult,
+  UnityGeneratorSecondaryClassRef,
   UnityGeneratorSecondaryClassUpdate,
 } from './daos/loader/upsertUnityGeneratorResults';
 export { default as getEntriesForEntryParser, EntryForEntryParser } from './daos/loader/getEntriesForEntryParser';
@@ -64,6 +65,7 @@ export {
 export {
   default as upsertFamiliarityGeneratorResults,
   FamiliarityGeneratorResult,
+  FamiliarityGeneratorSecondaryClassRef,
   FamiliarityGeneratorSecondaryClassUpdate,
 } from './daos/loader/upsertFamiliarityGeneratorResults';
 export {
@@ -197,6 +199,18 @@ export {
   getPuzzleEntriesForSenseGeneration,
   PuzzleEntryForSenseGeneration,
   SenseGenerationExistingSense,
+  mergeSenses,
+  SenseMerge,
+  updateSenseSummaries,
+  SenseSummaryUpdate,
   markSensesReferencesAttempted,
+  deleteInflectedEntriesForBaseEntries,
+  deleteSenseReferences,
+  getMatchedSensesWithoutLore,
+  PuzzleSenseLoreItem,
+  deleteSenseLore,
+  insertSenseLore,
+  SenseLoreInsert,
+  markSensesLoreAttempted,
 } from './daos/loader/crosswordProcessing';
 

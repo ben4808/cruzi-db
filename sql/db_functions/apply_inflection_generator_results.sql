@@ -97,14 +97,6 @@ BEGIN
     LEFT JOIN "entry" e ON e."entry" = b.item_entry AND e.lang = b.item_lang
     ON CONFLICT (base_entry, inflected_entry, lang) DO NOTHING;
 
-    DELETE FROM sense s
-    WHERE EXISTS (
-        SELECT 1
-        FROM tmp_base_forms b
-        WHERE b.item_entry = s."entry"
-          AND b.item_lang = s.lang
-    );
-
     UPDATE "entry" e
     SET loading_status = 'I'
     FROM jsonb_array_elements(p_results) AS elem

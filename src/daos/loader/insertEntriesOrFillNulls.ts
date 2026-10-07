@@ -14,7 +14,7 @@ const insertEntriesOrFillNulls = async (entries: Entry[]) => {
         quality_score: e.qualityScore ?? undefined,
         unity_bucket: e.unityBucket ?? undefined,
         unity_score: e.unityScore ?? undefined,
-        is_vulgar: e.isVulgar,
+        domain: e.domain ?? undefined,
         loading_status: e.loadingStatus ?? undefined,
         reviewed_status: e.reviewedStatus ?? undefined,
     }));

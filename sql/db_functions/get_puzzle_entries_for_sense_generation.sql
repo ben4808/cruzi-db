@@ -1,43 +1,49 @@
+-- Puzzle entries that have at least one clue still waiting on a sense match (match_attempted = false).
+DROP FUNCTION IF EXISTS get_puzzle_entries_for_sense_generation(text);
+
 CREATE OR REPLACE FUNCTION get_puzzle_entries_for_sense_generation(
-    p_puzzle_id text,
-    p_base_forms boolean
+    p_puzzle_id text
 )
 RETURNS TABLE (
     entry text,
     lang text,
     display_text text,
-    reviewed_status text,
     secondary_displays jsonb,
-    hint text,
-    existing_senses jsonb
+    hints jsonb,
+    existing_senses jsonb,
+    base_entries jsonb,
+    base_displays jsonb
 )
 LANGUAGE plpgsql
 AS $$
 #variable_conflict use_column
 BEGIN
     RETURN QUERY
-    WITH puzzle_clues AS (
+    WITH pending_clues AS (
         SELECT c."entry" AS clue_entry, c.lang AS clue_lang, c.custom_clue, ccl."order" AS clue_order
         FROM clue_collection cc
         JOIN collection__clue ccl ON ccl.collection_id = cc.id
         JOIN clue c ON c.id = ccl.clue_id
         WHERE cc.puzzle_id = p_puzzle_id
+          AND NOT c.match_attempted
     ),
     targets AS (
-        SELECT pc.clue_entry AS target_entry, pc.clue_lang AS target_lang, pc.custom_clue, pc.clue_order
-        FROM puzzle_clues pc
-        WHERE NOT p_base_forms
-        UNION ALL
-        SELECT ie.base_entry, ie.lang, pc.custom_clue, pc.clue_order
-        FROM puzzle_clues pc
-        JOIN inflected_entry ie ON ie.inflected_entry = pc.clue_entry AND ie.lang = pc.clue_lang
-        WHERE p_base_forms
+        SELECT
+            pc.clue_entry AS target_entry,
+            pc.clue_lang AS target_lang,
+            MIN(pc.clue_order) AS first_order,
+            COALESCE(
+                jsonb_agg(DISTINCT btrim(pc.custom_clue))
+                    FILTER (WHERE NULLIF(btrim(pc.custom_clue), '') IS NOT NULL),
+                '[]'::jsonb
+            ) AS hints
+        FROM pending_clues pc
+        GROUP BY pc.clue_entry, pc.clue_lang
     )
-    SELECT DISTINCT ON (e."entry", e.lang)
+    SELECT
         e."entry" AS entry,
         e.lang AS lang,
         e.display_text AS display_text,
-        e.reviewed_status AS reviewed_status,
         COALESCE((
             SELECT jsonb_agg(esc.secondary_display ORDER BY esc.secondary_class)
             FROM entry_secondary_class esc
@@ -45,14 +51,16 @@ BEGIN
               AND esc.lang = e.lang
               AND NULLIF(btrim(esc.secondary_display), '') IS NOT NULL
         ), '[]'::jsonb) AS secondary_displays,
-        NULLIF(btrim(t.custom_clue), '') AS hint,
+        t.hints AS hints,
         COALESCE((
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'id', s.id,
                     'entry', s."entry",
                     'summary', COALESCE(s.summary, ''),
-                    'display_text', COALESCE(s.display_text, '')
+                    'display_text', COALESCE(s.display_text, ''),
+                    'part_of_speech', COALESCE(s.part_of_speech, ''),
+                    'reviewed_status', s.reviewed_status
                 )
                 ORDER BY (s."entry" = e."entry"), s."entry", s.summary, s.id
             )
@@ -67,15 +75,22 @@ BEGIN
                           AND ie.lang = e.lang
                     )
               )
-        ), '[]'::jsonb) AS existing_senses
+        ), '[]'::jsonb) AS existing_senses,
+        COALESCE((
+            SELECT jsonb_agg(DISTINCT ie.base_entry)
+            FROM inflected_entry ie
+            WHERE ie.inflected_entry = e."entry"
+              AND ie.lang = e.lang
+        ), '[]'::jsonb) AS base_entries,
+        COALESCE((
+            SELECT jsonb_agg(DISTINCT COALESCE(NULLIF(btrim(be.display_text), ''), ie.base_entry))
+            FROM inflected_entry ie
+            LEFT JOIN "entry" be ON be."entry" = ie.base_entry AND be.lang = ie.lang
+            WHERE ie.inflected_entry = e."entry"
+              AND ie.lang = e.lang
+        ), '[]'::jsonb) AS base_displays
     FROM targets t
     JOIN "entry" e ON e."entry" = t.target_entry AND e.lang = t.target_lang
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM sense s
-        WHERE s."entry" = e."entry"
-          AND s.lang = e.lang
-    )
-    ORDER BY e."entry", e.lang, t.clue_order;
+    ORDER BY t.first_order, e."entry", e.lang;
 END;
 $$;

@@ -6,11 +6,12 @@ export interface CrosswordListEntry {
   unityBucket: string | null;
   familiarityBucket: string | null;
   qualityBucket: string | null;
+  hasAvoidTag: boolean;
 }
 
 const getCrosswordListEntries = async (
   minLength: number = 3,
-  maxLength: number = 5,
+  maxLength: number = 6,
   excludeObscure: boolean = true,
 ): Promise<CrosswordListEntry[]> => {
   const results = await sqlQuery(true, "get_crossword_list_entries", [
@@ -25,6 +26,7 @@ const getCrosswordListEntries = async (
     unityBucket: row.unity_bucket ?? null,
     familiarityBucket: row.familiarity_bucket ?? null,
     qualityBucket: row.quality_bucket ?? null,
+    hasAvoidTag: Boolean(row.has_avoid_tag),
   }));
 };
 

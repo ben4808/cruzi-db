@@ -5,6 +5,7 @@ import {
     EntryRef,
     EntryTranslation,
     Sense,
+    SenseLore,
     SenseReference,
 } from 'cruzi-models';
 import { sqlQuery } from "../../pool/postgres";
@@ -93,6 +94,26 @@ const mapSenseReferences = (raw: any): SenseReference[] | undefined => {
         .filter((row): row is SenseReference => row != null);
 };
 
+const mapSenseLore = (raw: any): SenseLore[] | undefined => {
+    if (!Array.isArray(raw) || raw.length === 0) {
+        return undefined;
+    }
+
+    return raw
+        .map((row: any): SenseLore | null => {
+            const loreText = row?.lore_text ?? row?.loreText;
+            if (typeof loreText !== 'string' || !loreText.trim()) {
+                return null;
+            }
+            return {
+                id: row.id,
+                senseId: row.sense_id ?? row.senseId,
+                loreText,
+            };
+        })
+        .filter((row): row is SenseLore => row != null);
+};
+
 const mapSenseTags = (raw: any): Record<string, string> | undefined => {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
         return undefined;
@@ -151,6 +172,7 @@ const mapSense = (raw: any, fallbackLang: string): Sense | undefined => {
         tags: mapSenseTags(raw.tags),
         translations: mapSenseTranslations(raw.translations),
         references: mapSenseReferences(raw.references),
+        lore: mapSenseLore(raw.lore ?? raw.lore_trivia ?? raw.loreTrivia),
     };
 };
 
@@ -163,6 +185,7 @@ const mapCollectionClue = (raw: any): CollectionClueWithProgress => {
         loadingStatus: clueRaw.loading_status,
         baseForm: clueRaw.base_form,
         classification: clueRaw.classification,
+        domain: clueRaw.domain,
         familiarityScore: clueRaw.familiarity_score,
         familiarityBucket: clueRaw.familiarity_bucket,
         qualityScore: clueRaw.quality_score,

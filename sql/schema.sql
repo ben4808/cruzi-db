@@ -51,7 +51,9 @@ create table inflected_entry (
   display_text text,
   inflected_type text,
   is_common boolean not null default true,
-  primary key(base_entry, inflected_entry, lang)
+  primary key(base_entry, inflected_entry, lang),
+  foreign key (base_entry, lang) references "entry"("entry", lang) on delete cascade,
+  foreign key (inflected_entry, lang) references "entry"("entry", lang) on delete cascade
 );
 
 create table entry_secondary_class (
@@ -63,7 +65,7 @@ create table entry_secondary_class (
   unity_bucket text,
   familiarity_bucket text,
   quality_bucket text,
-  primary key("entry", lang, secondary_class)
+  primary key("entry", lang, secondary_class, secondary_display)
 );
 
 create table puzzle (
@@ -113,6 +115,7 @@ create table sense (
   similar_entries text[],
   reviewed_status text,
   references_attempted boolean not null default false,
+  lore_attempted boolean not null default false,
   foreign key ("entry", lang) references "entry"("entry", lang) on delete cascade
 );
 
@@ -141,6 +144,12 @@ create table sense_reference (
   reference_text text not null,
   reference_source text,
   reference_url text
+);
+
+create table sense_lore (
+  id serial primary key,
+  sense_id text not null references sense(id) on delete cascade,
+  lore_text text not null
 );
 
 create table sense_tags (
@@ -239,29 +248,6 @@ create table collection_access (
 create table crossword_processing_queue (
   id serial primary key,
   puzzle_id text not null references puzzle(id) on delete cascade,
-  added_at timestamp not null default now()
-);
-
-create table sense_generator_queue (
-  id serial primary key,
-  puzzle_id text,
-  "entry" text not null,
-  lang text not null,
-  "hint" text,
-  added_at timestamp not null default now()
-);
-
-create table sense_reference_queue (
-  id serial primary key,
-  puzzle_id text,
-  sense_id text not null references sense(id) on delete cascade,
-  added_at timestamp not null default now()
-);
-
-create table sense_scoring_queue (
-  id serial primary key,
-  puzzle_id text,
-  sense_id text not null references sense(id) on delete cascade,
   added_at timestamp not null default now()
 );
 
@@ -376,7 +362,6 @@ create index ix_user__collection_user_id on user__collection(user_id);
 create index ix_sense_entry_lang on sense("entry", lang);
 create index ix_inflected_entry_inflected_lang on inflected_entry(inflected_entry, lang);
 create index ix_inflected_entry_base_lang on inflected_entry(base_entry, lang);
-create index ix_entry_loading_status on "entry"(loading_status) where loading_status <> 'Ready';
 -- Unique among assigned codes only; multiple rows may have NULL game_code.
 create unique index ux_friendly_words_game_code on friendly_words_game(game_code) where game_code is not null;
 create index ix_friendly_words_turn_game_id on friendly_words_turn(game_id, turn_number);

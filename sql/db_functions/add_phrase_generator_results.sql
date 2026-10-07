@@ -56,7 +56,7 @@ BEGIN
         unity_bucket,
         familiarity_bucket
     )
-    SELECT DISTINCT ON (sc_rows."entry", sc_rows.lang, sc_rows.secondary_class)
+    SELECT DISTINCT ON (sc_rows."entry", sc_rows.lang, sc_rows.secondary_class, sc_rows.secondary_display)
         sc_rows."entry",
         sc_rows.lang,
         sc_rows.secondary_class,
@@ -87,9 +87,8 @@ BEGIN
                 AND e.lang = trim((r.r->>'lang')::text)
           )
     ) AS sc_rows
-    ORDER BY sc_rows."entry", sc_rows.lang, sc_rows.secondary_class, sc_rows.result_ord, sc_rows.sc_ord
-    ON CONFLICT ("entry", lang, secondary_class) DO UPDATE SET
-        secondary_display = EXCLUDED.secondary_display,
+    ORDER BY sc_rows."entry", sc_rows.lang, sc_rows.secondary_class, sc_rows.secondary_display, sc_rows.result_ord, sc_rows.sc_ord
+    ON CONFLICT ("entry", lang, secondary_class, secondary_display) DO UPDATE SET
         secondary_base_form = EXCLUDED.secondary_base_form,
         unity_bucket = COALESCE(EXCLUDED.unity_bucket, entry_secondary_class.unity_bucket),
         familiarity_bucket = COALESCE(EXCLUDED.familiarity_bucket, entry_secondary_class.familiarity_bucket);

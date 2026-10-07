@@ -66,7 +66,7 @@ BEGIN
             WHEN 'Clunky' THEN 20
             WHEN 'Idiomatic' THEN 40
             WHEN 'Interesting' THEN 40
-            WHEN 'Appealing' THEN 40
+            WHEN 'Feel-Good' THEN 40
             WHEN 'Emotional' THEN 40
             WHEN 'Trendy' THEN 40
             WHEN 'Normal' THEN 30

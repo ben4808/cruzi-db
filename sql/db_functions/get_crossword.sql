@@ -69,6 +69,7 @@ BEGIN
                             'loading_status', e.loading_status,
                             'base_form', inflected_base_form_for_entry(c.entry, c.lang),
                             'classification', e.classification,
+                            'domain', e.domain,
                             'familiarity_score', e.familiarity_score,
                             'familiarity_bucket', e.familiarity_bucket,
                             'quality_score', e.quality_score,
@@ -117,6 +118,18 @@ BEGIN
                                         )
                                         FROM sense_reference sr
                                         WHERE sr.sense_id = s.id
+                                    ), '[]'::jsonb),
+                                    'lore', COALESCE((
+                                        SELECT jsonb_agg(
+                                            jsonb_build_object(
+                                                'id', sl.id,
+                                                'sense_id', sl.sense_id,
+                                                'lore_text', sl.lore_text
+                                            )
+                                            ORDER BY sl.id
+                                        )
+                                        FROM sense_lore sl
+                                        WHERE sl.sense_id = s.id
                                     ), '[]'::jsonb),
                                     'translations', COALESCE((
                                         SELECT jsonb_object_agg(

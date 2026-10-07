@@ -111,6 +111,16 @@ BEGIN
     ON CONFLICT (example_sentence_id, lang) DO UPDATE SET
         sentence = EXCLUDED.sentence;
 
+    INSERT INTO "entry" ("entry", lang, "length", display_text)
+    SELECT
+        normalize_display_text_to_entry_key(sense_data->>'base_form'),
+        p_lang,
+        length(normalize_display_text_to_entry_key(sense_data->>'base_form')),
+        NULLIF(trim(sense_data->>'base_form'), '')
+    WHERE normalize_display_text_to_entry_key(COALESCE(sense_data->>'base_form', '')) <> ''
+      AND normalize_display_text_to_entry_key(sense_data->>'base_form') IS DISTINCT FROM p_entry
+    ON CONFLICT ("entry", lang) DO NOTHING;
+
     INSERT INTO inflected_entry (
         base_entry,
         inflected_entry,
@@ -129,6 +139,19 @@ BEGIN
     ON CONFLICT (base_entry, inflected_entry, lang) DO UPDATE SET
         display_text = COALESCE(EXCLUDED.display_text, inflected_entry.display_text),
         inflected_type = COALESCE(EXCLUDED.inflected_type, inflected_entry.inflected_type);
+
+    INSERT INTO "entry" ("entry", lang, "length", display_text)
+    SELECT
+        normalize_display_text_to_entry_key(infl),
+        p_lang,
+        length(normalize_display_text_to_entry_key(infl)),
+        NULLIF(trim(infl), '')
+    FROM jsonb_array_elements_text(COALESCE(sense_data->'inflections', '[]'::jsonb)) AS infl
+    WHERE sense_data ? 'inflections'
+      AND jsonb_typeof(sense_data->'inflections') = 'array'
+      AND normalize_display_text_to_entry_key(infl) <> ''
+      AND normalize_display_text_to_entry_key(infl) IS DISTINCT FROM p_entry
+    ON CONFLICT ("entry", lang) DO NOTHING;
 
     INSERT INTO inflected_entry (
         base_entry,

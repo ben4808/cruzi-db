@@ -10,7 +10,7 @@ BEGIN
       trim((e->>'entry')::text),
       COALESCE(NULLIF(trim((e->>'lang')::text), ''), 'en'),
       COALESCE((e->>'length')::integer, length(trim((e->>'entry')::text))),
-      COALESCE(NULLIF(trim((e->>'display_text')::text), ''), trim((e->>'entry')::text))
+      NULL
     FROM jsonb_array_elements(p_entries) AS e
     WHERE COALESCE(NULLIF(trim(e->>'entry'), ''), '') <> ''
     ON CONFLICT ("entry", lang) DO NOTHING;

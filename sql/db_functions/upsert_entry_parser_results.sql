@@ -40,7 +40,7 @@ BEGIN
     AND esc.lang = elem->>'lang';
 
   INSERT INTO entry_secondary_class ("entry", lang, secondary_class, secondary_display, secondary_base_form)
-  SELECT DISTINCT ON (sc_rows."entry", sc_rows.lang, sc_rows.secondary_class)
+  SELECT DISTINCT ON (sc_rows."entry", sc_rows.lang, sc_rows.secondary_class, sc_rows.secondary_display)
     sc_rows."entry",
     sc_rows.lang,
     sc_rows.secondary_class,
@@ -61,9 +61,8 @@ BEGIN
     WHERE COALESCE(NULLIF(trim(sc->>'secondary_class'), ''), '') <> ''
       AND COALESCE(NULLIF(trim(sc->>'secondary_display'), ''), '') <> ''
   ) AS sc_rows
-  ORDER BY sc_rows."entry", sc_rows.lang, sc_rows.secondary_class, sc_rows.entry_ord, sc_rows.sc_ord
-  ON CONFLICT ("entry", lang, secondary_class) DO UPDATE SET
-    secondary_display = EXCLUDED.secondary_display,
+  ORDER BY sc_rows."entry", sc_rows.lang, sc_rows.secondary_class, sc_rows.secondary_display, sc_rows.entry_ord, sc_rows.sc_ord
+  ON CONFLICT ("entry", lang, secondary_class, secondary_display) DO UPDATE SET
     secondary_base_form = EXCLUDED.secondary_base_form;
 
   PERFORM rebuild_inflected_entries_from_payload(entries_data, 'replace');

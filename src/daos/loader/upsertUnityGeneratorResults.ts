@@ -1,7 +1,11 @@
 import { sqlQuery } from "../../pool/postgres";
 
-export interface UnityGeneratorSecondaryClassUpdate {
+export interface UnityGeneratorSecondaryClassRef {
   secondaryClass: string;
+  secondaryDisplay: string;
+}
+
+export interface UnityGeneratorSecondaryClassUpdate extends UnityGeneratorSecondaryClassRef {
   unityBucket: string;
 }
 
@@ -13,7 +17,7 @@ export interface UnityGeneratorResult {
   reviewedStatus?: string;
   displayText?: string;
   classification?: string;
-  secondaryClassesToDelete?: string[];
+  secondaryClassesToDelete?: UnityGeneratorSecondaryClassRef[];
   secondaryClassesToUpdate?: UnityGeneratorSecondaryClassUpdate[];
 }
 
@@ -32,11 +36,13 @@ const upsertUnityGeneratorResults = async (
     reviewed_status: e.reviewedStatus ?? "12",
     display_text: e.displayText ?? undefined,
     classification: e.classification ?? undefined,
-    secondary_classes_to_delete: (e.secondaryClassesToDelete ?? []).map((secondaryClass) => ({
-      secondary_class: secondaryClass,
+    secondary_classes_to_delete: (e.secondaryClassesToDelete ?? []).map((sc) => ({
+      secondary_class: sc.secondaryClass,
+      secondary_display: sc.secondaryDisplay,
     })),
     secondary_classes_to_update: (e.secondaryClassesToUpdate ?? []).map((sc) => ({
       secondary_class: sc.secondaryClass,
+      secondary_display: sc.secondaryDisplay,
       unity_bucket: sc.unityBucket,
     })),
   }));
