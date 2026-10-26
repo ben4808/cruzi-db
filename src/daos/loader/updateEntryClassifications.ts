@@ -11,6 +11,7 @@ export interface EntryClassificationUpdate {
   qualityBucket: string | null;
   domain?: string | null;
   isVulgar: boolean | null;
+  humanReviewed?: boolean | null;
 }
 
 const updateEntryClassifications = async (
@@ -33,6 +34,9 @@ const updateEntryClassifications = async (
     is_vulgar: update.isVulgar === null || update.isVulgar === undefined
       ? undefined
       : update.isVulgar,
+    human_reviewed: update.humanReviewed === null || update.humanReviewed === undefined
+      ? undefined
+      : update.humanReviewed,
   }));
 
   await sqlQuery(true, "update_entry_classifications", [

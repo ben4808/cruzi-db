@@ -41,7 +41,7 @@ BEGIN
       AND TRIM(e.display_text) <> ''
       AND e.classification IS DISTINCT FROM 'Nonsense'
       AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
-      AND e.length = 6
+      AND e.length = 7
     ORDER BY random()
     LIMIT p_limit;
 END;

@@ -3,8 +3,8 @@ import path from 'path';
 import { Pool } from 'pg';
 import { PostgresParameter } from './PostgresParameter';
 
-dotenv.config();
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ quiet: true });
+dotenv.config({ path: path.resolve(__dirname, '../../.env'), quiet: true });
 
 let pool: Pool;
 const databaseUrl = process.env.DATABASE_URL;

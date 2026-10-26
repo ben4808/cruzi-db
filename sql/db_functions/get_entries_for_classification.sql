@@ -15,6 +15,7 @@ RETURNS TABLE (
     is_vulgar boolean,
     is_crosswordese boolean,
     is_breakfast boolean,
+    is_reviewed boolean,
     is_sensitive boolean,
     nyt_value text,
     sense_id text,
@@ -62,6 +63,7 @@ BEGIN
               AND et.lang = e.lang
               AND et.tag = 'breakfast_test'
         ) AS is_breakfast,
+        COALESCE(e.human_reviewed, false) AS is_reviewed,
         CASE
             WHEN s.id IS NOT NULL THEN EXISTS (
                 SELECT 1

@@ -17,6 +17,7 @@ export interface ClassificationEntry {
   isVulgar: boolean | null;
   isCrosswordese: boolean;
   isBreakfast: boolean;
+  isReviewed: boolean;
   isSensitive: boolean;
   nytValue: string | null;
   senseId: string | null;
@@ -69,6 +70,7 @@ const getEntriesForClassification = async (
     isVulgar: row.is_vulgar == null ? null : asBoolean(row.is_vulgar),
     isCrosswordese: asBoolean(row.is_crosswordese),
     isBreakfast: asBoolean(row.is_breakfast),
+    isReviewed: asBoolean(row.is_reviewed),
     isSensitive: asBoolean(row.is_sensitive),
     nytValue: row.nyt_value ?? null,
     senseId: row.sense_id ?? null,

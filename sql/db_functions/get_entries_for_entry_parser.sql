@@ -15,8 +15,9 @@ BEGIN
         e.lang
     FROM "entry" e
     WHERE COALESCE(e.reviewed_status, '') NOT LIKE '1%'
-      AND (e.length = 6)
+      AND (e.length = 7)
       AND (p_pattern IS NULL OR p_pattern = '' OR e.entry LIKE p_pattern)
+      --AND COALESCE(e.reviewed_status, '') <> 'Failed parse'
     ORDER BY random()
     LIMIT p_limit;
 END;

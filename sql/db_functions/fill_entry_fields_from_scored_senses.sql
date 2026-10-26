@@ -87,7 +87,7 @@ BEGIN
                 WHEN 'Feel-Good' THEN 3
                 WHEN 'Trendy' THEN 4
                 WHEN 'Normal' THEN 5
-                WHEN 'Uncommon Inflection' THEN 6
+                WHEN 'Uncommon Derivation' THEN 6
                 WHEN 'Clunky' THEN 7
                 WHEN 'Non-unit' THEN 8
                 ELSE 9
@@ -128,7 +128,7 @@ BEGIN
             quality_bucket = selected.quality_bucket,
             quality_score = CASE selected.quality_bucket
                 WHEN 'Non-unit' THEN 20
-                WHEN 'Uncommon Inflection' THEN 20
+                WHEN 'Uncommon Derivation' THEN 20
                 WHEN 'Clunky' THEN 20
                 WHEN 'Idiomatic' THEN 40
                 WHEN 'Interesting' THEN 40

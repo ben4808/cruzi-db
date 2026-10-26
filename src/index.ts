@@ -12,6 +12,7 @@ export { default as getEntries, GetEntriesInput } from './daos/loader/getEntries
 export {
   default as getCrosswordListEntries,
   CrosswordListEntry,
+  CrosswordListExcludeItems,
 } from './daos/loader/getCrosswordListEntries';
 
 export { default as upsertEntries } from './daos/loader/upsertEntries';
@@ -150,6 +151,18 @@ export { default as submitFriendlyWordsTurn } from './daos/api/submitFriendlyWor
 export { default as recommendFriendlyWordsRatings } from './daos/api/recommendFriendlyWordsRatings';
 export { default as addFriendlyWordsRatings } from './daos/api/addFriendlyWordsRatings';
 export { default as completeFriendlyWordsGame } from './daos/api/completeFriendlyWordsGame';
+export { default as getRandomSeedEntries, SeedEntry } from './daos/api/getRandomSeedEntries';
+export {
+  default as getCrosswordeseAndAbbreviationEntries,
+  CrosswordeseOrAbbreviationEntry,
+} from './daos/api/getCrosswordeseAndAbbreviationEntries';
+export { default as addGeneratedClues, GeneratedClueInput } from './daos/api/addGeneratedClues';
+export {
+  default as getGeneratedCluesForEntries,
+  EntryClueStatus,
+  GeneratedClueRecord,
+} from './daos/api/getGeneratedCluesForEntries';
+
 
 export {
   pullCrosswordProcessingPuzzle,

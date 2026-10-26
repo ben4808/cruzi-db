@@ -21,6 +21,7 @@ BEGIN
       AND e."length" = p_length
       AND v_base_key <> ''
       AND e.classification <> 'Nonsense'
+      AND e.unity_bucket <> 'Nonsense'
       AND (
         CASE lower(trim(p_position))
           WHEN 'start' THEN e.entry LIKE v_base_key || '%'

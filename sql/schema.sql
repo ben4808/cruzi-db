@@ -41,6 +41,8 @@ create table "entry" (
 
   loading_status text,
   reviewed_status text,
+  human_reviewed boolean not null default false,
+  clues_generated boolean not null default false,
   primary key("entry", lang)
 );
 
@@ -217,6 +219,16 @@ create table user__clue (
   incorrect_solves int not null default 0,
   last_solve date,
   primary key(user_id, clue_id)
+);
+
+create table generated_clue (
+  id serial primary key,
+  "entry" text not null,
+  lang text not null,
+  generated_clue text not null,
+  is_seedword boolean not null default false,
+  clue_type text,
+  generated_at timestamp not null default now()
 );
 
 create table user__puzzle_clue (

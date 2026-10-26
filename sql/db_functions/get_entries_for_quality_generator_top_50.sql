@@ -21,7 +21,7 @@ BEGIN
         e.familiarity_bucket
     FROM "entry" e
     WHERE e.reviewed_status = '123'
-      AND (e.length = 4 OR e.length = 3 OR e.length = 5)
+      AND (e.length = 7)
       AND e.display_text IS NOT NULL
       AND TRIM(e.display_text) <> ''
       AND e.unity_bucket IS NOT NULL
@@ -30,6 +30,7 @@ BEGIN
       AND TRIM(e.familiarity_bucket) <> ''
       AND e.classification IS DISTINCT FROM 'Nonsense'
       AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
+      AND e.familiarity_bucket IS DISTINCT FROM 'Nonsense'
       AND (p_pattern IS NULL OR p_pattern = '' OR e.entry LIKE p_pattern)
     ORDER BY random()
     LIMIT p_limit;

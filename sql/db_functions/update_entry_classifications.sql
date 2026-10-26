@@ -19,6 +19,8 @@ BEGIN
         quality_score,
         domain,
         is_vulgar,
+        human_reviewed,
+        reviewed_status,
         loading_status
     )
     SELECT
@@ -61,7 +63,7 @@ BEGIN
         CASE NULLIF(trim(elem->>'quality_bucket'), '')
             WHEN 'Non-unit' THEN 20
             WHEN 'Unfamiliar' THEN 20
-            WHEN 'Uncommon Inflection' THEN 20
+            WHEN 'Uncommon Derivation' THEN 20
             WHEN 'Partial' THEN 20
             WHEN 'Clunky' THEN 20
             WHEN 'Idiomatic' THEN 40
@@ -76,6 +78,15 @@ BEGIN
         CASE
             WHEN elem->>'is_vulgar' IS NULL OR btrim(elem->>'is_vulgar') = '' THEN false
             ELSE (elem->>'is_vulgar')::boolean
+        END,
+        CASE
+            WHEN elem->>'human_reviewed' IS NULL OR btrim(elem->>'human_reviewed') = '' THEN false
+            ELSE (elem->>'human_reviewed')::boolean
+        END,
+        CASE
+            WHEN elem->>'human_reviewed' IS NULL OR btrim(elem->>'human_reviewed') = '' THEN NULL
+            WHEN (elem->>'human_reviewed')::boolean THEN '1234'
+            ELSE NULL
         END,
         'Ready'
     FROM jsonb_array_elements(p_updates) AS elem
@@ -94,7 +105,12 @@ BEGIN
             WHEN EXCLUDED.domain IS NULL THEN "entry".domain
             ELSE NULLIF(trim(EXCLUDED.domain), '')
         END,
-        is_vulgar = EXCLUDED.is_vulgar;
+        is_vulgar = EXCLUDED.is_vulgar,
+        human_reviewed = EXCLUDED.human_reviewed,
+        reviewed_status = CASE
+            WHEN EXCLUDED.human_reviewed IS TRUE AND "entry".human_reviewed IS DISTINCT FROM TRUE THEN '1234'
+            ELSE "entry".reviewed_status
+        END;
 
     IF EXISTS (
         SELECT 1
