@@ -157,11 +157,36 @@ export {
   CrosswordeseOrAbbreviationEntry,
 } from './daos/api/getCrosswordeseAndAbbreviationEntries';
 export { default as addGeneratedClues, GeneratedClueInput } from './daos/api/addGeneratedClues';
+export { default as deleteGeneratedClue } from './daos/api/deleteGeneratedClue';
+export { default as incrementDontUseTags } from './daos/api/incrementDontUseTags';
+export { default as ensureSeedEntry } from './daos/api/ensureSeedEntry';
 export {
   default as getGeneratedCluesForEntries,
   EntryClueStatus,
   GeneratedClueRecord,
 } from './daos/api/getGeneratedCluesForEntries';
+export { default as addMagicPuzzle, MagicPuzzleInsert } from './daos/api/addMagicPuzzle';
+export {
+  default as addCommunityClues,
+  CommunityClueInput,
+} from './daos/api/addCommunityClues';
+export { default as incrementUsedClues, UsedClueInput } from './daos/api/incrementUsedClues';
+export {
+  default as getCommunityCluesForEntries,
+  CommunityClueItem,
+  CommunityClueRecord,
+} from './daos/api/getCommunityCluesForEntries';
+export {
+  default as saveMagicPuzzle,
+  SaveMagicPuzzleInput,
+  SaveMagicPuzzleResult,
+  MagicPuzzleClueInput,
+} from './daos/api/saveMagicPuzzle';
+export {
+  default as getMagicPuzzle,
+  MagicPuzzleRecord,
+  MagicPuzzleViewClue,
+} from './daos/api/getMagicPuzzle';
 
 
 export {

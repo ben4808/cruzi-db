@@ -4,6 +4,7 @@ export interface GeneratedClueRecord {
   clue: string;
   clueType: string | null;
   isSeedword: boolean;
+  timesUsed: number;
 }
 
 export interface EntryClueStatus {
@@ -59,6 +60,7 @@ const getGeneratedCluesForEntries = async (
         clue: row.generated_clue,
         clueType: row.clue_type ?? null,
         isSeedword: asBoolean(row.is_seedword),
+        timesUsed: Number(row.times_used ?? 0),
       });
     }
     byEntry.set(entry, status);

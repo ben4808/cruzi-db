@@ -10,7 +10,8 @@ RETURNS TABLE (
     clues_generated boolean,
     generated_clue text,
     clue_type text,
-    is_seedword boolean
+    is_seedword boolean,
+    times_used int
 )
 LANGUAGE plpgsql
 AS $$
@@ -55,13 +56,18 @@ BEGIN
         matched.clues_generated,
         gc.generated_clue,
         gc.clue_type,
-        gc.is_seedword
+        gc.is_seedword,
+        COALESCE(gc.times_used, 0) AS times_used
     FROM matched
     LEFT JOIN generated_clue gc
       ON gc.lang = p_lang
      AND (
           gc."entry" = matched.requested_entry
           OR (matched.db_entry IS NOT NULL AND gc."entry" = matched.db_entry)
-     );
+     )
+    ORDER BY
+        matched.requested_entry,
+        gc.times_used DESC NULLS LAST,
+        gc.id;
 END;
 $$;

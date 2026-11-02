@@ -84,9 +84,19 @@ create table puzzle (
   source_link text
 );
 
+create table magic_puzzle (
+  id text not null primary key,
+  lang text not null default 'en',
+  width int not null,
+  height int not null,
+  created_at timestamp not null default now(),
+  seed_answer text not null
+);
+
 create table clue_collection (
   id text not null primary key,
   puzzle_id text references puzzle(id) on delete set null,
+  magic_puzzle_id text references magic_puzzle(id) on delete set null,
   title text not null,
   lang text not null,
   author text, -- One of author or creator_id might be populated
@@ -228,7 +238,17 @@ create table generated_clue (
   generated_clue text not null,
   is_seedword boolean not null default false,
   clue_type text,
+  times_used int not null default 0,
   generated_at timestamp not null default now()
+);
+
+create table community_clue (
+  id serial primary key,
+  "entry" text not null,
+  lang text not null,
+  clue text not null,
+  times_used int not null default 0,
+  submitted_at timestamp not null default now()
 );
 
 create table user__puzzle_clue (

@@ -1,6 +1,3 @@
-DROP FUNCTION IF EXISTS get_crossword_list_entries(integer, integer, boolean);
-DROP FUNCTION IF EXISTS get_crossword_list_entries(integer, integer, text);
-
 CREATE OR REPLACE FUNCTION get_crossword_list_entries(
     p_min_length integer DEFAULT 3,
     p_max_length integer DEFAULT 9,
@@ -16,7 +13,8 @@ RETURNS TABLE (
     has_avoid_tag boolean,
     is_abbreviation boolean,
     is_sensitive boolean,
-    is_crosswordese boolean
+    is_crosswordese boolean,
+    is_overused boolean
 )
 LANGUAGE plpgsql
 AS $$
@@ -50,7 +48,14 @@ BEGIN
             WHERE et_xwese."entry" = e."entry"
               AND et_xwese.lang = e.lang
               AND et_xwese.tag = 'crosswordese'
-        ) AS is_crosswordese
+        ) AS is_crosswordese,
+        EXISTS (
+            SELECT 1
+            FROM entry_tags et_overused
+            WHERE et_overused."entry" = e."entry"
+              AND et_overused.lang = e.lang
+              AND et_overused.tag = 'overused'
+        ) AS is_overused
     FROM "entry" e
     WHERE e.display_text IS NOT NULL AND btrim(e.display_text) <> ''
       AND e.classification IS NOT NULL AND btrim(e.classification) <> ''
@@ -61,6 +66,7 @@ BEGIN
           (
               p_exclude_items IS DISTINCT FROM 'ExcludeNonUnit'
               AND p_exclude_items IS DISTINCT FROM 'ExcludeObscure'
+              AND p_exclude_items IS DISTINCT FROM 'ExcludeNiche'
           )
           OR (
               e.classification IS DISTINCT FROM 'Nonsense'
@@ -69,10 +75,14 @@ BEGIN
               AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
               AND e.familiarity_bucket IS DISTINCT FROM 'Nonsense'
               AND (
-                  p_exclude_items IS DISTINCT FROM 'ExcludeObscure'
+                  p_exclude_items = 'ExcludeNonUnit'
                   OR (
                       e.familiarity_bucket IS DISTINCT FROM 'Obscure'
                       AND e.familiarity_bucket IS DISTINCT FROM 'Barely Exists'
+                      AND (
+                          p_exclude_items = 'ExcludeObscure'
+                          OR e.familiarity_bucket IS DISTINCT FROM 'Niche'
+                      )
                   )
               )
           )

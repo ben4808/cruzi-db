@@ -73,13 +73,14 @@ BEGIN
                 WHEN 'Active' THEN 2
                 WHEN 'Literal' THEN 3
                 WHEN 'Common Name' THEN 4
-                WHEN 'General Knowledge' THEN 5
-                WHEN 'Inferred' THEN 6
-                WHEN 'Niche' THEN 7
-                WHEN 'Obscure' THEN 8
-                WHEN 'Barely Exists' THEN 9
-                WHEN 'Nonsense' THEN 10
-                ELSE 11
+                WHEN 'Regionalism' THEN 5
+                WHEN 'General Knowledge' THEN 6
+                WHEN 'Inferred' THEN 7
+                WHEN 'Niche' THEN 8
+                WHEN 'Obscure' THEN 9
+                WHEN 'Barely Exists' THEN 10
+                WHEN 'Nonsense' THEN 11
+                ELSE 12
             END,
             CASE NULLIF(btrim(s.quality_bucket), '')
                 WHEN 'Idiomatic' THEN 1
@@ -117,6 +118,7 @@ BEGIN
                 WHEN 'Active' THEN 40
                 WHEN 'Literal' THEN 35
                 WHEN 'Common Name' THEN 30
+                WHEN 'Regionalism' THEN 30
                 WHEN 'General Knowledge' THEN 30
                 WHEN 'Inferred' THEN 25
                 WHEN 'Niche' THEN 20

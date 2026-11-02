@@ -17,6 +17,7 @@ RETURNS TABLE (
     is_breakfast boolean,
     is_reviewed boolean,
     is_sensitive boolean,
+    is_overused boolean,
     nyt_value text,
     sense_id text,
     sense_summary text
@@ -79,6 +80,13 @@ BEGIN
                   AND lower(et.tag) = 'sensitive'
             )
         END AS is_sensitive,
+        EXISTS (
+            SELECT 1
+            FROM entry_tags et
+            WHERE et."entry" = e."entry"
+              AND et.lang = e.lang
+              AND et.tag = 'overused'
+        ) AS is_overused,
         nyt."value" AS nyt_value,
         s.id AS sense_id,
         s.summary AS sense_summary

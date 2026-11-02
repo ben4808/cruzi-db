@@ -19,6 +19,7 @@ export interface ClassificationEntry {
   isBreakfast: boolean;
   isReviewed: boolean;
   isSensitive: boolean;
+  isOverused: boolean;
   nytValue: string | null;
   senseId: string | null;
   senseSummary: string | null;
@@ -72,6 +73,7 @@ const getEntriesForClassification = async (
     isBreakfast: asBoolean(row.is_breakfast),
     isReviewed: asBoolean(row.is_reviewed),
     isSensitive: asBoolean(row.is_sensitive),
+    isOverused: asBoolean(row.is_overused),
     nytValue: row.nyt_value ?? null,
     senseId: row.sense_id ?? null,
     senseSummary: row.sense_summary ?? null,

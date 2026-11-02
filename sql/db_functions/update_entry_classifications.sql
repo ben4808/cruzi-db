@@ -48,6 +48,7 @@ BEGIN
             WHEN 'Easy Collocation' THEN 35
             WHEN 'Literal' THEN 35
             WHEN 'Common Name' THEN 30
+            WHEN 'Regionalism' THEN 30
             WHEN 'General Knowledge' THEN 30
             WHEN 'Colloquial' THEN 30
             WHEN 'Inferred' THEN 25

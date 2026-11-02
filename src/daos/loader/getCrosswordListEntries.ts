@@ -1,6 +1,6 @@
 import { sqlQuery } from "../../pool/postgres";
 
-export type CrosswordListExcludeItems = 'ExcludeNonUnit' | 'ExcludeObscure';
+export type CrosswordListExcludeItems = 'ExcludeNonUnit' | 'ExcludeObscure' | 'ExcludeNiche';
 
 export interface CrosswordListEntry {
   entry: string;
@@ -13,6 +13,7 @@ export interface CrosswordListEntry {
   isAbbreviation: boolean;
   isSensitive: boolean;
   isCrosswordese: boolean;
+  isOverused: boolean;
 }
 
 const getCrosswordListEntries = async (
@@ -37,6 +38,7 @@ const getCrosswordListEntries = async (
     isAbbreviation: Boolean(row.is_abbreviation),
     isSensitive: Boolean(row.is_sensitive),
     isCrosswordese: Boolean(row.is_crosswordese),
+    isOverused: Boolean(row.is_overused),
   }));
 };
 
