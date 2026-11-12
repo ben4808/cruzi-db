@@ -9,8 +9,9 @@ export interface EntryClassificationUpdate {
   unityBucket: string | null;
   familiarityBucket: string | null;
   qualityBucket: string | null;
+  crosswordBucket?: string | null;
   domain?: string | null;
-  isVulgar: boolean | null;
+  isVulgar?: boolean | null;
   humanReviewed?: boolean | null;
 }
 
@@ -24,12 +25,13 @@ const updateEntryClassifications = async (
   const payload = updates.map((update) => ({
     entry: update.entry,
     lang: update.lang,
-    base_form: update.baseForm ?? undefined,
+    base_form: update.baseForm ?? null,
     display_text: update.displayText ?? undefined,
     classification: update.classification ?? undefined,
     unity_bucket: update.unityBucket ?? undefined,
     familiarity_bucket: update.familiarityBucket ?? undefined,
     quality_bucket: update.qualityBucket ?? undefined,
+    crossword_bucket: update.crosswordBucket === undefined ? undefined : (update.crosswordBucket || null),
     domain: update.domain ?? undefined,
     is_vulgar: update.isVulgar === null || update.isVulgar === undefined
       ? undefined

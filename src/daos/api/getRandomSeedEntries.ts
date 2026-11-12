@@ -11,12 +11,14 @@ const getRandomSeedEntries = async (
   familiarityBucket: string = "General Knowledge",
   count: number = 10,
   lang: string = "en",
+  excludeSeedwordClues: boolean = false,
 ): Promise<SeedEntry[]> => {
   const results = await sqlQuery(true, "get_random_seed_entries", [
     { name: "p_length", value: length },
     { name: "p_familiarity_bucket", value: familiarityBucket },
     { name: "p_count", value: count },
     { name: "p_lang", value: lang },
+    { name: "p_exclude_seedword_clues", value: excludeSeedwordClues },
   ]);
 
   return results.map((row) => ({

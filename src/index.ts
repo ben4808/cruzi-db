@@ -51,6 +51,14 @@ export {
 } from './daos/loader/upsertUnityGeneratorResults';
 export { default as getEntriesForEntryParser, EntryForEntryParser } from './daos/loader/getEntriesForEntryParser';
 export {
+  default as getEntriesForEntrySentenceGenerator,
+  EntryForEntrySentenceGenerator,
+} from './daos/loader/getEntriesForEntrySentenceGenerator';
+export {
+  default as addEntrySentences,
+  EntrySentenceInput,
+} from './daos/loader/addEntrySentences';
+export {
   default as upsertEntryParserResults,
   EntryParserResult,
   EntryParserSecondaryClass,
@@ -112,6 +120,7 @@ export {
 export {
   default as addShortPhraseResults,
   ShortPhraseResultInput,
+  ShortPhraseSecondaryClassInput,
 } from './daos/loader/addShortPhraseResults';
 export { default as deleteShortPhraseQueueItem } from './daos/loader/deleteShortPhraseQueueItem';
 export {

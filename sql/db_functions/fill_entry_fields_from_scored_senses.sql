@@ -66,7 +66,7 @@ BEGIN
                 WHEN 'Partial' THEN 6
                 WHEN 'Non-unit' THEN 7
                 WHEN 'Nonsense' THEN 8
-                ELSE 9
+                ELSE 12
             END,
             CASE NULLIF(btrim(s.familiarity_bucket), '')
                 WHEN 'Ubiquitous' THEN 1
@@ -78,9 +78,8 @@ BEGIN
                 WHEN 'Inferred' THEN 7
                 WHEN 'Niche' THEN 8
                 WHEN 'Obscure' THEN 9
-                WHEN 'Barely Exists' THEN 10
-                WHEN 'Nonsense' THEN 11
-                ELSE 12
+                WHEN 'Nonsense' THEN 10
+                ELSE 11
             END,
             CASE NULLIF(btrim(s.quality_bucket), '')
                 WHEN 'Idiomatic' THEN 1
@@ -88,10 +87,7 @@ BEGIN
                 WHEN 'Feel-Good' THEN 3
                 WHEN 'Trendy' THEN 4
                 WHEN 'Normal' THEN 5
-                WHEN 'Uncommon Derivation' THEN 6
-                WHEN 'Clunky' THEN 7
-                WHEN 'Non-unit' THEN 8
-                ELSE 9
+                ELSE 6
             END,
             random()
     ),
@@ -123,15 +119,11 @@ BEGIN
                 WHEN 'Inferred' THEN 25
                 WHEN 'Niche' THEN 20
                 WHEN 'Obscure' THEN 15
-                WHEN 'Barely Exists' THEN 10
                 WHEN 'Nonsense' THEN 0
                 ELSE NULL
             END,
             quality_bucket = selected.quality_bucket,
             quality_score = CASE selected.quality_bucket
-                WHEN 'Non-unit' THEN 20
-                WHEN 'Uncommon Derivation' THEN 20
-                WHEN 'Clunky' THEN 20
                 WHEN 'Idiomatic' THEN 40
                 WHEN 'Interesting' THEN 40
                 WHEN 'Feel-Good' THEN 40
@@ -150,7 +142,7 @@ BEGIN
         USING updated u
         WHERE et."entry" = u.entry
           AND et.lang = u.lang
-          AND lower(et.tag) IN ('vulgar', 'sensitive')
+          AND lower(et.tag) IN ('vulgar', 'sensitive', 'gross')
         RETURNING et."entry"
     )
     INSERT INTO entry_tags ("entry", lang, tag, "value")
@@ -161,7 +153,7 @@ BEGIN
         st.value
     FROM updated u
     JOIN sense_tags st ON st.sense_id = u.sense_id
-    WHERE lower(st.tag) IN ('vulgar', 'sensitive')
+    WHERE lower(st.tag) IN ('vulgar', 'sensitive', 'gross')
       AND (SELECT COUNT(*) FROM deleted) IS NOT NULL
     ON CONFLICT ("entry", lang, tag) DO UPDATE SET "value" = EXCLUDED."value";
 END;

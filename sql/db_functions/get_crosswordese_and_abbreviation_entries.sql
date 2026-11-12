@@ -43,7 +43,7 @@ BEGIN
       )
       AND e.unity_bucket IS DISTINCT FROM 'Non-unit'
       AND e.unity_bucket IS DISTINCT FROM 'Nonsense'
-      AND e.familiarity_bucket IS DISTINCT FROM 'Barely Exists'
+      AND e.familiarity_bucket IS DISTINCT FROM 'Nonsense'
       AND NOT EXISTS (
           SELECT 1
           FROM entry_tags et

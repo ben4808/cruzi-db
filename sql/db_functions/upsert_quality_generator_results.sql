@@ -14,7 +14,7 @@ BEGIN
   USING jsonb_array_elements(entries_data) AS elem
   WHERE et."entry" = elem->>'entry'
     AND et.lang = elem->>'lang'
-    AND et.tag IN ('vulgar', 'sensitive');
+    AND et.tag IN ('vulgar', 'sensitive', 'gross');
 
   INSERT INTO entry_tags ("entry", lang, tag)
   SELECT DISTINCT
@@ -29,7 +29,7 @@ BEGIN
       ELSE '[]'::jsonb
     END
   ) AS flag_value
-  WHERE lower(btrim(flag_value)) IN ('vulgar', 'sensitive')
+  WHERE lower(btrim(flag_value)) IN ('vulgar', 'sensitive', 'gross')
   ON CONFLICT ("entry", lang, tag) DO NOTHING;
 END;
 $$ LANGUAGE plpgsql;

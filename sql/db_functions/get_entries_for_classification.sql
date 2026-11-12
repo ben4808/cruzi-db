@@ -12,11 +12,14 @@ RETURNS TABLE (
     unity_bucket text,
     familiarity_bucket text,
     quality_bucket text,
+    crossword_bucket text,
+    base_form text,
     is_vulgar boolean,
+    is_sensitive boolean,
+    is_gross boolean,
     is_crosswordese boolean,
     is_breakfast boolean,
     is_reviewed boolean,
-    is_sensitive boolean,
     is_overused boolean,
     nyt_value text,
     sense_id text,
@@ -35,6 +38,8 @@ BEGIN
         CASE WHEN s.id IS NOT NULL THEN s.unity_bucket ELSE e.unity_bucket END,
         CASE WHEN s.id IS NOT NULL THEN s.familiarity_bucket ELSE e.familiarity_bucket END,
         CASE WHEN s.id IS NOT NULL THEN s.quality_bucket ELSE e.quality_bucket END,
+        e.crossword_bucket,
+        e.base_form,
         CASE
             WHEN s.id IS NOT NULL THEN EXISTS (
                 SELECT 1
@@ -48,23 +53,8 @@ BEGIN
                 WHERE et."entry" = e."entry"
                   AND et.lang = e.lang
                   AND lower(et.tag) = 'vulgar'
-            ) OR COALESCE(e.is_vulgar, false)
+            )
         END AS is_vulgar,
-        EXISTS (
-            SELECT 1
-            FROM entry_tags et
-            WHERE et."entry" = e."entry"
-              AND et.lang = e.lang
-              AND et.tag = 'crosswordese'
-        ) AS is_crosswordese,
-        EXISTS (
-            SELECT 1
-            FROM entry_tags et
-            WHERE et."entry" = e."entry"
-              AND et.lang = e.lang
-              AND et.tag = 'breakfast_test'
-        ) AS is_breakfast,
-        COALESCE(e.human_reviewed, false) AS is_reviewed,
         CASE
             WHEN s.id IS NOT NULL THEN EXISTS (
                 SELECT 1
@@ -80,6 +70,36 @@ BEGIN
                   AND lower(et.tag) = 'sensitive'
             )
         END AS is_sensitive,
+        CASE
+            WHEN s.id IS NOT NULL THEN EXISTS (
+                SELECT 1
+                FROM sense_tags st
+                WHERE st.sense_id = s.id
+                  AND lower(st.tag) = 'gross'
+            )
+            ELSE EXISTS (
+                SELECT 1
+                FROM entry_tags et
+                WHERE et."entry" = e."entry"
+                  AND et.lang = e.lang
+                  AND lower(et.tag) = 'gross'
+            )
+        END AS is_gross,
+        EXISTS (
+            SELECT 1
+            FROM entry_tags et
+            WHERE et."entry" = e."entry"
+              AND et.lang = e.lang
+              AND et.tag = 'crosswordese'
+        ) AS is_crosswordese,
+        EXISTS (
+            SELECT 1
+            FROM entry_tags et
+            WHERE et."entry" = e."entry"
+              AND et.lang = e.lang
+              AND et.tag = 'breakfast_test'
+        ) AS is_breakfast,
+        COALESCE(e.human_reviewed, false) AS is_reviewed,
         EXISTS (
             SELECT 1
             FROM entry_tags et

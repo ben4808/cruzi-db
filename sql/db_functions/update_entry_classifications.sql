@@ -10,6 +10,7 @@ BEGIN
         lang,
         "length",
         display_text,
+        base_form,
         classification,
         unity_bucket,
         unity_score,
@@ -17,8 +18,8 @@ BEGIN
         familiarity_score,
         quality_bucket,
         quality_score,
+        crossword_bucket,
         domain,
-        is_vulgar,
         human_reviewed,
         reviewed_status,
         loading_status
@@ -28,6 +29,7 @@ BEGIN
         trim(elem->>'lang'),
         length(trim(elem->>'entry')),
         NULLIF(trim(elem->>'display_text'), ''),
+        NULLIF(trim(COALESCE(elem->>'base_form', elem->>'baseForm')), ''),
         NULLIF(trim(elem->>'classification'), ''),
         NULLIF(trim(elem->>'unity_bucket'), ''),
         CASE NULLIF(trim(elem->>'unity_bucket'), '')
@@ -36,6 +38,7 @@ BEGIN
             WHEN 'Formula' THEN 3
             WHEN 'Partial' THEN 2
             WHEN 'Variant' THEN 2
+            WHEN 'Formulaic' THEN 2
             WHEN 'Non-unit' THEN 2
             WHEN 'Nonsense' THEN 1
             ELSE NULL
@@ -56,17 +59,11 @@ BEGIN
             WHEN 'Variant' THEN 20
             WHEN 'Partial Phrase' THEN 20
             WHEN 'Obscure' THEN 15
-            WHEN 'Barely Exists' THEN 10
             WHEN 'Nonsense' THEN 0
             ELSE NULL
         END,
         NULLIF(trim(elem->>'quality_bucket'), ''),
         CASE NULLIF(trim(elem->>'quality_bucket'), '')
-            WHEN 'Non-unit' THEN 20
-            WHEN 'Unfamiliar' THEN 20
-            WHEN 'Uncommon Derivation' THEN 20
-            WHEN 'Partial' THEN 20
-            WHEN 'Clunky' THEN 20
             WHEN 'Idiomatic' THEN 40
             WHEN 'Interesting' THEN 40
             WHEN 'Feel-Good' THEN 40
@@ -75,11 +72,8 @@ BEGIN
             WHEN 'Normal' THEN 30
             ELSE NULL
         END,
+        NULLIF(trim(elem->>'crossword_bucket'), ''),
         NULLIF(trim(elem->>'domain'), ''),
-        CASE
-            WHEN elem->>'is_vulgar' IS NULL OR btrim(elem->>'is_vulgar') = '' THEN false
-            ELSE (elem->>'is_vulgar')::boolean
-        END,
         CASE
             WHEN elem->>'human_reviewed' IS NULL OR btrim(elem->>'human_reviewed') = '' THEN false
             ELSE (elem->>'human_reviewed')::boolean
@@ -95,6 +89,16 @@ BEGIN
       AND COALESCE(NULLIF(trim(elem->>'lang'), ''), '') <> ''
     ON CONFLICT ("entry", lang) DO UPDATE SET
         display_text = NULLIF(trim(EXCLUDED.display_text), ''),
+        base_form = CASE
+            WHEN EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(p_updates) AS elem
+                WHERE trim(elem->>'entry') = EXCLUDED."entry"
+                  AND trim(elem->>'lang') = EXCLUDED.lang
+                  AND (elem ? 'base_form' OR elem ? 'baseForm')
+            ) THEN EXCLUDED.base_form
+            ELSE "entry".base_form
+        END,
         classification = NULLIF(trim(EXCLUDED.classification), ''),
         unity_bucket = NULLIF(trim(EXCLUDED.unity_bucket), ''),
         unity_score = EXCLUDED.unity_score,
@@ -102,23 +106,24 @@ BEGIN
         familiarity_score = EXCLUDED.familiarity_score,
         quality_bucket = NULLIF(trim(EXCLUDED.quality_bucket), ''),
         quality_score = EXCLUDED.quality_score,
+        crossword_bucket = CASE
+            WHEN EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(p_updates) AS elem
+                WHERE trim(elem->>'entry') = EXCLUDED."entry"
+                  AND trim(elem->>'lang') = EXCLUDED.lang
+                  AND elem ? 'crossword_bucket'
+            ) THEN EXCLUDED.crossword_bucket
+            ELSE "entry".crossword_bucket
+        END,
         domain = CASE
             WHEN EXCLUDED.domain IS NULL THEN "entry".domain
             ELSE NULLIF(trim(EXCLUDED.domain), '')
         END,
-        is_vulgar = EXCLUDED.is_vulgar,
         human_reviewed = EXCLUDED.human_reviewed,
         reviewed_status = CASE
             WHEN EXCLUDED.human_reviewed IS TRUE AND "entry".human_reviewed IS DISTINCT FROM TRUE THEN '1234'
             ELSE "entry".reviewed_status
         END;
-
-    IF EXISTS (
-        SELECT 1
-        FROM jsonb_array_elements(p_updates) AS elem
-        WHERE COALESCE(NULLIF(trim(COALESCE(elem->>'base_form', elem->>'baseForm')), ''), '') <> ''
-    ) THEN
-        PERFORM rebuild_inflected_entries_from_payload(p_updates, 'replace'::text);
-    END IF;
 END;
 $$;

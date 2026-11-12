@@ -29,6 +29,7 @@ create table "entry" (
   lang text not null,
   "length" int not null,
   display_text text,
+  base_form text,
   classification text,
   
   unity_bucket text,
@@ -37,6 +38,7 @@ create table "entry" (
   familiarity_score int,
   quality_bucket text,
   quality_score int,
+  crossword_bucket text,
   domain text,
 
   loading_status text,
@@ -56,6 +58,15 @@ create table inflected_entry (
   primary key(base_entry, inflected_entry, lang),
   foreign key (base_entry, lang) references "entry"("entry", lang) on delete cascade,
   foreign key (inflected_entry, lang) references "entry"("entry", lang) on delete cascade
+);
+
+create table entry_relationship (
+  id serial primary key,
+  "entry" text not null,
+  lang text not null,
+  related_entry text not null,
+  related_lang text not null,
+  relationship_type text not null
 );
 
 create table entry_secondary_class (
@@ -189,6 +200,15 @@ create table example_sentence_improvement (
   old_sentence text not null,
   new_sentence text not null,
   new_translation text not null
+);
+
+create table entry_sentence (
+  id text not null primary key,
+  "entry" text not null,
+  original_lang text not null,
+  original_sentence text not null,
+  translated_lang text,
+  translated_sentence text
 );
 
 create table clue (

@@ -23,7 +23,7 @@ BEGIN
     DELETE FROM sense_tags st
     USING jsonb_array_elements(p_updates) AS elem
     WHERE st.sense_id = elem->>'sense_id'
-      AND st.tag IN ('vulgar', 'sensitive')
+      AND st.tag IN ('vulgar', 'sensitive', 'gross')
       AND elem ? 'flags';
 
     INSERT INTO sense_tags (sense_id, tag)
@@ -38,7 +38,7 @@ BEGIN
         END
     ) AS flag_value
     WHERE elem ? 'flags'
-      AND lower(btrim(flag_value)) IN ('vulgar', 'sensitive')
+      AND lower(btrim(flag_value)) IN ('vulgar', 'sensitive', 'gross')
     ON CONFLICT (sense_id, tag) DO NOTHING;
 END;
 $$;

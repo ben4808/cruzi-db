@@ -1,6 +1,9 @@
 import { sqlQuery } from "../../pool/postgres";
 
-export type CrosswordListExcludeItems = 'ExcludeNonUnit' | 'ExcludeObscure' | 'ExcludeNiche';
+export type CrosswordListExcludeItems =
+  | 'ExcludeNotAThing'
+  | 'ExcludeNotGettable'
+  | 'ExcludeMaybeGettable';
 
 export interface CrosswordListEntry {
   entry: string;
@@ -9,11 +12,10 @@ export interface CrosswordListEntry {
   unityBucket: string | null;
   familiarityBucket: string | null;
   qualityBucket: string | null;
+  crosswordBucket: string | null;
+  baseForm: string | null;
   hasAvoidTag: boolean;
-  isAbbreviation: boolean;
-  isSensitive: boolean;
-  isCrosswordese: boolean;
-  isOverused: boolean;
+  hasSensitiveTag: boolean;
 }
 
 const getCrosswordListEntries = async (
@@ -34,11 +36,10 @@ const getCrosswordListEntries = async (
     unityBucket: row.unity_bucket ?? null,
     familiarityBucket: row.familiarity_bucket ?? null,
     qualityBucket: row.quality_bucket ?? null,
+    crosswordBucket: row.crossword_bucket ?? null,
+    baseForm: row.base_form ?? null,
     hasAvoidTag: Boolean(row.has_avoid_tag),
-    isAbbreviation: Boolean(row.is_abbreviation),
-    isSensitive: Boolean(row.is_sensitive),
-    isCrosswordese: Boolean(row.is_crosswordese),
-    isOverused: Boolean(row.is_overused),
+    hasSensitiveTag: Boolean(row.has_sensitive_tag),
   }));
 };
 

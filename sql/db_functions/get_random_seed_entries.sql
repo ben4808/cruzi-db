@@ -1,10 +1,12 @@
 DROP FUNCTION IF EXISTS get_random_seed_entries(integer, text, integer, text);
+DROP FUNCTION IF EXISTS get_random_seed_entries(integer, text, integer, text, boolean);
 
 CREATE OR REPLACE FUNCTION get_random_seed_entries(
     p_length integer,
     p_familiarity_bucket text DEFAULT 'General Knowledge',
     p_count integer DEFAULT 10,
-    p_lang text DEFAULT 'en'
+    p_lang text DEFAULT 'en',
+    p_exclude_seedword_clues boolean DEFAULT false
 )
 RETURNS TABLE (
     entry text,
@@ -34,6 +36,16 @@ BEGIN
           WHERE et."entry" = e."entry"
             AND et.lang = e.lang
             AND et.tag IN ('breakfast_test', 'vulgar')
+      )
+      AND (
+          NOT p_exclude_seedword_clues
+          OR NOT EXISTS (
+              SELECT 1
+              FROM generated_clue gc
+              WHERE gc."entry" = e."entry"
+                AND gc.lang = e.lang
+                AND gc.is_seedword = true
+          )
       )
     ORDER BY random()
     LIMIT p_count;

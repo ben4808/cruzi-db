@@ -14,11 +14,14 @@ export interface ClassificationEntry {
   unityBucket: string | null;
   familiarityBucket: string | null;
   qualityBucket: string | null;
+  crosswordBucket: string | null;
+  baseForm: string | null;
   isVulgar: boolean | null;
   isCrosswordese: boolean;
   isBreakfast: boolean;
   isReviewed: boolean;
   isSensitive: boolean;
+  isGross: boolean;
   isOverused: boolean;
   nytValue: string | null;
   senseId: string | null;
@@ -68,11 +71,14 @@ const getEntriesForClassification = async (
     unityBucket: row.unity_bucket ?? null,
     familiarityBucket: row.familiarity_bucket ?? null,
     qualityBucket: row.quality_bucket ?? null,
+    crosswordBucket: row.crossword_bucket ?? null,
+    baseForm: row.base_form ?? row.baseForm ?? null,
     isVulgar: row.is_vulgar == null ? null : asBoolean(row.is_vulgar),
     isCrosswordese: asBoolean(row.is_crosswordese),
     isBreakfast: asBoolean(row.is_breakfast),
     isReviewed: asBoolean(row.is_reviewed),
     isSensitive: asBoolean(row.is_sensitive),
+    isGross: asBoolean(row.is_gross),
     isOverused: asBoolean(row.is_overused),
     nytValue: row.nyt_value ?? null,
     senseId: row.sense_id ?? null,

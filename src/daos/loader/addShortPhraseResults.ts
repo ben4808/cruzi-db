@@ -1,5 +1,13 @@
 import { sqlQuery } from '../../pool/postgres';
 
+export interface ShortPhraseSecondaryClassInput {
+  secondaryClass: string;
+  secondaryDisplay: string;
+  secondaryBaseForm?: string;
+  unityBucket?: string;
+  familiarityBucket?: string;
+}
+
 export interface ShortPhraseResultInput {
   prompt: string;
   entry: string;
@@ -11,6 +19,7 @@ export interface ShortPhraseResultInput {
   unityBucket?: string;
   frequency?: string;
   familiarityBucket?: string;
+  secondaryClasses?: ShortPhraseSecondaryClassInput[];
 }
 
 const addShortPhraseResults = async (results: ShortPhraseResultInput[]): Promise<void> => {
@@ -29,6 +38,13 @@ const addShortPhraseResults = async (results: ShortPhraseResultInput[]): Promise
     unity_bucket: result.unityBucket ?? undefined,
     frequency: result.frequency ?? undefined,
     familiarity_bucket: result.familiarityBucket ?? undefined,
+    secondary_classes: (result.secondaryClasses ?? []).map((secondary) => ({
+      secondary_class: secondary.secondaryClass,
+      secondary_display: secondary.secondaryDisplay,
+      secondary_base_form: secondary.secondaryBaseForm ?? undefined,
+      unity_bucket: secondary.unityBucket ?? undefined,
+      familiarity_bucket: secondary.familiarityBucket ?? undefined,
+    })),
   }));
 
   await sqlQuery(true, 'add_short_phrase_results', [

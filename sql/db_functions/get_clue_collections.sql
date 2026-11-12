@@ -51,6 +51,7 @@ BEGIN
         LEFT JOIN user__collection uc ON c.id = uc.collection_id AND uc.user_id = p_user_id
         LEFT JOIN collection_access ca ON c.id = ca.collection_id AND ca.user_id = p_user_id
         WHERE c.puzzle_id IS NULL
+          AND c.magic_puzzle_id IS NULL
           AND ((p_user_id IS NULL AND c.is_private = FALSE)
            OR (p_user_id IS NOT NULL AND (c.is_private = FALSE OR c.creator_id = p_user_id OR ca.user_id IS NOT NULL)))
     );
