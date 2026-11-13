@@ -67,6 +67,11 @@ export { default as getEntriesForEntryImprover, EntryForEntryImprover } from './
 export { default as upsertEntryImproverResults } from './daos/loader/upsertEntryImproverResults';
 export { default as deleteEntries } from './daos/loader/deleteEntries';
 export {
+  default as searchExplorerEntries,
+  ExplorerEntrySearch,
+  ExplorerEntryRow,
+} from './daos/api/searchExplorerEntries';
+export {
   default as getEntriesForFamiliarityGeneratorTop50,
   EntryForFamiliarityGenerator,
   FamiliarityGeneratorSecondaryClass,
